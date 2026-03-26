@@ -1,0 +1,21 @@
+import { CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Users } from "./Users";
+import { CartItems } from "./CartItems";
+
+@Entity('cart')
+export class Cart {
+    @PrimaryGeneratedColumn()
+    cart_id!: number;
+
+    @ManyToOne(() => Users, (user) => user.carts)
+    user!: Users;
+
+    @OneToMany(() => CartItems, (item) => item.cart)
+    cartItems!: CartItems[];
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
+}

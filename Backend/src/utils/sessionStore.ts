@@ -1,0 +1,1 @@
+export const SessionStore = new  Map<string, {lastActivity: number, role: string}>();
