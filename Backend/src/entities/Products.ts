@@ -20,10 +20,10 @@ export class Products {
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.00 })
     product_price!: number;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'date', nullable: true })
     manufacturing_date!: Date;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'date', nullable: true })
     expiry_date!: Date;
 
     @Column()
