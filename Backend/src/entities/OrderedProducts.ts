@@ -1,11 +1,17 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Orders } from "./Orders";
 import { Products } from "./Products";
 
 @Entity('ordered-products')
-export class OrderedProducts{
+export class OrderedProducts {
+    @PrimaryGeneratedColumn()
+    ordered_product_id !: number;
+
     @Column()
     quantity !: number;
+
+    @Column()
+    price !: number;
 
     @ManyToOne(() => Orders, (order) => order.orderProducts)
     order!: Orders;

@@ -11,7 +11,7 @@ export enum PaymentMethod {
 export enum PaymentStatus {
     Pending = "pending",
     Completed = "completed",
-    Cancelled = "cancelled",
+    Refunded = "Refunded",
 }
 
 @Entity('payments')
@@ -19,6 +19,9 @@ export class Payments {
 
     @PrimaryGeneratedColumn()
     payment_id !: number;
+
+    @Column()
+    amount_paid !: number;
 
     @Column()
     payment_date !: Date;
@@ -30,7 +33,7 @@ export class Payments {
     payment_status !: PaymentStatus;
 
     @OneToOne(() => Orders, (order) => order.payment)
-    @JoinColumn({name: 'order_id'})
+    @JoinColumn({ name: 'order_id' })
     order!: Orders;
 
     @CreateDateColumn()

@@ -1,7 +1,7 @@
-export class AppError extends Error{
+export class AppError extends Error {
     public readonly statusCode!: number;
     public readonly isOperational!: boolean;
-    constructor(message:string, statusCode: number, isOperational = true){
+    constructor(message: string, statusCode: number, isOperational = true) {
         super(message);
         Object.setPrototypeOf(this, new.target.prototype)
         this.statusCode = statusCode;
@@ -10,15 +10,15 @@ export class AppError extends Error{
     }
 }
 
-export class NotFound extends AppError{
-    constructor(resource = 'Resource'){
+export class NotFound extends AppError {
+    constructor(resource = 'Resource') {
         super(`${resource} not found`, 404);
     }
 }
 
-export class ValidationError extends AppError{
-    constructor(message: string){
-        super(message, 404);
+export class ValidationError extends AppError {
+    constructor(message: string) {
+        super(message, 400);
     }
 }
 

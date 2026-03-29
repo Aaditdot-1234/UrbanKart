@@ -38,7 +38,7 @@ export class Products {
     @OneToMany(() => CartItems, (item) => item.product)
     items!: CartItems[];
 
-    @OneToMany(() => Reviews, (review) => review.product)
+    @OneToMany(() => Reviews, (review) => review.product, { cascade: true })
     reviews!: Reviews[];
 
     @OneToMany(() => OrderedProducts, (op) => op.product)

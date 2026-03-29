@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users";
 import { CartItems } from "./CartItems";
 
@@ -6,6 +6,9 @@ import { CartItems } from "./CartItems";
 export class Cart {
     @PrimaryGeneratedColumn()
     cart_id!: number;
+
+    @Column({ default: true })
+    is_active!: boolean;
 
     @ManyToOne(() => Users, (user) => user.carts)
     user!: Users;

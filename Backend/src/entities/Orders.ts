@@ -4,14 +4,24 @@ import { OrderedProducts } from "./OrderedProducts";
 import { Address } from "./Address";
 import { Payments } from "./Payments";
 
+export enum OrderStatus {
+    Pending = 'pending',
+    Shipped = 'shipped',
+    Delivered = 'delivered',
+    Cancelled = 'cancelled'
+}
+
 @Entity('orders')
-export class Orders{
-    
+export class Orders {
+
     @PrimaryGeneratedColumn()
     order_id !: number;
 
-    @Column({type: "decimal", precision: 10, scale: 2, default: 0.00})
+    @Column({ type: "decimal", precision: 10, scale: 2, default: 0.00 })
     totalAmount !: number;
+
+    @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+    status !: OrderStatus;
 
     @ManyToOne(() => Users, (user) => user.orders)
     user!: Users;
@@ -19,7 +29,7 @@ export class Orders{
     @OneToMany(() => OrderedProducts, (op) => op.order)
     orderProducts!: OrderedProducts[];
 
-    @ManyToOne(() => Address, (address) =>address.orders)
+    @ManyToOne(() => Address, (address) => address.orders)
     address!: Address;
 
     @OneToOne(() => Payments, (payment) => payment.order)
@@ -29,5 +39,5 @@ export class Orders{
     createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt!: Date;    
+    updatedAt!: Date;
 }
