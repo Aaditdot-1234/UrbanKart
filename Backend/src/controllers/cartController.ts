@@ -6,25 +6,25 @@ import { Users } from "../entities/Users";
 export class CartController {
     static addToCart = asyncHandler(async (req: Request, res: Response) => {
         const { product_id, quantity } = req.body;
-        const userId = (req as any).user.id;
+        const user = req.user as Users;
 
-        await CartService.addToCart(userId, product_id, quantity);
+        await CartService.addToCart(user.id, product_id, quantity);
         res.status(200).json({ message: "Product added to cart successfully." });
     });
 
     static updateCartItem = asyncHandler(async (req: Request, res: Response) => {
         const { cart_item_id, quantity } = req.body;
-        const userId = (req as any).user.id;
+        const user = req.user as Users;
 
-        await CartService.updateCartItem(userId, cart_item_id, quantity);
+        await CartService.updateCartItem(user.id, cart_item_id, quantity);
         res.status(200).json({ message: "Cart item updated successfully." });
     });
 
-    static deleteCartItem = asyncHandler(async (req: Request<{cart_item_id: string}>, res: Response) => {
+    static deleteCartItem = asyncHandler(async (req: Request<{ cart_item_id: string }>, res: Response) => {
         const { cart_item_id } = req.params;
-        const userId = (req as any).user.id;
+        const user = req.user as Users;
 
-        await CartService.deleteCartItem(userId, +cart_item_id);
+        await CartService.deleteCartItem(user.id, +cart_item_id);
         res.status(200).json({ message: "Cart item deleted successfully." });
     });
 
