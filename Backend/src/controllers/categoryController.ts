@@ -39,8 +39,8 @@ export class CategoryController {
         res.status(200).json(types);
     })
 
-    static getCategoryByProduct = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { product_id } = req.params as { product_id: string };
+    static getCategoryByProduct = asyncHandler(async (req: Request<{ product_id: string }>, res: Response, next: NextFunction) => {
+        const { product_id } = req.params;
         const productRepo = AppDataSource.getRepository(Products);
         const product = await productRepo.findOne({
             where: { product_id: +product_id },

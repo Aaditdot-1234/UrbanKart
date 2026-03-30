@@ -1,139 +1,77 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
 import AppDataSource from "../datasource";
-import { UserRole, Users } from "../entities/Users";
-import { ConflictError, NotFound, UnauthorisedError, ValidationError } from "../errors/appError";
-import { hashPassword, VerifyPassword } from "../auth/password";
-import { signToken } from "../auth/jwt";
-import { SessionStore } from "../utils/sessionStore";
+import { Users } from "../entities/Users";
+import { NotFound } from "../errors/appError";
+import { COOKIE_NAME } from "../auth/passport";
+import { sessionStore } from "../utils/sessionStore";
+import { AuthService } from "../services/authService";
 
 export class AuthController {
-    static register = asyncHandler(async (req: Request, res: Response) => {
-        const { name, email, password, phone, address } = req.body;
-        const userRepo = AppDataSource.getRepository(Users);
-
-        if (!name || !email || !password || !phone || !address) {
-            throw new ValidationError('Missing important fields: Name, Email, Password, Phone are required!');
-        }
-
-        const normalizedEmail = email.toLowerCase().trim();
-
-        const existingUser = await userRepo.findOne({
-            where: { email: normalizedEmail }
-        })
-
-        if (existingUser) {
-            throw new ConflictError("A User with similar email exists!");
-        }
-
-        const hashedPassword = await hashPassword(password);
-
-        const savedUser = userRepo.create({
-            name: name,
-            email: normalizedEmail,
-            role: UserRole.Customer,
-            isActive: true,
-            passwordHash: hashedPassword,
-            phone: phone,
-            address: address,
-        })
-
-        await userRepo.save(savedUser);
-
+    static register = asyncHandler(async (req: Request<{}, any, Users>, res: Response) => {
+        await AuthService.register(req.body);
         res.status(201).json({ message: 'User Registered successfully.' });
-    })
+    });
 
     static login = asyncHandler(async (req: Request, res: Response) => {
         const { email, password } = req.body;
-        const userRepo = AppDataSource.getRepository(Users);
+        const meta = {
+            userAgent: req.headers['user-agent'] || 'Unknown',
+            ip: req.ip || 'Unknown'
+        };
 
-        if (!email || !password) {
-            throw new ValidationError("Missing important fields: Email, Password are required!");
-        }
+        const { token } = await AuthService.login(email, password, meta);
 
-        const user = await userRepo.createQueryBuilder('users')
-            .addSelect('users.passwordhash')
-            .where('users.email = :email', { email: email.toLowerCase().trim() })
-            .getOne();
-
-        if (!user) {
-            throw new NotFound("User not found.")
-        }
-
-        const isPasswordValid = await VerifyPassword(user.passwordHash, password);
-
-        if (!isPasswordValid) {
-            throw new ValidationError("Credentials are invalid!");
-        }
-
-        const token = signToken({ sub: user.id, email: user.email, role: user.role });
-
-        SessionStore.set(user.id, {
-            lastActivity: Date.now(),
-            role: user.role
-        })
-
-        res.cookie('access_token', token, {
+        res.cookie(COOKIE_NAME, token, {
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: 'strict',
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 1 * 60 * 60 * 1000,
-        })
-
-        res.status(200).json({ message: "Login Sucessful." });
-    })
-
-    static logout = asyncHandler(async (req: Request, res: Response) => {
-        const user = (req as any).user;
-
-        const userId = user.id;
-
-        SessionStore.delete(userId);
-        res.clearCookie('access_token');
-        res.status(200).json({ message: "Logout successful." });
-    })
-
-    static lockUserAccount = asyncHandler(async (req: Request, res: Response) => {
-        const { id } = req.params as {id: string};
-        const userRepo = AppDataSource.getRepository(Users);
-
-        const user = await userRepo.findOne({
-            where: { id: id }
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        if (!user) {
-            throw new NotFound("User not found");
-        }
-
-        user.isLocked = true; 
-
-        await userRepo.save(user);
-
-        res.status(200).json({
-            message: `User ${user.email} has been locked successfully.`
-        });
+        res.status(200).json({ message: "Login Successful." });
     });
 
-    static forgotPassword = asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
-        const { email, password } = req.body;
-        const customisedEmail = email.toLowerCase().trim();
+    static logout = asyncHandler(async (req: Request, res: Response) => {
+        const user = req.user as Users & { jti: string };
+        sessionStore.delete(user.jti);
+        res.clearCookie(COOKIE_NAME);
+        res.status(200).json({ message: "Logout successful." });
+    });
 
+    static lockUserAccount = asyncHandler(async (req: Request<{userId: string}>, res: Response) => {
+        const { userId } = req.params;
+        await AuthService.lockAccount(userId);
+        
+        res.clearCookie(COOKIE_NAME);
+        res.status(200).json({ message: `User has been locked successfully.` });
+    });
+
+    static forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+        const { email, password } = req.body;
+        await AuthService.resetPassword(email, password);
+        res.status(201).json({ message: "Password reset successful." });
+    });
+
+    static getAllUsers = asyncHandler(async (req: Request, res: Response) => {
+        const userRepo = AppDataSource.getRepository(Users);
+        const users = await userRepo.find();
+        res.status(200).json({ message: "Users fetched successfully.", users });
+    });
+
+    static updateUserInfo = asyncHandler(async (req: Request, res: Response) => {
+        const { name, phone, email } = req.body;
+        const loggedInUserInfo = (req as any).user;
         const userRepo = AppDataSource.getRepository(Users);
 
-        const user = await userRepo.findOne({
-            where: {email: customisedEmail}
-        })
+        const user = await userRepo.findOne({ where: { id: loggedInUserInfo.id } });
+        if (!user) throw new NotFound("User Not found");
 
-        if(!user){
-            throw new UnauthorisedError('Authorization required.');
-        }
-
-        const newHashedPassword = await hashPassword(password);
-
-        user.passwordHash = newHashedPassword;
+        user.name = name ?? user.name;
+        user.email = email ?? user.email;
+        user.phone = phone ?? user.phone;
 
         await userRepo.save(user);
-
-        res.status(201).json({message: "Password reset successfull."});
-    })
+        res.status(200).json({ message: "User information updated successfully." });
+    });
 }

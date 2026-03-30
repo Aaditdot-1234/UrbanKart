@@ -1,92 +1,34 @@
-import AppDataSource from "../datasource";
-import { Products } from "../entities/Products";
-import { NotFound } from "../errors/appError";
+import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
-import { NextFunction, Request, Response } from "express";
+import { ProductService } from "../services/productService";
+import { Products } from "../entities/Products";
 
 export class ProductController {
-    static createProduct = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { name, description, price, stock, subCategory, productImage } = req.body;
-
-        const productRepo = AppDataSource.getRepository(Products);
-
-        const productInfo = productRepo.create({
-            product_name: name,
-            product_description: description,
-            product_price: price,
-            stock: stock,
-            subCategories: subCategory,
-            productImages: productImage,
-        })
-
-        await productRepo.save(productInfo);
-
+    static createProduct = asyncHandler(async (req: Request<{}, any, Products>, res: Response) => {
+        await ProductService.createProduct(req.body);
         res.status(201).json({ message: "Product created successfully." });
-    })
+    });
 
-    static updateProduct = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { id } = req.params as { id: string };
-        const { name, description, price, stock, subCategory, productImage } = req.body;
-
-        const productRepo = AppDataSource.getRepository(Products);
-
-        const product = await productRepo.findOne({
-            where: { product_id: +id }
-        });
-
-        if (!product) {
-            throw new NotFound("Product not found");
-        }
-
-        product.product_name = name;
-        product.product_description = description;
-        product.product_price = price;
-        product.stock = stock;
-        product.subCategories = subCategory;
-        product.productImages = productImage;
-
-        await productRepo.save(product);
-
+    static updateProduct = asyncHandler(async (req: Request<{id: string}, any, Partial<Products>>, res: Response) => {
+        const { id } = req.params;
+        await ProductService.updateProduct(+id, req.body);
         res.status(200).json({ message: "Product updated successfully." });
-    })
+    });
 
-    static deleteProduct = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { id } = req.params as { id: string };
-        const productRepo = AppDataSource.getRepository(Products);
-
-        const product = await productRepo.findOne({
-            where: { product_id: +id }
-        });
-
-        if (!product) {
-            throw new NotFound("Product not found");
-        }
-
-        await productRepo.remove(product);
-
+    static deleteProduct = asyncHandler(async (req: Request<{id:string}>, res: Response) => {
+        const { id } = req.params;
+        await ProductService.deleteProduct(+id);
         res.status(200).json({ message: "Product deleted successfully." });
-    })
+    });
 
-    static getAllProducts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const productRepo = AppDataSource.getRepository(Products);
-
-        const products = await productRepo.find();
-
+    static getAllProducts = asyncHandler(async (req: Request, res: Response) => {
+        const products = await ProductService.getAllProducts();
         res.status(200).json(products);
-    })
+    });
 
-    static getProductById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { id } = req.params as { id: string };
-        const productRepo = AppDataSource.getRepository(Products);
-
-        const product = await productRepo.findOne({
-            where: { product_id: +id }
-        });
-
-        if (!product) {
-            throw new NotFound("Product not found");
-        }
-
+    static getProductById = asyncHandler(async (req: Request<{id:string}>, res: Response) => {
+        const { id } = req.params;
+        const product = await ProductService.getProductById(+id);
         res.status(200).json(product);
-    })
+    });
 }

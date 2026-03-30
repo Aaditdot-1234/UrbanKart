@@ -11,6 +11,9 @@ export class Address{
     @Column({type: "text"})
     address!: string;
 
+    @Column({default:false})
+    is_deleted!: boolean;
+
     @ManyToOne(() => Users, (user) => user.address)
     user!: Users
 

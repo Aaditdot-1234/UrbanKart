@@ -1,41 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import { NotFound, UnauthorisedError, ValidationError } from "../errors/appError";
-import { SessionStore } from "../utils/sessionStore";
-import { JwtPayload, verifyToken } from "../auth/jwt";
-import AppDataSource from "../datasource";
+import { UnauthorisedError } from "../errors/appError";
 import { UserRole, Users } from "../entities/Users";
+import passport from "passport";
 
-export async function requireJwt(req: Request, res: Response, next: NextFunction){
-    const token = req.cookies.access_token;
-
-    if(!token){
-        throw new UnauthorisedError("No token provided");
+export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
+  passport.authenticate('jwt', { session: false }, (err: any, user: any) => {
+    if (err) return next(err);
+    
+    if (!user) {
+      throw new UnauthorisedError("Invalid or expired session.");
     }
-    try{
-        const payload: JwtPayload = verifyToken(token);
-        const session = SessionStore.get(payload.sub);
-        
-        const userRepo = AppDataSource.getRepository(Users);
-        const user = await userRepo.findOne({where: {id: payload.sub}})
-        
-        if(!user){
-            throw new NotFound("User not found");
-        }
 
-        if(!session){
-            res.clearCookie('access_token');
-            throw new UnauthorisedError('Session expired or account locked');
-        }
-
-        req.user = user;
-        next();
-    }catch(err){
-        throw new UnauthorisedError("Invalid or expired session.");
-    }
-}
+    req.user = user;
+    next();
+  })(req, res, next);
+};
 
 export function requireAdmin(req:Request, res: Response, next: NextFunction){
-    const user = (req as any).user;
+    const user = req.user as Users;
 
     if(!user){
         throw new UnauthorisedError("Authorization required");

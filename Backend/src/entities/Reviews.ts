@@ -13,6 +13,9 @@ export class Reviews {
     @Column({ type: "text" })
     comments!: string;
 
+    @Column({default:false})
+    is_deleted!: boolean;
+
     @ManyToOne(() => Users, (user) => user.reviews)
     user!: Users;
 

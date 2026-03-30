@@ -29,6 +29,9 @@ export class Products {
     @Column()
     stock!: number
 
+    @Column({default:false})
+    is_deleted!: boolean;
+
     @ManyToOne(() => SubCategories, (sub) => sub.products)
     subCategories!: SubCategories;
 

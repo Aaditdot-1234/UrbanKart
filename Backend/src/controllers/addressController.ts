@@ -1,80 +1,50 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
-import AppDataSource from "../datasource";
-import { Address } from "../entities/Address";
-import { NotFound } from "../errors/appError";
+import { AddressService } from "../services/addressService";
+import { Users } from "../entities/Users";
 
 export class AddressController {
-    static addAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const LoggedInUser = (req as any).user;
+    static addAddress = asyncHandler(async (req: Request, res: Response) => {
+        const user = req.user as Users;
         const { address } = req.body;
-        const addressRepo = AppDataSource.getRepository(Address);
 
-        const addressInfo = addressRepo.create({
-            user: LoggedInUser.id,
-            address: address,
-        })
-
-        await addressRepo.save(addressInfo);
+        const addressInfo = await AddressService.addAddress(user.id, address);
 
         res.status(201).json({
             message: "Address added successfully.",
             address: addressInfo,
-        })
-    })
+        });
+    });
 
-    static getAllAddresses = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const LoggedInUser = (req as any).user;
-        const addressRepo = AppDataSource.getRepository(Address);
-
-        const addresses = await addressRepo.find({
-            where: { user: { id: LoggedInUser.id } },
-        })
+    static getAllAddresses = asyncHandler(async (req: Request, res: Response) => {
+        const user = req.user as Users;
+        const addresses = await AddressService.getAddressesByUser(user.id);
 
         res.status(200).json({
             message: "Addresses fetched successfully.",
-            addresses: addresses,
-        })
-    })
+            addresses,
+        });
+    });
 
-    static updateAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const LoggedInUser = (req as any).user;
+    static updateAddress = asyncHandler(async (req: Request, res: Response) => {
+        const user = req.user as Users;
         const { address } = req.body;
-        const addressRepo = AppDataSource.getRepository(Address);
-
-        const addressInfo = await addressRepo.findOne({
-            where: { user: { id: LoggedInUser.id } },
-        })
-
-        if (!addressInfo) {
-            throw new NotFound("Address not found");
-        }
-
-        addressInfo.address = address;
-        await addressRepo.save(addressInfo);
-
+        
+        const addressInfo = await AddressService.updateAddress(user.id, address);
+        
         res.status(200).json({
             message: "Address updated successfully.",
             address: addressInfo,
-        })
-    })
+        });
+    });
+    
+    static deleteAddress = asyncHandler(async (req: Request, res: Response) => {
+        const user = req.user as Users;
 
-    static deleteAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const LoggedInUser = (req as any).user;
-        const addressRepo = AppDataSource.getRepository(Address);
-
-        const addressInfo = await addressRepo.findOne({
-            where: { user: { id: LoggedInUser.id } },
-        })
-
-        if (!addressInfo) {
-            throw new NotFound("Address not found");
-        }
-
-        await addressRepo.remove(addressInfo);
+        await AddressService.deleteAddress(user.id);
 
         res.status(200).json({
             message: "Address deleted successfully.",
-        })
-    })
+        });
+    });
 }
