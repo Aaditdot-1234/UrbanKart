@@ -11,11 +11,24 @@ import addressRouter from "./routes/addressRoutes";
 import orderRouter from "./routes/orderRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
+import { requireAuth } from "./middleware/authMidlleware";
+import { Users } from "./entities/Users";
+import { seed } from "./seeding/seed";
 
 async function main() {
     await AppDataSource.initialize();
 
     const app = express();
+    
+    const userCount = await AppDataSource.getRepository(Users).count();
+    
+    if(userCount === 0){
+        await seed(AppDataSource);
+        console.log("Database seeded");
+    }
+    else{
+        console.log("Database already has data, skipping seed.");
+    }
 
     app.use(cors({
         origin: 'http://localhost:4200',
@@ -24,17 +37,18 @@ async function main() {
         allowedHeaders: ['Content-Type', 'Authorization'],
     }));
 
+
     app.use(express.json());
     app.use(cookieParser());
 
     app.use('/auth', authRouter);
-    app.use('/category', categoryRouter);
+    app.use('/category', requireAuth, categoryRouter);
     app.use('/product', productRouter);
-    app.use('/cart', cartRouter);
-    app.use('/address', addressRouter);
-    app.use('/order', orderRouter);
-    app.use('/payment', paymentRoutes);
-    app.use('/review', reviewRoutes);
+    app.use('/cart', requireAuth, cartRouter);
+    app.use('/address', requireAuth, addressRouter);
+    app.use('/order', requireAuth, orderRouter);
+    app.use('/payment', requireAuth, paymentRoutes);
+    app.use('/review', requireAuth, reviewRoutes);
 
     app.use(errorHandler);
 

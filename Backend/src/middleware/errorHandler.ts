@@ -16,6 +16,6 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
     res.status(500).json({
         status: "error",
         message: "Something went wrong.",
-        stack: isDev ? err.stack : undefined;
+        stack: isDev ? err.stack : undefined,
     })
 }

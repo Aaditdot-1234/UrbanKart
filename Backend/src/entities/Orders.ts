@@ -20,7 +20,7 @@ export class Orders {
     @Column({ type: "decimal", precision: 10, scale: 2, default: 0.00 })
     totalAmount !: number;
 
-    @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+    @Column({ type: "simple-enum", enum: OrderStatus, default: OrderStatus.Pending })
     status !: OrderStatus;
 
     @ManyToOne(() => Users, (user) => user.orders)

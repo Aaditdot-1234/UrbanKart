@@ -5,35 +5,62 @@ import { hashPassword, VerifyPassword } from "../auth/password";
 import { signToken } from "../auth/jwt";
 import { sessionStore } from "../utils/sessionStore";
 import { v4 as uuidV4 } from 'uuid';
+import { Address } from "../entities/Address";
+
+export interface UserData{
+    name: string, 
+    email:string, 
+    password: string,
+    phone:string, 
+    address: string,
+}
 
 export class AuthService {
     private static userRepo = AppDataSource.getRepository(Users);
 
-    static async register(data: Users) {
-        const { name, email, passwordHash, phone, address } = data;
-        const password = passwordHash;
+    static async register(data: UserData) {
+        const { name, email, password, phone, address } = data;
 
-        if (!name || !email || !password || !phone || !address) {
-            throw new ValidationError('Missing fields: Name, Email, Password, Phone, and Address are required.');
+        const querryRunner = AppDataSource.createQueryRunner();
+        await querryRunner.connect();
+        await querryRunner.startTransaction();
+        try {
+            if (!name || !email || !password || !phone || !address) {
+                throw new ValidationError('Missing fields: Name, Email, Password, Phone, and Address are required.');
+            }
+    
+            const normalizedEmail = email.toLowerCase().trim();
+            const existingUser = await this.userRepo.findOne({ where: { email: normalizedEmail } });
+    
+            if (existingUser) throw new ConflictError("User with this email already exists.");
+    
+            const hashedPassword = await hashPassword(password);
+            const user = querryRunner.manager.create(Users, {
+                name,
+                email: normalizedEmail,
+                role: UserRole.Customer,
+                isActive: true,
+                passwordHash: hashedPassword,
+                phone,
+            });
+
+            const savedUser = await this.userRepo.save(user);
+    
+            const addressInfo = querryRunner.manager.create(Address, {
+                address: address,
+                user: savedUser,
+            })
+
+            await querryRunner.manager.save(addressInfo);
+
+            await querryRunner.commitTransaction();
+            return savedUser;
+        } catch (error) {
+            console.error(error);
+            await querryRunner.rollbackTransaction();
+        } finally {
+            await querryRunner.release();
         }
-
-        const normalizedEmail = email.toLowerCase().trim();
-        const existingUser = await this.userRepo.findOne({ where: { email: normalizedEmail } });
-
-        if (existingUser) throw new ConflictError("User with this email already exists.");
-
-        const hashedPassword = await hashPassword(password);
-        const user = this.userRepo.create({
-            name,
-            email: normalizedEmail,
-            role: UserRole.Customer,
-            isActive: true,
-            passwordHash: hashedPassword,
-            phone,
-            address,
-        });
-
-        return await this.userRepo.save(user);
     }
 
     static async login(email: string, pass: string, meta: { userAgent: string; ip: string }) {

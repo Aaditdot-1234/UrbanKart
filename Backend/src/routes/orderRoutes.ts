@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { requireAuth } from "../middleware/authMidlleware";
 import { OrderController } from "../controllers/orderController";
+import { requireAdmin } from "../middleware/authMidlleware";
 
 const orderRouter = Router();
 
-orderRouter.post('/create', requireAuth, OrderController.createOrder);
-orderRouter.get('/get-all', requireAuth, OrderController.getAllOrders);
-orderRouter.get('/get-by-id/:id', requireAuth, OrderController.getOrderById);
-orderRouter.patch('/update-status/:id', requireAuth, OrderController.updateOrderStatus);
+orderRouter.post('/create', OrderController.createOrder);
+orderRouter.get('/get-all', OrderController.getAllOrders);
+orderRouter.get('/get-by-id/:id', OrderController.getOrderById);
+orderRouter.patch('/update-status/:id', requireAdmin, OrderController.updateOrderStatus);
 
 
 export default orderRouter;

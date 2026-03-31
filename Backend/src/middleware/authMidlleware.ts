@@ -16,13 +16,14 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
   })(req, res, next);
 };
 
+
 export function requireAdmin(req:Request, res: Response, next: NextFunction){
     const user = req.user as Users;
 
     if(!user){
         throw new UnauthorisedError("Authorization required");
     }
-
+    
     if(user.role !== UserRole.Admin){
         throw new UnauthorisedError("Access denied. Admin prvilleges required.");
     }

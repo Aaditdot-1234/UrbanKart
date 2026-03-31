@@ -22,7 +22,7 @@ export class Users {
     @Column({ length: 100, unique: true, nullable: false })
     email!: string;
 
-    @Column({ length: 100, unique: true, nullable: false, select: false })
+    @Column({ length: 100, nullable: false, select: false })
     passwordHash!: string;
 
     @Column({ length: 20, nullable: false })

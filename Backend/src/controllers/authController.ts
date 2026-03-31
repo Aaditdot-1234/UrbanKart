@@ -5,10 +5,10 @@ import { Users } from "../entities/Users";
 import { NotFound } from "../errors/appError";
 import { COOKIE_NAME } from "../auth/passport";
 import { sessionStore } from "../utils/sessionStore";
-import { AuthService } from "../services/authService";
+import { AuthService, UserData } from "../services/authService";
 
 export class AuthController {
-    static register = asyncHandler(async (req: Request<{}, any, Users>, res: Response) => {
+    static register = asyncHandler(async (req: Request<{}, any, UserData>, res: Response) => {
         await AuthService.register(req.body);
         res.status(201).json({ message: 'User Registered successfully.' });
     });

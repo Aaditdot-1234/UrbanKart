@@ -1,4 +1,3 @@
-import AppDataSource from "../datasource";
 import { Types } from "../entities/Types";
 import { Categories } from "../entities/Categories";
 import { SubCategories } from "../entities/SubCategories";
@@ -11,6 +10,7 @@ import { OrderedProducts } from "../entities/OrderedProducts";
 import { Payments, PaymentMethod, PaymentStatus } from "../entities/Payments";
 import { Reviews } from "../entities/Reviews";
 import bcrypt from 'bcrypt';
+import { DataSource } from "typeorm";
 
 function daysAgo(n: number): Date {
     return new Date(Date.now() - n * 86400000);
@@ -19,26 +19,25 @@ function daysAhead(n: number): Date {
     return new Date(Date.now() + n * 86400000);
 }
 
-async function seed() {
-    await AppDataSource.initialize();
+export async function seed(dataSource: DataSource) {
     console.log('Database connected. Starting seed...');
 
-    const typeRepo = AppDataSource.getRepository(Types);
-    const categoryRepo = AppDataSource.getRepository(Categories);
-    const subCategoryRepo = AppDataSource.getRepository(SubCategories);
-    const productRepo = AppDataSource.getRepository(Products);
-    const productImagesRepo = AppDataSource.getRepository(ProductImages);
-    const userRepo = AppDataSource.getRepository(Users);
-    const addressRepo = AppDataSource.getRepository(Address);
-    const orderRepo = AppDataSource.getRepository(Orders);
-    const orderedProductsRepo = AppDataSource.getRepository(OrderedProducts);
-    const paymentsRepo = AppDataSource.getRepository(Payments);
-    const reviewsRepo = AppDataSource.getRepository(Reviews);
+    const typeRepo = dataSource.getRepository(Types);
+    const categoryRepo = dataSource.getRepository(Categories);
+    const subCategoryRepo = dataSource.getRepository(SubCategories);
+    const productRepo = dataSource.getRepository(Products);
+    const productImagesRepo = dataSource.getRepository(ProductImages);
+    const userRepo = dataSource.getRepository(Users);
+    const addressRepo = dataSource.getRepository(Address);
+    const orderRepo = dataSource.getRepository(Orders);
+    const orderedProductsRepo = dataSource.getRepository(OrderedProducts);
+    const paymentsRepo = dataSource.getRepository(Payments);
+    const reviewsRepo = dataSource.getRepository(Reviews);
 
     const existingTypes = await typeRepo.count();
     if (existingTypes > 0) {
         console.log('Database already seeded. Exiting.');
-        await AppDataSource.destroy();
+        await dataSource.destroy();
         return;
     }
 
@@ -628,10 +627,10 @@ async function seed() {
 
     let reviewCount = 0;
     for (let i = 0; i < savedProducts.length; i++) {
-        const numReviews = (i % 2) + 2; // 2 or 3 per product
+        const numReviews = (i % 2) + 2;
         for (let j = 0; j < numReviews; j++) {
             const user = customers[(i + j * 3) % customers.length];
-            const rating = 3.0 + ((i + j) % 5) * 0.5; // 3.0–5.0
+            const rating = 3.0 + ((i + j) % 5) * 0.5;
             await reviewsRepo.save(reviewsRepo.create({
                 product: savedProducts[i],
                 user,
@@ -654,10 +653,10 @@ async function seed() {
     console.log(`Orders:        ${orderCount}  (all status/payment combos covered)`);
     console.log(`Reviews:       ${reviewCount}`);
 
-    await AppDataSource.destroy();
+    await dataSource.destroy();
 }
 
-seed().catch(err => {
-    console.error('Seeding failed:', err);
-    process.exit(1);
-});
+// seed().catch(err => {
+//     console.error('Seeding failed:', err);
+//     process.exit(1);
+// });
