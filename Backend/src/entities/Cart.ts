@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users";
 import { CartItems } from "./CartItems";
 
@@ -11,6 +11,7 @@ export class Cart {
     is_active!: boolean;
 
     @ManyToOne(() => Users, (user) => user.carts)
+    @JoinColumn({name: "user_id"})
     user!: Users;
 
     @OneToMany(() => CartItems, (item) => item.cart)

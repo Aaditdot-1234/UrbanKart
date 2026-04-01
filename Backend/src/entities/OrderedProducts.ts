@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Orders } from "./Orders";
 import { Products } from "./Products";
 
@@ -14,9 +14,11 @@ export class OrderedProducts {
     price !: number;
 
     @ManyToOne(() => Orders, (order) => order.orderProducts)
+    @JoinColumn({ name: "order_id" })
     order!: Orders;
 
     @ManyToOne(() => Products, (product) => product.orderItems)
+    @JoinColumn({ name: "product_id" })
     product!: Products;
 
     @CreateDateColumn()

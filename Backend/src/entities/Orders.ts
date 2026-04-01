@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users";
 import { OrderedProducts } from "./OrderedProducts";
 import { Address } from "./Address";
@@ -24,12 +24,14 @@ export class Orders {
     status !: OrderStatus;
 
     @ManyToOne(() => Users, (user) => user.orders)
+    @JoinColumn({name: "user_id"})
     user!: Users;
 
     @OneToMany(() => OrderedProducts, (op) => op.order)
     orderProducts!: OrderedProducts[];
 
     @ManyToOne(() => Address, (address) => address.orders)
+    @JoinColumn({name: "address_id"})
     address!: Address;
 
     @OneToOne(() => Payments, (payment) => payment.order)

@@ -505,16 +505,32 @@ export async function seed(dataSource: DataSource) {
         ['50 Aspen Way, Las Vegas, Nevada, NV 89101, USA', '3600 Las Vegas Blvd S, Las Vegas, NV 89109, USA'],
     ];
 
-    // savedAddresses[i*2] and savedAddresses[i*2+1] belong to customers[i] = savedUsers[i+1]
     const savedAddresses: Address[] = [];
-    for (let i = 0; i < addressStrings.length; i++) {
-        const user = savedUsers[i + 1]; // skip admin
-        for (const address of addressStrings[i]) {
-            savedAddresses.push(await addressRepo.save(addressRepo.create({ address, user, is_deleted: false })));
-        }
-    }
-    console.log(`Seeded ${savedAddresses.length} addresses`);
 
+    for (let i = 0; i < addressStrings.length; i++) {
+        const user = savedUsers[i + 1];
+
+        const homeAddress = addressRepo.create({
+            address: addressStrings[i][0],
+            address_title: 'Home',
+            is_default: true,
+            user: user,
+            is_deleted: false
+        });
+
+        const workAddress = addressRepo.create({
+            address: addressStrings[i][1],
+            address_title: 'Work',
+            is_default: false,
+            user: user,
+            is_deleted: false
+        });
+
+        savedAddresses.push(await addressRepo.save(homeAddress));
+        savedAddresses.push(await addressRepo.save(workAddress));
+    }
+
+    console.log(`Seeded ${savedAddresses.length} addresses with Titles and Default flags.`);
     // ─── ORDERS + ORDERED PRODUCTS + PAYMENTS ─────────────────────────────────
     // All scenarios covered:
     //   OrderStatus:    pending | shipped | delivered | cancelled

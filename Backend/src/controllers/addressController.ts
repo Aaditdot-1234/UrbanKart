@@ -3,12 +3,17 @@ import { asyncHandler } from "../errors/asyncHandler";
 import { AddressService } from "../services/addressService";
 import { Users } from "../entities/Users";
 
-export class AddressController {
-    static addAddress = asyncHandler(async (req: Request, res: Response) => {
-        const user = req.user as Users;
-        const { address } = req.body;
+export interface AddAddress{
+    address: string, 
+    title:string, 
+    setAsDefault: boolean,
+}
 
-        const addressInfo = await AddressService.addAddress(user.id, address);
+export class AddressController {
+    static addAddress = asyncHandler(async (req: Request<{}, any, AddAddress>, res: Response) => {
+        const user = req.user as Users;
+
+        const addressInfo = await AddressService.addAddress(user.id, req.body);
 
         res.status(201).json({
             message: "Address added successfully.",
@@ -26,11 +31,11 @@ export class AddressController {
         });
     });
 
-    static updateAddress = asyncHandler(async (req: Request, res: Response) => {
+    static updateAddress = asyncHandler(async (req: Request<{addressId: number}, any, Partial<AddAddress>>, res: Response) => {
         const user = req.user as Users;
-        const { address } = req.body;
+        const {addressId} = req.params;
         
-        const addressInfo = await AddressService.updateAddress(user.id, address);
+        const addressInfo = await AddressService.updateAddress(user.id, addressId, req.body);
         
         res.status(200).json({
             message: "Address updated successfully.",
@@ -38,10 +43,11 @@ export class AddressController {
         });
     });
     
-    static deleteAddress = asyncHandler(async (req: Request, res: Response) => {
+    static deleteAddress = asyncHandler(async (req: Request<{addressId: number}>, res: Response) => {
         const user = req.user as Users;
+        const {addressId} = req.params;
 
-        await AddressService.deleteAddress(user.id);
+        await AddressService.deleteAddress(user.id, addressId);
 
         res.status(200).json({
             message: "Address deleted successfully.",

@@ -3,9 +3,9 @@ import { ReviewController } from "../controllers/reviewController";
 
 const reviewRouter = Router();
 
-reviewRouter.post('/create', ReviewController.addReview);
-reviewRouter.get('/get-all', ReviewController.getReviews);
-reviewRouter.delete('/delete/:id', ReviewController.deleteReview);
+reviewRouter.post('/create/:productId', ReviewController.addReview);
+reviewRouter.get('/get-all/:productId', ReviewController.getReviews);
+reviewRouter.delete('/delete/:reviewId', ReviewController.deleteReview);
 
 export default reviewRouter;
 

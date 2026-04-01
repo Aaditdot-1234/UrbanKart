@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Products } from "./Products";
 import { Cart } from "./Cart";
 
@@ -11,9 +11,11 @@ export class CartItems {
     quantity!: number;
 
     @ManyToOne(() => Products, (product) => product.items)
+    @JoinColumn({ name: "product_id" })
     product!: Products;
 
     @ManyToOne(() => Cart, (cart) => cart.cartItems)
+    @JoinColumn({ name: "cart_id" })
     cart!: Cart;
 
     @CreateDateColumn()

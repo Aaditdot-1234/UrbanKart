@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategories } from "./SubCategories";
 import { Types } from "./Types";
 
@@ -17,6 +17,7 @@ export class Categories {
     subCategory!: SubCategories[];
 
     @ManyToOne(() => Types, (t) => t.categories)
+    @JoinColumn({ name: "type_id" })
     types!: Types;
 
     @CreateDateColumn()

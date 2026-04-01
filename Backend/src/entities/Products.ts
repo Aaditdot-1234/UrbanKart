@@ -1,8 +1,7 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { SubCategories } from "./SubCategories";
 import { ProductImages } from "./ProductImages";
 import { Reviews } from "./Reviews";
-import { Cart } from "./Cart";
 import { CartItems } from "./CartItems";
 import { OrderedProducts } from "./OrderedProducts";
 
@@ -33,6 +32,7 @@ export class Products {
     is_deleted!: boolean;
 
     @ManyToOne(() => SubCategories, (sub) => sub.products)
+    @JoinColumn({name: "subCategory_id"})
     subCategories!: SubCategories;
 
     @OneToMany(() => ProductImages, (images) => images.product, { cascade: true })
@@ -45,7 +45,7 @@ export class Products {
     reviews!: Reviews[];
 
     @OneToMany(() => OrderedProducts, (op) => op.product)
-    orderItems !: OrderedProducts;
+    orderItems !: OrderedProducts[];
 
     @CreateDateColumn()
     createdAt!: Date;

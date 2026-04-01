@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Products } from "./Products";
 
 @Entity('product-images')
@@ -13,6 +13,7 @@ export class ProductImages {
     is_primary!: boolean;
 
     @ManyToOne(() => Products, (product) => product.productImages)
+    @JoinColumn({ name: "product_id" })
     product !: Products; 
 
     @CreateDateColumn()

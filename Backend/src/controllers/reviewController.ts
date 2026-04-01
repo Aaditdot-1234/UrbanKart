@@ -4,7 +4,7 @@ import { ReviewService } from "../services/reviewService";
 import { Users } from "../entities/Users";
 
 export class ReviewController {
-    static addReview = asyncHandler(async (req: Request, res: Response) => {
+    static addReview = asyncHandler(async (req: Request<{productId: number}>, res: Response) => {
         const user = req.user as Users;
         const { productId } = req.params;
         const { comments, rating } = req.body;

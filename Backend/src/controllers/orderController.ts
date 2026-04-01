@@ -2,12 +2,11 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
 import { OrderService } from "../services/orderService";
 import { OrderStatus } from "../entities/Orders";
-import { Address } from "../entities/Address";
 import { PaymentMethod, PaymentStatus } from "../entities/Payments";
 import { Users } from "../entities/Users";
 
 export interface CreateOrder{
-    address: Address, 
+    addressId: number, 
     payment_status: PaymentStatus, 
     payment_method: PaymentMethod
 }

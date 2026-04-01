@@ -1,5 +1,6 @@
 import { CreateOrder } from "../controllers/orderController";
 import AppDataSource from "../datasource";
+import { Address } from "../entities/Address";
 import { OrderedProducts } from "../entities/OrderedProducts";
 import { Orders, OrderStatus } from "../entities/Orders";
 import { Payments, PaymentStatus } from "../entities/Payments";
@@ -10,7 +11,7 @@ export class OrderService {
     private static orderRepo = AppDataSource.getRepository(Orders);
 
     static async createOrder(userId: string, body: CreateOrder) {
-        const { address, payment_method, payment_status } = body;
+        const { addressId, payment_method, payment_status } = body;
         const queryRunner = AppDataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
@@ -24,14 +25,20 @@ export class OrderService {
             if (!user) throw new NotFound("User not found");
 
             const activeCart = user.carts?.find(cart => cart.is_active);
-            if (!activeCart) throw new NotFound("Cart not found");
+            if (!activeCart || activeCart.cartItems.length === 0) throw new ValidationError("Your cart is empty.");
+
+            const choosenAddress = await queryRunner.manager.findOne(Address, {
+                where: {address_id: addressId, user: {id: userId}}
+            })
+
+            if(!choosenAddress) throw new NotFound("Address not found.")
 
             const order = queryRunner.manager.create(Orders, {
                 user,
                 totalAmount: 0,
                 status: OrderStatus.Pending,
                 orderProducts: [],
-                address
+                address: choosenAddress,
             });
 
             for (const item of activeCart.cartItems) {
@@ -41,7 +48,7 @@ export class OrderService {
                     price: item.product.product_price
                 });
                 order.orderProducts.push(orderedProduct);
-                order.totalAmount += item.quantity * item.product.product_price;
+                order.totalAmount += Number(item.quantity) * Number(item.product.product_price);
             }
 
             const payment = queryRunner.manager.create(Payments, {

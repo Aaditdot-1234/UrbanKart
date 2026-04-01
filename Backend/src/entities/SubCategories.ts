@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Products } from "./Products";
 import { Categories } from "./Categories";
 
@@ -17,6 +17,7 @@ export class SubCategories {
     products!: Products[];
 
     @ManyToOne(() => Categories, (category) => category.subCategory)
+    @JoinColumn({ name: "category_id" })
     categories!: Categories;
 
     @CreateDateColumn()

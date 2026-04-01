@@ -56,17 +56,13 @@ Create Product: http://localhost:3000/product/create
         "product_description": "Latest Apple smartphone",
         "product_price": 79999,
         "stock": 10,
-        "subCategories": [
-            {
-                "subcategory_id": 1
-            }
-        ],
+        "subCategories": 2,
         "productImages": [
             {
-                "image_url": "https://example.com/image1.jpg"
+                "image_path": "https://example.com/image1.jpg"
             },
             {
-            "image_url": "https://example.com/image2.jpg"
+            "image_path": "https://example.com/image2.jpg"
             }
         ]
     }

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Users } from "./Users";
 import { Products } from "./Products";
 
@@ -17,9 +17,11 @@ export class Reviews {
     is_deleted!: boolean;
 
     @ManyToOne(() => Users, (user) => user.reviews)
+    @JoinColumn({name: "user_id"})
     user!: Users;
 
     @ManyToOne(() => Products, (product) => product.reviews)
+    @JoinColumn({name: "product_id"})
     product!: Products;
 
     @CreateDateColumn()

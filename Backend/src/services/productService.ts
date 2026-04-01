@@ -25,12 +25,15 @@ export class ProductService {
             subCategoryId,
             imageUrls
         } = data;
+        console.log(data);
 
         const subCategory = await AppDataSource
             .getRepository(SubCategories)
-            .findOneBy({ subcategory_id: subCategoryId });
+            .findOneBy({ subcategory_id: Number(subCategoryId) });
 
         if (!subCategory) throw new Error("Subcategory not found");
+
+        console.log(subCategory);
 
         const product = this.productRepo.create({
             product_name,
@@ -73,7 +76,9 @@ export class ProductService {
     }
 
     static async getAllProducts() {
-        return await this.productRepo.find();
+        return await this.productRepo.find({
+            where: {is_deleted: false}
+        });
     }
 
     static async getProductById(id: number) {

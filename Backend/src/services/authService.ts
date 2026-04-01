@@ -30,7 +30,7 @@ export class AuthService {
             }
 
             const normalizedEmail = email.toLowerCase().trim();
-            const existingUser = await this.userRepo.findOne({ where: { email: normalizedEmail } });
+            const existingUser = await querryRunner.manager.findOne(Users, { where: { email: normalizedEmail } });
 
             if (existingUser) throw new ConflictError("User with this email already exists.");
 
@@ -48,6 +48,8 @@ export class AuthService {
 
             const addressInfo = querryRunner.manager.create(Address, {
                 address: address,
+                address_title: "Home",
+                is_default: true,
                 user: savedUser,
             })
 
