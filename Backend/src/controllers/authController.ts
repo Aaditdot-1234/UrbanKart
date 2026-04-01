@@ -42,8 +42,6 @@ export class AuthController {
     static lockUserAccount = asyncHandler(async (req: Request<{userId: string}>, res: Response) => {
         const { userId } = req.params;
         await AuthService.lockAccount(userId);
-        
-        res.clearCookie(COOKIE_NAME);
         res.status(200).json({ message: `User has been locked successfully.` });
     });
 

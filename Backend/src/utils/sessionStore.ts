@@ -43,7 +43,7 @@ class SessionStore {
         userSession.delete(jti);
 
         if (userSession.size === 0) {
-            this.userIndex.delete(jti);
+            this.userIndex.delete(session.userId);
         }
     }
 

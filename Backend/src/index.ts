@@ -14,32 +14,35 @@ import reviewRoutes from "./routes/reviewRoutes";
 import { requireAuth } from "./middleware/authMidlleware";
 import { Users } from "./entities/Users";
 import { seed } from "./seeding/seed";
+import passport from "passport";
+import "./auth/passport";
 
 async function main() {
     await AppDataSource.initialize();
 
     const app = express();
-    
+
     const userCount = await AppDataSource.getRepository(Users).count();
-    
-    if(userCount === 0){
+
+    if (userCount === 0) {
         await seed(AppDataSource);
         console.log("Database seeded");
     }
-    else{
+    else {
         console.log("Database already has data, skipping seed.");
     }
 
     app.use(cors({
         origin: 'http://localhost:4200',
         credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
     }));
 
 
     app.use(express.json());
     app.use(cookieParser());
+    app.use(passport.initialize());
 
     app.use('/auth', authRouter);
     app.use('/category', requireAuth, categoryRouter);

@@ -7,11 +7,11 @@ import { sessionStore } from "../utils/sessionStore";
 import { v4 as uuidV4 } from 'uuid';
 import { Address } from "../entities/Address";
 
-export interface UserData{
-    name: string, 
-    email:string, 
+export interface UserData {
+    name: string,
+    email: string,
     password: string,
-    phone:string, 
+    phone: string,
     address: string,
 }
 
@@ -28,12 +28,12 @@ export class AuthService {
             if (!name || !email || !password || !phone || !address) {
                 throw new ValidationError('Missing fields: Name, Email, Password, Phone, and Address are required.');
             }
-    
+
             const normalizedEmail = email.toLowerCase().trim();
             const existingUser = await this.userRepo.findOne({ where: { email: normalizedEmail } });
-    
+
             if (existingUser) throw new ConflictError("User with this email already exists.");
-    
+
             const hashedPassword = await hashPassword(password);
             const user = querryRunner.manager.create(Users, {
                 name,
@@ -44,8 +44,8 @@ export class AuthService {
                 phone,
             });
 
-            const savedUser = await this.userRepo.save(user);
-    
+            const savedUser = await querryRunner.manager.save(user);
+
             const addressInfo = querryRunner.manager.create(Address, {
                 address: address,
                 user: savedUser,
@@ -76,6 +76,7 @@ export class AuthService {
         const isValid = await VerifyPassword(user.passwordHash, pass);
         if (!isValid) throw new ValidationError("Invalid credentials.");
 
+
         if (user.isLocked) throw new UnauthorisedError("Account is locked by admin.");
 
         const jti = uuidV4();
@@ -96,7 +97,7 @@ export class AuthService {
         const user = await this.userRepo.findOne({ where: { id: userId } });
         if (!user) throw new NotFound("User not found");
 
-        user.isLocked = true;
+        user.isLocked = !user.isLocked;
         await this.userRepo.save(user);
 
         sessionStore.deleteAllForUser(user.id);

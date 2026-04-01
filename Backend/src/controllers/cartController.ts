@@ -16,15 +16,15 @@ export class CartController {
         const { cart_item_id, quantity } = req.body;
         const user = req.user as Users;
 
-        await CartService.updateCartItem(user.id, cart_item_id, quantity);
+        await CartService.updateCartItem(user.id, +cart_item_id, quantity);
         res.status(200).json({ message: "Cart item updated successfully." });
     });
 
-    static deleteCartItem = asyncHandler(async (req: Request<{ cart_item_id: string }>, res: Response) => {
-        const { cart_item_id } = req.params;
+    static deleteCartItem = asyncHandler(async (req: Request<{ cartItemId: string }>, res: Response) => {
+        const { cartItemId } = req.params;
         const user = req.user as Users;
 
-        await CartService.deleteCartItem(user.id, +cart_item_id);
+        await CartService.deleteCartItem(user.id, +cartItemId);
         res.status(200).json({ message: "Cart item deleted successfully." });
     });
 

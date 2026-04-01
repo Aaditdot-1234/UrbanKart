@@ -1,0 +1,177 @@
+Auth: 
+Login: http://localhost:3000/auth/login
+    Admin data: {
+        "email": "admin@urbankart.com",
+        "password": "Admin@UrbanKart1"
+    }
+    User data: {
+        "email": "grace.lee@email.com",
+        "password": "Password123!"
+    }
+Register: http://localhost:3000/auth/register
+    data: {
+        "name": "John Doe",
+        "email": "[EMAIL_ADDRESS]",
+        "password": "[PASSWORD]",
+        "phone": "1234567890",
+        "role": "user"
+    }
+Logout: http://localhost:3000/auth/logout
+
+Cart: http://localhost:3000/cart
+Add to Cart: http://localhost:3000/cart/add
+    data: {
+        "product_id": 1,
+        "quantity": 1
+    }
+Update Cart Item: http://localhost:3000/cart/update
+    data: {
+        "cart_item_id": 1,
+        "quantity": 2
+    }
+Delete Cart Item: http://localhost:3000/cart/delete/:cartItemId
+Calculate Total: http://localhost:3000/cart/total
+
+Category: http://localhost:3000/category
+Create Category: http://localhost:3000/category/create
+    data: {
+        "category_name": "Electronics",
+        "category_description": "Electronics products",
+        "category_image": "https://example.com/electronics.jpg"
+    }
+Update Category: http://localhost:3000/category/update/:id
+    data: {
+        "category_name": "Electronics",
+        "category_description": "Electronics products",
+        "category_image": "https://example.com/electronics.jpg"
+    }
+Delete Category: http://localhost:3000/category/delete/:id
+Get All Categories: http://localhost:3000/category/get-all
+Get Category By Id: http://localhost:3000/category/get-by-id/:id
+
+Product: http://localhost:3000/product
+Create Product: http://localhost:3000/product/create
+    {
+        "product_name": "iPhone 15",
+        "product_description": "Latest Apple smartphone",
+        "product_price": 79999,
+        "stock": 10,
+        "subCategories": [
+            {
+                "subcategory_id": 1
+            }
+        ],
+        "productImages": [
+            {
+                "image_url": "https://example.com/image1.jpg"
+            },
+            {
+            "image_url": "https://example.com/image2.jpg"
+            }
+        ]
+    }
+Update Product: http://localhost:3000/product/update/:id
+    {
+        "product_name": "iPhone 15 Pro",
+        "product_price": 89999,
+        "stock": 5
+    }
+Delete Product: http://localhost:3000/product/delete/:id
+Get All Products: http://localhost:3000/product/get-all
+Get Product By Id: http://localhost:3000/product/get-by-id/:id
+
+Address: http://localhost:3000/address
+Create Address: http://localhost:3000/address/create
+    data: {
+        "address_line_1": "Address Line 1",
+        "address_line_2": "Address Line 2",
+        "city": "City",
+        "state": "State",
+        "postal_code": "123456",
+        "country": "Country"
+    }
+Update Address: http://localhost:3000/address/update/:id
+    data: {
+        "address_line_1": "Address Line 1",
+        "address_line_2": "Address Line 2",
+        "city": "City",
+        "state": "State",
+        "postal_code": "123456",
+        "country": "Country"
+    }
+Delete Address: http://localhost:3000/address/delete/:id
+Get All Addresses: http://localhost:3000/address/get-all
+Get Address By Id: http://localhost:3000/address/get-by-id/:id
+
+Order: http://localhost:3000/order
+Create Order: http://localhost:3000/order/create
+    data: {
+        "address_id": 1,
+        "payment_id": 1,
+        "order_items": [
+            {
+                "product_id": 1,
+                "quantity": 1
+            }
+        ]
+    }
+Update Order: http://localhost:3000/order/update/:id
+    data: {
+        "order_id": 1,
+        "status": "shipped"
+    }
+Delete Order: http://localhost:3000/order/delete/:id
+Get All Orders: http://localhost:3000/order/get-all
+Get Order By Id: http://localhost:3000/order/get-by-id/:id
+
+Payment: http://localhost:3000/payment
+Create Payment: http://localhost:3000/payment/create
+    data: {
+        "order_id": 1,
+        "payment_method": "Credit Card",
+        "amount": 100
+    }
+Update Payment: http://localhost:3000/payment/update/:id
+    data: {
+        "payment_id": 1,
+        "status": "completed"
+    }
+Delete Payment: http://localhost:3000/payment/delete/:id
+Get All Payments: http://localhost:3000/payment/get-all
+Get Payment By Id: http://localhost:3000/payment/get-by-id/:id
+
+Review: http://localhost:3000/review
+Create Review: http://localhost:3000/review/create
+    data: {
+        "product_id": 1,
+        "rating": 5,
+        "review_text": "Great product!"
+    }
+Update Review: http://localhost:3000/review/update/:id
+    data: {
+        "review_id": 1,
+        "rating": 4,
+        "review_text": "Good product!"
+    }
+Delete Review: http://localhost:3000/review/delete/:id
+Get All Reviews: http://localhost:3000/review/get-all
+Get Review By Id: http://localhost:3000/review/get-by-id/:id
+
+
+
+
+
+
+
+
+
+
+───────────────────────────────────────────────────────────────────────┼──────────────────┼────────────────────────────────────────────┤
+  │ 1   │ JWT signed with 'dev.jwt-secret-change-me' but verified with          │ auth/passport.ts │ Aligned fallback secret to match jwt.ts    │   
+  │     │ 'change-me-in-production' when no .env — every token fails            │                  │                                            │   
+  ├─────┼───────────────────────────────────────────────────────────────────────┼──────────────────┼────────────────────────────────────────────┤   
+  │ 2   │ PATCH missing from CORS allowed methods — update route blocked from   │ index.ts         │ Added 'PATCH' to the methods array         │
+  │     │ Angular                                                               │                  │                                            │   
+  ├─────┼───────────────────────────────────────────────────────────────────────┼──────────────────┼────────────────────────────────────────────┤   
+  │ 3   │ passport.initialize() never registered — passport behaviour is        │ index.ts         │ Added app.use(passport.initialize()) after │   
+  │     │ undefined                                                             │                  │  cookie-parser

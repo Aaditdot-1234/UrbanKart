@@ -1,20 +1,44 @@
 import AppDataSource from "../datasource";
 import { Products } from "../entities/Products";
 import { NotFound } from "../errors/appError";
+import { SubCategories } from "../entities/SubCategories";
+import { ProductImages } from "../entities/ProductImages";
+
+export interface ProductRequest {
+    product_name: string;
+    product_description: string;
+    product_price: number;
+    stock: number;
+    subCategoryId: number;
+    imageUrls: ProductImages[];
+}
 
 export class ProductService {
     private static productRepo = AppDataSource.getRepository(Products);
 
-    static async createProduct(data: Products) {
-        const { product_name, product_description, product_price, stock, subCategories, productImages } = data;
+    static async createProduct(data: ProductRequest) {
+        const {
+            product_name,
+            product_description,
+            product_price,
+            stock,
+            subCategoryId,
+            imageUrls
+        } = data;
+
+        const subCategory = await AppDataSource
+            .getRepository(SubCategories)
+            .findOneBy({ subcategory_id: subCategoryId });
+
+        if (!subCategory) throw new Error("Subcategory not found");
 
         const product = this.productRepo.create({
             product_name,
             product_description,
             product_price,
-            stock: stock,
-            subCategories,
-            productImages
+            stock,
+            subCategories: subCategory,
+            productImages: imageUrls
         });
 
         return await this.productRepo.save(product);

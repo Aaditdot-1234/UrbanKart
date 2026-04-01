@@ -34,7 +34,7 @@ export class Users {
     @Column({ default: false })
     isActive!: boolean;
 
-    @Column({ select: false, default: false })
+    @Column({ default: false })
     isLocked!: boolean;
 
     @OneToMany(() => Address, (address) => address.user, { cascade: true })

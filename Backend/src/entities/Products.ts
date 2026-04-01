@@ -29,13 +29,13 @@ export class Products {
     @Column()
     stock!: number
 
-    @Column({default:false})
+    @Column({ default: false })
     is_deleted!: boolean;
 
     @ManyToOne(() => SubCategories, (sub) => sub.products)
     subCategories!: SubCategories;
 
-    @OneToMany(() => ProductImages, (images) => images.product)
+    @OneToMany(() => ProductImages, (images) => images.product, { cascade: true })
     productImages!: ProductImages[];
 
     @OneToMany(() => CartItems, (item) => item.product)
