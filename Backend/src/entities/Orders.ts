@@ -24,14 +24,14 @@ export class Orders {
     status !: OrderStatus;
 
     @ManyToOne(() => Users, (user) => user.orders)
-    @JoinColumn({name: "user_id"})
+    @JoinColumn({ name: "user_id" })
     user!: Users;
 
-    @OneToMany(() => OrderedProducts, (op) => op.order)
+    @OneToMany(() => OrderedProducts, (op) => op.order, { cascade: true })
     orderProducts!: OrderedProducts[];
 
     @ManyToOne(() => Address, (address) => address.orders)
-    @JoinColumn({name: "address_id"})
+    @JoinColumn({ name: "address_id" })
     address!: Address;
 
     @OneToOne(() => Payments, (payment) => payment.order)

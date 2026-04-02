@@ -8,27 +8,27 @@ import { NextFunction, Request, Response } from "express";
 
 export class CategoryController {
     static filterProducts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        const { name, minPrice, maxPrice, typeId } = req.query as {name?: string, minPrice?: number, maxPrice?: number, typeId?: string};
+        const { name, minPrice, maxPrice, typeId } = req.query as { name?: string, minPrice?: number, maxPrice?: number, typeId?: string };
         const qb = AppDataSource.getRepository(Products).createQueryBuilder("product");
 
-        console.log({name, minPrice, maxPrice, typeId});
+        console.log({ name, minPrice, maxPrice, typeId });
 
         qb.leftJoinAndSelect("product.subCategories", "subCategory")
             .leftJoinAndSelect("subCategory.categories", "category")
             .leftJoinAndSelect("category.types", "type")
-            .where("product.is_deleted = :is_deleted", {is_deleted: false})
+            .where("product.is_deleted = :is_deleted", { is_deleted: false })
 
-        if(name){
+        if (name) {
             qb.andWhere("category.category_name LIKE :name OR subCategory.subcategory_name LIKE :name OR type.type_name LIKE :name OR product.product_name LIKE :name", { name: `%${name}%` });
         }
-        if(minPrice){
-            qb.andWhere("product.product_price >= :minPrice", {minPrice: Number(minPrice)})
+        if (minPrice) {
+            qb.andWhere("product.product_price >= :minPrice", { minPrice: Number(minPrice) })
         }
-        if(maxPrice){
-            qb.andWhere("product.product_price <= :maxPrice", {maxPrice: Number(maxPrice)})
+        if (maxPrice) {
+            qb.andWhere("product.product_price <= :maxPrice", { maxPrice: Number(maxPrice) })
         }
-        if(typeId){
-            qb.andWhere("type.type_id LIKE :typeId", {typeId: Number(typeId)})
+        if (typeId) {
+            qb.andWhere("type.type_id LIKE :typeId", { typeId: Number(typeId) })
         }
 
         const products = await qb.getMany();

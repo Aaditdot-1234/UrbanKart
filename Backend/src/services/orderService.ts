@@ -28,10 +28,10 @@ export class OrderService {
             if (!activeCart || activeCart.cartItems.length === 0) throw new ValidationError("Your cart is empty.");
 
             const choosenAddress = await queryRunner.manager.findOne(Address, {
-                where: {address_id: addressId, user: {id: userId}}
+                where: { address_id: addressId, user: { id: userId } }
             })
 
-            if(!choosenAddress) throw new NotFound("Address not found.")
+            if (!choosenAddress) throw new NotFound("Address not found.")
 
             const order = queryRunner.manager.create(Orders, {
                 user,
@@ -45,20 +45,25 @@ export class OrderService {
                 const orderedProduct = queryRunner.manager.create(OrderedProducts, {
                     quantity: item.quantity,
                     product: item.product,
-                    price: item.product.product_price
+                    price: item.product.product_price,
+                    order: order
                 });
                 order.orderProducts.push(orderedProduct);
                 order.totalAmount += Number(item.quantity) * Number(item.product.product_price);
             }
 
             const payment = queryRunner.manager.create(Payments, {
-                order,
+                order: order,
                 amount_paid: order.totalAmount,
                 payment_date: new Date(),
                 payment_method,
                 payment_status
             });
 
+            order.payment = payment;
+
+            activeCart.is_active = false;
+            await queryRunner.manager.save(activeCart);
             await queryRunner.manager.save(order);
             await queryRunner.manager.save(payment);
             await queryRunner.commitTransaction();
