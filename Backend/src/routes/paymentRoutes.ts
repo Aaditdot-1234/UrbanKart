@@ -5,9 +5,9 @@ import { requireAdmin } from "../middleware/authMidlleware";
 const paymentRoutes = Router();
 
 paymentRoutes.get('/get-all', requireAdmin, PaymentController.getAllPayments);
-paymentRoutes.get('/get-by-id/:id', requireAdmin, PaymentController.getPaymentById);
-paymentRoutes.patch('/update/:id', requireAdmin, PaymentController.updatePayment);
-paymentRoutes.get('/get-by-order/:id', PaymentController.getPaymentByOrder);
+paymentRoutes.get('/get-by-id/:paymentId', requireAdmin, PaymentController.getPaymentById);
+paymentRoutes.get('/get-by-order/:orderId', PaymentController.getPaymentByOrder);
 paymentRoutes.get('/get-my-payments', PaymentController.getMyPayments);
+paymentRoutes.patch('/update/:paymentId', requireAdmin, PaymentController.updatePayment);
 
 export default paymentRoutes;

@@ -24,28 +24,39 @@ export class OrderController {
         res.status(200).json({ message: "Orders fetched successfully.", orders });
     });
 
-    static getOrderById = asyncHandler(async (req: Request, res: Response) => {
-        const order = await OrderService.getOrderById(+req.params.orderId);
+    static getOrderById = asyncHandler(async (req: Request<{orderId: number}>, res: Response) => { 
+        const {orderId} = req.params;
+
+        const order = await OrderService.getOrderById(+orderId);
         res.status(200).json({ message: "Order fetched successfully.", order });
     });
 
     static filterorderbyDate = asyncHandler(async (req: Request, res: Response) => {
-        const { startDate, endDate } = req.body;
-        const orders = await OrderService.filterByDate(startDate, endDate);
+        const loggedInUser = req.user as Users;
+        const { startDate, endDate } = req.query as {startDate: string, endDate:string};
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const orders = await OrderService.filterByDate(loggedInUser.id, start, end);
         res.status(200).json({ message: "Orders fetched successfully.", orders });
     });
-
+    
     static filterOrderByStatus = asyncHandler(async (req: Request, res: Response) => {
-        const orders = await OrderService.filterByStatus(req.body.status as OrderStatus);
+        const loggedInUser = req.user as Users;
+        const {status} = req.query;
+        
+        const orders = await OrderService.filterByStatus(loggedInUser.id, status as OrderStatus);
         res.status(200).json({ message: "Orders fetched successfully.", orders });
     });
-
+    
     static filterOrderByCategory = asyncHandler(async (req: Request, res: Response) => {
-        const orders = await OrderService.filterByCategory(req.body.category);
+        const loggedInUser = req.user as Users;
+        const {category} = req.query as {category: string};
+
+        const orders = await OrderService.filterByCategory(loggedInUser.id, category);
         res.status(200).json({ message: "Orders fetched successfully.", orders });
     });
 
-    static updateOrderStatus = asyncHandler(async (req: Request<{orderId: string}>, res: Response) => {
+    static updateOrderStatus = asyncHandler(async (req: Request<{orderId: number}>, res: Response) => {
         const { orderId } = req.params;
         const { status } = req.body;
         await OrderService.updateStatus(+orderId, status as OrderStatus);

@@ -34,7 +34,7 @@ export class Orders {
     @JoinColumn({ name: "address_id" })
     address!: Address;
 
-    @OneToOne(() => Payments, (payment) => payment.order)
+    @OneToOne(() => Payments, (payment) => payment.order, {cascade: true})
     payment !: Payments;
 
     @CreateDateColumn()

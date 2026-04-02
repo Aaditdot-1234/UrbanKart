@@ -6,8 +6,11 @@ const orderRouter = Router();
 
 orderRouter.post('/create', OrderController.createOrder);
 orderRouter.get('/get-all', OrderController.getAllOrders);
-orderRouter.get('/get-by-id/:id', OrderController.getOrderById);
-orderRouter.patch('/update-status/:id', requireAdmin, OrderController.updateOrderStatus);
+orderRouter.get('/get-by-id/:orderId', OrderController.getOrderById);
+orderRouter.patch('/update-status/:orderId', requireAdmin, OrderController.updateOrderStatus);
+orderRouter.get('/filter-by-date', OrderController.filterorderbyDate)
+orderRouter.get('/filter-by-status', OrderController.filterOrderByStatus)
+orderRouter.get('/filter-by-category', OrderController.filterOrderByCategory)
 
 
 export default orderRouter;

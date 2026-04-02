@@ -37,20 +37,30 @@ export class OrderService {
                 user,
                 totalAmount: 0,
                 status: OrderStatus.Pending,
-                orderProducts: [],
                 address: choosenAddress,
             });
 
+            let calculateTotal = 0;
             for (const item of activeCart.cartItems) {
-                const orderedProduct = queryRunner.manager.create(OrderedProducts, {
+                calculateTotal += Number(item.product.product_price) * Number(item.quantity);
+            }
+
+            order.totalAmount = calculateTotal;
+
+            await queryRunner.manager.save(order);
+
+            const orderItems = activeCart.cartItems.map(item => {
+                return queryRunner.manager.create(OrderedProducts, {
                     quantity: item.quantity,
                     product: item.product,
                     price: item.product.product_price,
-                    order: order
-                });
-                order.orderProducts.push(orderedProduct);
-                order.totalAmount += Number(item.quantity) * Number(item.product.product_price);
-            }
+                    order: order,
+                })
+            })
+
+            await queryRunner.manager.save(orderItems);
+            activeCart.is_active = false;
+            await queryRunner.manager.save(activeCart);
 
             const payment = queryRunner.manager.create(Payments, {
                 order: order,
@@ -60,11 +70,6 @@ export class OrderService {
                 payment_status
             });
 
-            order.payment = payment;
-
-            activeCart.is_active = false;
-            await queryRunner.manager.save(activeCart);
-            await queryRunner.manager.save(order);
             await queryRunner.manager.save(payment);
             await queryRunner.commitTransaction();
 
@@ -93,29 +98,35 @@ export class OrderService {
         return order;
     }
 
-    static async filterByDate(startDate: Date, endDate: Date) {
+    static async filterByDate(userId: string, startDate: Date, endDate: Date) {
         return await AppDataSource.createQueryBuilder()
             .select('orders')
             .from(Orders, 'orders')
-            .where('orders.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
+            .where('orders.user_id = :userId', { userId })
+            .andWhere('orders.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
             .getMany();
     }
 
-    static async filterByStatus(status: OrderStatus) {
+    static async filterByStatus(userId: string, status: OrderStatus) {
         return await AppDataSource.createQueryBuilder()
             .select('orders')
             .from(Orders, 'orders')
-            .where('orders.status = :status', { status })
+            .where('orders.user_id = :userId', { userId })
+            .andWhere('orders.status = :status', { status })
             .getMany();
     }
 
-    static async filterByCategory(category: string) {
+    static async filterByCategory(userId: string, category: string) {
         return await AppDataSource.createQueryBuilder()
             .select('orders')
             .from(Orders, 'orders')
             .leftJoinAndSelect('orders.orderProducts', 'orderProducts')
             .leftJoinAndSelect('orderProducts.product', 'product')
-            .where('product.category = :category', { category })
+            .leftJoinAndSelect('product.subCategories', 'subCategory')
+            .leftJoinAndSelect('subCategory.categories', 'category')
+            .leftJoinAndSelect('category.types', 'type')
+            .where('orders.user_id = :userId', { userId })
+            .andWhere('category.category_name LIKE :cat OR subCategory.subcategory_name LIKE :cat OR type.type_name LIKE :cat', { cat: `%${category}%` })
             .getMany();
     }
 

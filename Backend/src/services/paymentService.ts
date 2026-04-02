@@ -48,9 +48,9 @@ export class PaymentService {
             });
 
             if (!payment) throw new NotFound("Payment not found");
-            if (payment.order.user.id !== userId) {
-                throw new UnauthorisedError("Not authorized to update this payment");
-            }
+            // if (payment.order.user.id !== userId) {
+            //     throw new UnauthorisedError("Not authorized to update this payment");
+            // }
             if (!Object.values(PaymentStatus).includes(newStatus)) {
                 throw new ValidationError("Invalid payment status");
             }
