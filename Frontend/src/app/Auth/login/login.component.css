@@ -1,24 +1,29 @@
-.login-page{
+.login-page {
     height: 100vh;
     width: 100%;
 }
 
-.login-left{
+.login-left {
     height: 100%;
     width: 50%;
     background-color: var(--bg);
 }
 
-.login-right{
+.login-right {
     height: 100%;
     width: 50%;
     background-color: var(--text);
 }
 
-.login-header{
+.login-header {
     font-size: 40px;
 }
 
-.account-header{
+.account-header {
     font-size: 30px;
+}
+
+.login-card__register {
+    border-top: 1px solid black;
+    padding-top: 30px;
 }
