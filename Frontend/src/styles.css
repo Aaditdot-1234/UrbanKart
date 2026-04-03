@@ -140,6 +140,12 @@ body {
     }
 }
 
+.img-container {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no repeat;
+}
+
 input {
     border-radius: 8px;
     border: 0.8px solid black;
