@@ -1,0 +1,29 @@
+.register-page {
+    height: 100vh;
+    width: 100%;
+}
+
+.register-left {
+    height: 100%;
+    width: 50%;
+    background-color: var(--bg);
+}
+
+.register-right {
+    height: 100%;
+    width: 50%;
+    background-color: var(--text);
+}
+
+.register-header {
+    font-size: 40px;
+}
+
+.account-header {
+    font-size: 30px;
+}
+
+.register-card__register {
+    border-top: 1px solid black;
+    padding-top: 30px;
+}

@@ -1,1 +1,148 @@
-<p>register works!</p>
+<div class="register-page flex-jus-ce">
+    <div class="register-left flex-jus-ce flex-al-ce">
+        <form class="register-card flex-al-fs flex-dir g-40" [formGroup]="registerForm">
+            <div class="register-card__header">
+                <h1 class="std-header-font register-header">Register</h1>
+            </div>
+            <div class="register-card__inputs flex-dir g-10">
+                <div class="flex-jus-sb g-20">
+                    <div class="flex-dir g-10">
+                        <label for="" class="std-tagline-font">Name</label>
+                        <input type="text" placeholder="Enter Name" formControlName="name">
+                        @if (registerForm.get("name")?.invalid && (registerForm.get('name')?.touched ||
+                        registerForm.get('name')?.dirty)) {
+                        <div class="error flex-al-ce flex-jus-fs g-10 show">
+                            <img src="error.png" alt="" class="err-img">
+                            @if (registerForm.get("name")?.errors?.['required']) {
+                            <p class="std-tagline-font">Name is required</p>
+                            }
+                            @if (registerForm.get("name")?.errors?.['minlength']) {
+                            <p class="std-tagline-font">Name is too short</p>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <div class="flex-dir g-10">
+                        <label for="" class="std-tagline-font">Email</label>
+                        <input type="text" placeholder="Enter Email" formControlName="email">
+                        @if (registerForm.get("email")?.invalid && (registerForm.get('email')?.touched ||
+                        registerForm.get('email')?.dirty)) {
+                        <div class="error flex-al-ce flex-jus-fs g-10 show">
+                            <img src="error.png" alt="" class="err-img">
+                            @if (registerForm.get("email")?.errors?.['required']) {
+                            <p class="std-tagline-font">Email is required</p>
+                            }
+                            @if (registerForm.get("email")?.errors?.['email']) {
+                            <p class="std-tagline-font">Email is invalid</p>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="flex-jus-sb g-20">
+                    <div class="flex-dir g-10">
+                        <label for="" class="std-tagline-font">Password</label>
+                        <input type="text" placeholder="Enter Password" formControlName="password">
+                        @if(registerForm.get('password')?.invalid && (registerForm.get('password')?.touched ||
+                        registerForm.get('password')?.dirty)){
+                        <div class="error flex-al-bs flex-jus-fs g-10 show">
+                            <img src="error.png" alt="" class="err-img">
+                            <div class="flex-al-bs flex-jus-ce flex-dir g-10">
+                                @if(registerForm.get('password')?.errors?.['required']){
+                                <p class="std-tagline-font">Password is required</p>
+                                }
+                                @if(registerForm.get('password')?.errors?.['minlength']){
+                                <p class="std-tagline-font">Password is too short</p>
+                                }
+                                @if(registerForm.get('password')?.errors?.['passwordStrength']){
+                                @if(!registerForm.get('password')?.errors?.['passwordStrength'].hasNumber){
+                                <p class="std-tagline-font">Password must contain a number</p>
+                                }
+                                @if(!registerForm.get('password')?.errors?.['passwordStrength'].hasUpperCase){
+                                <p class="std-tagline-font">Password must contain an uppercase letter</p>
+                                }
+                                @if(!registerForm.get('password')?.errors?.['passwordStrength'].hasLowerCase){
+                                <p class="std-tagline-font">Password must contain a lowercase letter</p>
+                                }
+                                @if(!registerForm.get('password')?.errors?.['passwordStrength'].hasSpecialChar){
+                                <p class="std-tagline-font">Password must contain a special character</p>
+                                }
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    <div class="flex-dir g-10">
+                        <label for="" class="std-tagline-font">Confirm Password</label>
+                        <input type="text" placeholder="Enter Confirm Password" formControlName="confirmPassword">
+                        @if (registerForm.get("confirmPassword")?.invalid &&
+                        (registerForm.get('confirmPassword')?.touched ||
+                        registerForm.get('confirmPassword')?.dirty)) {
+                        <div class="error flex-al-ce flex-jus-fs g-10 show">
+                            <img src="error.png" alt="" class="err-img">
+                            @if (registerForm.get("confirmPassword")?.errors?.['required']) {
+                            <p class="std-tagline-font">Confirm Password is required</p>
+                            }
+                            @if (registerForm.get("confirmPassword")?.errors?.['minlength']) {
+                            <p class="std-tagline-font">Confirm Password is too short</p>
+                            }
+                            @if (registerForm.get("confirmPassword")?.errors?.['matchPassword']) {
+                            <p class="std-tagline-font">Confirm Password does not match</p>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="flex-dir g-10">
+                    <label for="" class="std-tagline-font">Phone</label>
+                    <input type="text" placeholder="Enter Phone Number" formControlName="phone">
+                    @if(registerForm.get('phone')?.invalid && (registerForm.get('phone')?.touched ||
+                    registerForm.get('phone')?.dirty)){
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        @if(registerForm.get('phone')?.errors?.['required']){
+                        <p class="std-tagline-font">Phone is required</p>
+                        }
+                        @if(registerForm.get('phone')?.errors?.['minlength']){
+                        <p class="std-tagline-font">Phone is too short</p>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="flex-dir g-10">
+                    <label for="" class="std-tagline-font">Address</label>
+                    <textarea name="address" id="address" placeholder="Enter Address"
+                        formControlName="address"></textarea>
+                    @if(registerForm.get('address')?.invalid && (registerForm.get('address')?.touched ||
+                    registerForm.get('address')?.dirty)){
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        @if(registerForm.get('address')?.errors?.['required']){
+                        <p class="std-tagline-font">Address is required</p>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="register-card__button">
+                    <button>Create Acount</button>
+                </div>
+            </div>
+            <div class="register-card__register flex-dir g-10">
+                <div>
+                    <h1 class="std-header-font account-header">Login</h1>
+                </div>
+                <div>
+                    <p class="std-tagline-font">Already have an account? Login from here.</p>
+                </div>
+                <div>
+                    <a routerLink="/auth/login">
+                        <h2 class="std-tagline-font">
+                            Sign In
+                        </h2>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="register-right"></div>
+</div>

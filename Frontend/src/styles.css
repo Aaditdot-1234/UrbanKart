@@ -61,7 +61,7 @@ body {
     justify-content: flex-end;
 }
 
-.flex-jus-fe {
+.flex-jus-sb {
     display: flex;
     justify-content: space-between;
 }
@@ -88,6 +88,58 @@ body {
     gap: 40px;
 }
 
+.pt-20 {
+    padding-top: 20px;
+}
+
+.error {
+    background-color: rgb(255, 216, 216);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.error:hover {
+    animation: shake 0.5s ease-in-out;
+}
+
+.error.show {
+    animation: shake 0.5s ease-in-out;
+}
+
+.error p {
+    color: red;
+    font-weight: 400;
+}
+
+.err-img {
+    width: 20px;
+    height: 20px;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-10px);
+    }
+
+    40% {
+        transform: translateX(10px);
+    }
+
+    60% {
+        transform: translateX(-6px);
+    }
+
+    80% {
+        transform: translateX(6px);
+    }
+}
+
 input {
     border-radius: 8px;
     border: 0.8px solid black;
@@ -96,6 +148,17 @@ input {
 }
 
 input:focus {
+    outline: none;
+}
+
+textarea {
+    border-radius: 8px;
+    border: 0.8px solid black;
+    padding: 8px;
+    background-color: transparent;
+}
+
+textarea:focus {
     outline: none;
 }
 

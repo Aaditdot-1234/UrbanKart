@@ -1,24 +1,54 @@
 <div class="login-page flex-jus-ce">
     <div class="login-left flex-jus-ce flex-al-ce">
-        <div class="login-card flex-al-fs flex-dir g-40">
+        <form class="login-card flex-al-fs flex-dir g-40" [formGroup]="loginForm">
             <div class="login-card__header">
                 <h1 class="std-header-font login-header">Login</h1>
             </div>
             <div class="login-card__inputs flex-dir g-10">
                 <div class="flex-dir g-10">
                     <label for="" class="std-tagline-font">Email</label>
-                    <input type="text">
+                    <input type="text" formControlName="email">
+                    @if (loginForm.get("email")?.invalid && (loginForm.get('email')?.touched ||
+                    loginForm.get('email')?.dirty)) {
+                    @if (loginForm.get("email")?.errors?.['required']) {
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        <p class="std-tagline-font">Email is required</p>
+                    </div>
+                    }
+                    @if (loginForm.get("email")?.errors?.['email']) {
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        <p class="std-tagline-font">Email is invalid</p>
+                    </div>
+                    }
+                    }
                 </div>
                 <div class="flex-dir g-10">
                     <label for="" class="std-tagline-font">Password</label>
-                    <input type="text">
+                    <input type="text" formControlName="password">
+                    @if (loginForm.get("password")?.invalid && (loginForm.get('password')?.touched ||
+                    loginForm.get('password')?.dirty)) {
+                    @if (loginForm.get("password")?.errors?.['required']) {
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        <p class="std-tagline-font">password is required</p>
+                    </div>
+                    }
+                    @if (loginForm.get("password")?.errors?.['minlength']) {
+                    <div class="error flex-al-ce flex-jus-fs g-10 show">
+                        <img src="error.png" alt="" class="err-img">
+                        <p class="std-tagline-font">password is too short</p>
+                    </div>
+                    }
+                    }
                 </div>
-                <div>
+                <div class="pt-20">
                     <a href="">
                         <h2 class="std-tagline-font">Forgot your password</h2>
                     </a>
                 </div>
-                <div class="login-card__button">
+                <div class="login-card__button pt-20">
                     <button>Sign in</button>
                 </div>
             </div>
@@ -30,14 +60,14 @@
                     <p class="std-tagline-font">Don't have an account? Register from here.</p>
                 </div>
                 <div>
-                    <a href="">
+                    <a routerLink="/auth/register">
                         <h2 class="std-tagline-font">
                             Create account
                         </h2>
                     </a>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
     <div class="login-right"></div>
 </div>
