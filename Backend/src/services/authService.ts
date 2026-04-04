@@ -56,7 +56,8 @@ export class AuthService {
             await querryRunner.manager.save(addressInfo);
 
             await querryRunner.commitTransaction();
-            return savedUser;
+            const {passwordHash, ...savedUserWithoutPassword} = savedUser;
+            return savedUserWithoutPassword;
         } catch (error) {
             console.error(error);
             await querryRunner.rollbackTransaction();
@@ -92,7 +93,8 @@ export class AuthService {
             ip: meta.ip
         });
 
-        return { token, user };
+        const {passwordHash, ...userWithoutPassword} = user;
+        return { token, userWithoutPassword };
     }
 
     static async lockAccount(userId: string) {

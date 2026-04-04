@@ -9,8 +9,8 @@ import { AuthService, UserData } from "../services/authService";
 
 export class AuthController {
     static register = asyncHandler(async (req: Request<{}, any, UserData>, res: Response) => {
-        await AuthService.register(req.body);
-        res.status(201).json({ message: 'User Registered successfully.' });
+        const user = await AuthService.register(req.body);
+        res.status(201).json({ message: 'User Registered successfully.', user});
     });
 
     static login = asyncHandler(async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ export class AuthController {
             ip: req.ip || 'Unknown'
         };
 
-        const { token } = await AuthService.login(email, password, meta);
+        const { token, userWithoutPassword } = await AuthService.login(email, password, meta);
 
         res.cookie(COOKIE_NAME, token, {
             httpOnly: true,
@@ -29,7 +29,7 @@ export class AuthController {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.status(200).json({ message: "Login Successful." });
+        res.status(200).json({ message: "Login Successful.", userWithoutPassword });
     });
 
     static logout = asyncHandler(async (req: Request, res: Response) => {
@@ -56,6 +56,13 @@ export class AuthController {
         const users = await userRepo.find();
         res.status(200).json({ message: "Users fetched successfully.", users });
     });
+    
+    static getUserById = asyncHandler(async(req:Request<{userId:string}>, res: Response) => {
+        const {userId} = req.params;
+        const userRepo = AppDataSource.getRepository(Users);
+        const user = await userRepo.findOne({where: {id: userId}})
+        res.status(200).json({ message: "User fetched successfully.", user });
+    })
 
     static updateUserInfo = asyncHandler(async (req: Request, res: Response) => {
         const { name, phone, email } = req.body;
