@@ -1,31 +1,31 @@
-.home-page{
+.home-page {
     width: 100%;
 }
 
-.hero-section{
+.hero-section {
     /* background-color: var(--bg); */
     height: 100vh;
     width: 100%;
-    padding: 90px 50px;
+    padding: 80px 50px 20px 50px;
 }
 
-.hero-section-card{
+.hero-section-card {
     position: relative;
     height: 100%;
     width: 100%;
     border-radius: 20px;
 }
 
-.hs-card-image{
+.hs-card-image {
     position: relative;
     overflow: hidden;
     border-radius: 20px;
     height: 100%;
     background-image: url('../../../public/hero1.jpg');
-    background-position: top !important;
+    background-position: 10% 30% !important;
 }
 
-.hs-card-image::before{
+.hs-card-image::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -34,7 +34,7 @@
     background-size: cover;
     clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
     opacity: 0;
-    transition: clip-path 0.6s ease, opacity 0.6s ease;
+    transition: clip-path 0.2s ease, opacity 0.2s ease;
 }
 
 .hero-section-card:hover .hs-card-image::before {
@@ -42,29 +42,161 @@
     opacity: 1;
 }
 
-.hs-card-overlay{
-    background-color: rgba(0, 0, 0, 0.2);
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    top: 0;
-    left: 0;
+.hs-card-overlay {
     border-radius: 20px;
 }
 
-.hero-header-font{
+.hero-header-font {
     font-size: 40px;
     font-weight: Bold;
     color: white;
 }
 
-.hero-tagline-font{
+.hero-tagline-font {
     font-size: 20px;
     font-weight: 400;
     color: white;
 }
 
-.card-overlay-info > div{
+.card-overlay-info>div {
     width: 50%;
+}
+
+.divider-1 {
+    margin-top: 20px;
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+}
+
+.divider-1-loop {
+    display: flex;
+    width: max-content;
+    animation: scroll 25s linear infinite;
+}
+
+.divider-1-loop p {
+    padding: 0 40px;
+    font-size: 40px;
+    font-weight: 400;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.categories {
+    margin: 20px 120px;
+}
+
+.category-card-image {
+    width: 100px;
+    height: 100px;
+}
+
+.category-card-image>div {
+    width: 60%;
+    height: 60%;
+}
+
+.category-name {
+    font-weight: 500;
+}
+
+.best-deals {
+    border-top: 1px solid rgb(204, 204, 204);
+    margin: 40px var(--std-padding);
+    padding: 40px 0px;
+    height: 100vh;
+}
+
+.arrow {
+    border: 0.5px solid black;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px;
+    transition: all 0.2s ease-in-out;
+}
+
+.link-category {
+    text-decoration: none;
+}
+
+.link-category:hover .arrow {
+    background-color: black;
+    color: white;
+    transform: scale(1.4);
+}
+
+.link-category>p {
+    position: relative;
+    display: inline-block;
+}
+
+.link-category>p::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0%;
+    height: 1px;
+    background-color: black;
+    transition: width 0.3s ease-in-out;
+}
+
+.link-category:hover p::after {
+    width: 100%;
+}
+
+.best-deal-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 40px 0px;
+}
+
+.best-deal-product>div:first-child {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+
+.best-deal-product>div:first-child>div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.item {
+    position: relative;
+    background-color: var(--bg);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item .overlay {
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.item .circle {
+    margin: 0px;
+}
+
+.item .arrow:hover {
+    background-color: black;
+    color: white;
+    transform: scale(1.4);
 }

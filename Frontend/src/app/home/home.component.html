@@ -2,14 +2,15 @@
     <section class="hero-section">
         <div class="hero-section-card">
             <div class="hs-card-image img-container"></div>
-            <div class="hs-card-overlay flex-al-end">
+            <div class="hs-card-overlay overlay flex-al-end">
                 <div class="card-overlay-info flex-jus-sb w-100 p-20">
                     <div class="flex-al-bs flex-jus-fs flex-dir g-20">
                         <div>
                             <h1 class="std-header-font hero-header-font">Buy our new Arrivals</h1>
                         </div>
                         <div>
-                            <p class="std-tagline-font hero-tagline-font">Hurry!!! we have new stock of the clothes and shoes. Get products
+                            <p class="std-tagline-font hero-tagline-font">Hurry!!! we have new stock of the clothes and
+                                shoes. Get products
                                 with best price.
                             </p>
                         </div>
@@ -20,13 +21,15 @@
                     <div class="flex-al-end flex-jus-fe g-20">
                         <div class="flex-jus-sb g-20">
                             <div>
-                                <button class="button std-tagline-font hero-tagline-font" style="padding-top: 5px;">&larr;</button>
+                                <button class="button std-tagline-font hero-tagline-font"
+                                    style="padding-top: 5px;">&larr;</button>
                             </div>
                             <div class="flex-jus-ce flex-al-ce">
                                 <p class="std-tagline-font hero-tagline-font">1/2</p>
                             </div>
                             <div>
-                                <button class="std-tagline-font hero-tagline-font" style="padding-top: 5px;">&rarr;</button>
+                                <button class="std-tagline-font hero-tagline-font"
+                                    style="padding-top: 5px;">&rarr;</button>
                             </div>
                         </div>
                     </div>
@@ -34,7 +37,122 @@
             </div>
         </div>
     </section>
-    <section></section>
+    <div class="divider-1">
+        <div class="divider-1-loop flex-jus-sb flex-al-ce">
+            <p class="std-tagline-font">Free shipping</p>
+            <div class="circle" style="background-color: black;"></div>
+            <p class="std-tagline-font">10% Discount on prices above ₹1000</p>
+            <div class="circle" style="background-color: black;"></div>
+            <p class="std-tagline-font">Free shipping</p>
+            <div class="circle" style="background-color: black;"></div>
+            <p class="std-tagline-font">10% Discount on prices above ₹1000</p>
+            <div class="circle" style="background-color: black;"></div>
+        </div>
+    </div>
+    <div class="categories flex-jus-sb flex-al-ce g-20 p-20">
+        @for (item of categories; track $index) {
+        <div class="category-card flex-dir flex-al-ce g-20">
+            <div class="category-card-image circle flex-al-ce flex-jus-ce" [style.background-color]="item.color">
+                <div class="img-container" [style.background-image]="'url(' + item.image + ')'"></div>
+            </div>
+            <div class="category-card-overlay">
+                <p class="std-header-font category-name">{{item.name}}</p>
+            </div>
+        </div>
+        }
+    </div>
+    <section class="best-deals">
+        <div class="flex-jus-sb flex-al-ce">
+            <h1 class="font-40 font-w-600 std-header-font">Best Deals</h1>
+            <a routerLink="/auth/login" class="flex-al-ce g-20 link-category">
+                <p class="std-tagline-font font-20">View All our categories</p>
+                <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                    <p class="font-20">&nearr;</p>
+                </div>
+            </a>
+        </div>
+        <div>
+            <p class="std-tagline-font font-20 font-w-500 pt-20">Explore our curated range of top-tier products.
+                discover the
+                perfect
+                fit
+                for any occasion or lifestyle.</p>
+        </div>
+        <div class="best-deal-product flex-al-ce flex-jus-ce g-10 w-100 h-100">
+            <div class="h-100 g-10">
+                <div class="h-100 g-10">
+                    <div class="item">
+                        <div class="overlay flex-al-end">
+                            <div class="flex-jus-sb w-100 flex-al-end">
+                                <div class="flex-dir flex-al-bs flex-jus-ce">
+                                    <div>
+                                        <h1 class="font-40 font-w-600 std-header-font">Furniture</h1>
+                                    </div>
+                                    <div>
+                                        <p class="std-tagline-font font-20 font-w-500">10 products</p>
+                                    </div>
+                                </div>
+                                <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                                    <p class="font-20">&nearr;</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="overlay flex-al-end">
+                            <div class="flex-jus-sb w-100 flex-al-end">
+                                <div class="flex-dir flex-al-bs flex-jus-ce">
+                                    <div>
+                                        <h1 class="font-40 font-w-600 std-header-font">Furniture</h1>
+                                    </div>
+                                    <div>
+                                        <p class="std-tagline-font font-20 font-w-500">10 products</p>
+                                    </div>
+                                </div>
+                                <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                                    <p class="font-20">&nearr;</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="overlay flex-al-end">
+                        <div class="flex-jus-sb w-100 flex-al-end">
+                            <div class="flex-dir flex-al-bs flex-jus-ce">
+                                <div>
+                                    <h1 class="font-40 font-w-600 std-header-font">Furniture</h1>
+                                </div>
+                                <div>
+                                    <p class="std-tagline-font font-20 font-w-500">10 products</p>
+                                </div>
+                            </div>
+                            <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                                <p class="font-20">&nearr;</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item h-100">
+                <div class="overlay flex-al-end">
+                    <div class="flex-jus-sb w-100 flex-al-end">
+                        <div class="flex-dir flex-al-bs flex-jus-ce">
+                            <div>
+                                <h1 class="font-40 font-w-600 std-header-font">Furniture</h1>
+                            </div>
+                            <div>
+                                <p class="std-tagline-font font-20 font-w-500">10 products</p>
+                            </div>
+                        </div>
+                        <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                            <p class="font-20">&nearr;</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section></section>
     <section></section>
     <section></section>
