@@ -10,7 +10,7 @@ import { AuthService, UserData } from "../services/authService";
 export class AuthController {
     static register = asyncHandler(async (req: Request<{}, any, UserData>, res: Response) => {
         const user = await AuthService.register(req.body);
-        res.status(201).json({ message: 'User Registered successfully.', user});
+        res.status(201).json({ message: 'User Registered successfully.', user });
     });
 
     static login = asyncHandler(async (req: Request, res: Response) => {
@@ -39,7 +39,7 @@ export class AuthController {
         res.status(200).json({ message: "Logout successful." });
     });
 
-    static lockUserAccount = asyncHandler(async (req: Request<{userId: string}>, res: Response) => {
+    static lockUserAccount = asyncHandler(async (req: Request<{ userId: string }>, res: Response) => {
         const { userId } = req.params;
         await AuthService.lockAccount(userId);
         res.status(200).json({ message: `User has been locked successfully.` });
@@ -56,11 +56,11 @@ export class AuthController {
         const users = await userRepo.find();
         res.status(200).json({ message: "Users fetched successfully.", users });
     });
-    
-    static getUserById = asyncHandler(async(req:Request<{userId:string}>, res: Response) => {
-        const {userId} = req.params;
+
+    static getUserById = asyncHandler(async (req: Request<{ userId: string }>, res: Response) => {
+        const { userId } = req.params;
         const userRepo = AppDataSource.getRepository(Users);
-        const user = await userRepo.findOne({where: {id: userId}})
+        const user = await userRepo.findOne({ where: { id: userId } })
         res.status(200).json({ message: "User fetched successfully.", user });
     })
 
@@ -76,7 +76,8 @@ export class AuthController {
         user.email = email ?? user.email;
         user.phone = phone ?? user.phone;
 
-        await userRepo.save(user);
-        res.status(200).json({ message: "User information updated successfully." });
+        const savedUser = await userRepo.save(user);
+        const { passwordHash, ...userWithoutPassword } = savedUser;
+        res.status(200).json({ message: "User information updated successfully.", user: userWithoutPassword });
     });
 }

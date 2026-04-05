@@ -171,3 +171,12 @@ Get Review By Id: http://localhost:3000/review/get-by-id/:id
   ├─────┼───────────────────────────────────────────────────────────────────────┼──────────────────┼────────────────────────────────────────────┤   
   │ 3   │ passport.initialize() never registered — passport behaviour is        │ index.ts         │ Added app.use(passport.initialize()) after │   
   │     │ undefined                                                             │                  │  cookie-parser
+
+
+
+
+tasks left in backend: 
+
+1) forgot password and otp generation.
+2) Race conditions.
+3) Multer

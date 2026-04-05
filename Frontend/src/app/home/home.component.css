@@ -1,18 +1,19 @@
 .home-page {
     width: 100%;
+    max-width: 100%;
+    height: 100%;
+    overflow-x: hidden;
 }
 
 .hero-section {
     /* background-color: var(--bg); */
     height: 100vh;
-    width: 100%;
-    padding: 80px 50px 20px 50px;
+    padding: 80px 60px 20px 60px;
 }
 
 .hero-section-card {
     position: relative;
     height: 100%;
-    width: 100%;
     border-radius: 20px;
 }
 
@@ -199,4 +200,158 @@
     background-color: black;
     color: white;
     transform: scale(1.4);
+}
+
+.divider-2 {
+    padding: 40px 120px;
+    background-color: rgb(28, 44, 28);
+}
+
+.products-progress .overlay {
+    background-color: transparent;
+    height: fit-content;
+    width: 100%;
+    top: -20px;
+}
+
+.product-image {
+    width: 325px;
+    height: 350px;
+    background-color: var(--bg);
+    border-radius: 20px;
+}
+
+.services {
+    margin: 60px 0px;
+    padding: 20px var(--std-padding) 20px 0px;
+    background-color: rgb(246, 246, 246);
+}
+
+.services>div:first-child {
+    height: 500px;
+    width: 60%;
+    background-image: url('/hero1.jpg');
+    border-radius: 0px 20px 20px 0px;
+}
+
+.services>div:last-child {
+    height: 500px;
+    width: 40%;
+    padding: 40px;
+    background-color: rgb(233, 233, 233);
+    border-radius: 20px;
+}
+
+.services h2 {
+    font-size: 30px;
+}
+
+.services .circle {
+    background-color: grey;
+    height: 30px;
+    width: 30px;
+    color: black;
+    text-align: center;
+    margin: 0;
+}
+
+.customer-reviews img {
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.customer-reviews {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    padding: 60px;
+}
+
+.reviews-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.review-card {
+    position: absolute;
+    width: 260px;
+    padding: 16px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    animation: fadeSlideIn 0.6s ease forwards;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+}
+
+.rating {
+    font-size: 14px;
+    color: gold;
+}
+
+@keyframes fadeSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+.grab-attention {
+    margin: 60px 0px;
+    padding: 20px var(--std-padding) 20px 0px;
+    background-color: rgb(246, 246, 246);
+}
+
+.grab-attention .overlay {
+    background-color: transparent;
+    height: 100% !important;
+    width: 100% !important;
+    padding-bottom: 50px;
+    padding-right: 250px;
+}
+
+.grab-attention>div:first-child {
+    height: 500px;
+    width: 60%;
+    background-image: url('/hero1.jpg');
+    border-radius: 0px 20px 20px 0px;
+}
+
+.grab-attention .overlay>div {
+    height: 300px;
+    width: 40%;
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.grab-attention p {
+    text-align: center;
+}
+
+.divider-3 {
+    background-color: rgb(28, 44, 28);
+}
+
+.divider-3 p {
+    color: white;
 }
