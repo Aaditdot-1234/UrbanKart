@@ -6,6 +6,7 @@ import { signToken } from "../auth/jwt";
 import { sessionStore } from "../utils/sessionStore";
 import { v4 as uuidV4 } from 'uuid';
 import { Address } from "../entities/Address";
+import { otpStore } from "../utils/otpStore";
 
 export interface UserData {
     name: string,
@@ -107,11 +108,31 @@ export class AuthService {
         sessionStore.deleteAllForUser(user.id);
     }
 
-    static async resetPassword(email: string, newPass: string) {
+    static async resetPassword(email: string, otp:string, newPass: string) {
+        const isValid = otpStore.verify(email, otp);
+        if(!isValid) throw new Error("Invalid or expired OTP");
+
         const user = await this.userRepo.findOne({ where: { email: email.toLowerCase().trim() } });
         if (!user) throw new UnauthorisedError('Authorization required.');
-
+        
         user.passwordHash = await hashPassword(newPass);
-        await this.userRepo.save(user);
+        const saveduser = await this.userRepo.save(user);
+
+        otpStore.remove(email);
+
+        const {passwordHash, ...userWithoutPassword} = saveduser;
+        return userWithoutPassword;
+    }
+    
+    static async requestOTP(email:string){
+        const user = await this.userRepo.findOne({ where: { email: email.toLowerCase().trim() } });
+        if (!user) throw new UnauthorisedError('Authorization required.');
+        
+        const generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiry = new Date(Date.now() + 10 * 60000);
+
+        otpStore.create(email, generatedOTP, expiry);
+
+        return generatedOTP;
     }
 }

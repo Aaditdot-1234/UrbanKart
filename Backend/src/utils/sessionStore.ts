@@ -47,7 +47,6 @@ class SessionStore {
         }
     }
 
-
     getForUser(userId: string): SessionEntry[] {
         const userSessions = this.userIndex.get(userId);
         if (!userSessions) return [];

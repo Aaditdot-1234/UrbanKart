@@ -1,6 +1,6 @@
 <div class="register-page flex-jus-ce">
     <div class="register-left flex-jus-ce flex-al-ce">
-        <form class="register-card flex-al-fs flex-dir g-40" [formGroup]="registerForm">
+        <form class="register-card flex-al-fs flex-dir g-40" [formGroup]="registerForm" (ngSubmit)="handleRegister()">
             <div class="register-card__header">
                 <h1 class="std-header-font register-header">Register</h1>
             </div>
@@ -124,7 +124,7 @@
                     }
                 </div>
                 <div class="register-card__button">
-                    <button>Create Acount</button>
+                    <button type="submit" [disabled]="registerForm.invalid">Create Acount</button>
                 </div>
             </div>
             <div class="register-card__register flex-dir g-10">

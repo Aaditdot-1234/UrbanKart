@@ -1,0 +1,26 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "npm start --prefix Frontend",
+    "backend": "npm run dev --prefix Backend",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aaditdot-1234/UrbanKart.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aaditdot-1234/UrbanKart/issues"
+  },
+  "homepage": "https://github.com/Aaditdot-1234/UrbanKart#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

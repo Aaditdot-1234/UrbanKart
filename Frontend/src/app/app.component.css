@@ -1,0 +1,19 @@
+.global-toast{
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 9999;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(128, 128, 128, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px 20px;
+}
+
+.global-toast > div:first-child{
+    border-radius: 2px;
+    width: 10px;
+}

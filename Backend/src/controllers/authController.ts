@@ -45,10 +45,16 @@ export class AuthController {
         res.status(200).json({ message: `User has been locked successfully.` });
     });
 
+    static getOTP = asyncHandler(async (req: Request, res: Response) => {
+        const { email} = req.body;
+        const otp = await AuthService.requestOTP(email);
+        res.status(201).json({ message: "OTP generated successfully.", otp });
+    });
+
     static forgotPassword = asyncHandler(async (req: Request, res: Response) => {
-        const { email, password } = req.body;
-        await AuthService.resetPassword(email, password);
-        res.status(201).json({ message: "Password reset successful." });
+        const { email, otp, password } = req.body;
+        const user = await AuthService.resetPassword(email, otp, password);
+        res.status(201).json({ message: "Password reset successful.", user });
     });
 
     static getAllUsers = asyncHandler(async (req: Request, res: Response) => {

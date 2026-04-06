@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Login, LogoutResponse, Register, RegisterResponse, User } from '../models/auth.model';
+import { Login, LogoutResponse, OTPResponse, Register, RegisterResponse, User } from '../models/auth.model';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class AuthService {
   currentUser$ = new BehaviorSubject<Omit<User, 'password'> | null>(null);
 
   register(registerDetails: Register) {
-    return this.http.post<RegisterResponse>(this.apiUrl + '/register', registerDetails, { withCredentials: true }).pipe(
+    return this.http.post<RegisterResponse>(this.apiUrl + '/register', registerDetails).pipe(
       tap((response) => {
         this.currentUser$.next(response.user);
       })
@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   login(loginDetails: Login) {
-    return this.http.post<RegisterResponse>(this.apiUrl + '/login', loginDetails, { withCredentials: true }).pipe(
+    return this.http.post<RegisterResponse>(this.apiUrl + '/login', loginDetails).pipe(
       tap((response) => {
         this.currentUser$.next(response.user);
       })
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post<LogoutResponse>(this.apiUrl + '/logout', {}, { withCredentials: true }).pipe(
+    return this.http.post<LogoutResponse>(this.apiUrl + '/logout', {}).pipe(
       tap(() => {
         this.currentUser$.next(null);
       })
@@ -43,8 +43,8 @@ export class AuthService {
     )
   }
 
-  forgotpassword(email: string, password: string) {
-    return this.http.patch<RegisterResponse>(this.apiUrl + '/forgot-password', { email, password }, { withCredentials: true }).pipe(
+  forgotpassword(email: string, otp:string, password: string) {
+    return this.http.patch<RegisterResponse>(this.apiUrl + '/forgot-password', { email, otp, password }).pipe(
       tap((response) => {
         this.currentUser$.next(response.user);
       })
@@ -52,11 +52,15 @@ export class AuthService {
   }
 
   getUser(userId: string) {
-    return this.http.get<RegisterResponse>(`${this.apiUrl}/user/${userId}`, { withCredentials: true });
+    return this.http.get<RegisterResponse>(`${this.apiUrl}/user/${userId}`);
   }
 
   getAllusers() {
-    return this.http.get<User[]>(`${this.apiUrl}/users`, { withCredentials: true });
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  }
+
+  getOTP(email:string){
+    return this.http.patch<OTPResponse>(`${this.apiUrl}/getOTP`, {email});
   }
 
   updateUserInfo(updatedDetails: Partial<User>) {

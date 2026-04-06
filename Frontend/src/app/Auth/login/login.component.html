@@ -1,6 +1,6 @@
 <div class="login-page flex-jus-ce">
     <div class="login-left flex-jus-ce flex-al-ce">
-        <form class="login-card flex-al-fs flex-dir g-40" [formGroup]="loginForm">
+        <form class="login-card flex-al-fs flex-dir g-40" [formGroup]="loginForm" (ngSubmit)="handleLogin()">
             <div class="login-card__header">
                 <h1 class="std-header-font login-header">Login</h1>
             </div>
@@ -44,12 +44,12 @@
                     }
                 </div>
                 <div class="pt-20">
-                    <a href="">
+                    <a href="/auth/forgot-password">
                         <h2 class="std-tagline-font">Forgot your password</h2>
                     </a>
                 </div>
                 <div class="login-card__button pt-20">
-                    <button>Sign in</button>
+                    <button type="submit" [disabled]="loginForm.invalid">Sign in</button>
                 </div>
             </div>
             <div class="login-card__register flex-dir g-10">

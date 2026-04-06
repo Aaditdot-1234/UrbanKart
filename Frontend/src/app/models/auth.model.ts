@@ -26,3 +26,8 @@ export interface Login{
 export interface LogoutResponse{
     message:string;
 }
+
+export interface OTPResponse{
+    message:string,
+    otp:string;
+}
