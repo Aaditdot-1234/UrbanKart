@@ -45,7 +45,7 @@ async function main() {
     app.use(passport.initialize());
 
     app.use('/auth', authRouter);
-    app.use('/category', requireAuth, categoryRouter);
+    app.use('/category', categoryRouter);
     app.use('/product', productRouter);
     app.use('/cart', requireAuth, cartRouter);
     app.use('/address', requireAuth, addressRouter);

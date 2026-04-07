@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { FooterComponent } from "../shared/components/footer/footer.component";
 
 interface Review {
   name: string;
@@ -15,7 +16,7 @@ interface Review {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, FooterComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

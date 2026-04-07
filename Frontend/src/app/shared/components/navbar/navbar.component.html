@@ -1,40 +1,43 @@
-<nav class="flex-jus-ce flex-dir g-20 navbar" [class.animate-navbar]="isScrolled">
+<nav class="flex-jus-ce flex-dir g-20 navbar">
     <div class="relative">
-        <div class="flex-al-ce flex-jus-sb w-100">
+        <div class="flex-al-ce flex-jus-sb w-100 top-navbar">
             <div class="menu" (click)="onHover = !onHover">
                 <img width="25" height="25" src="https://img.icons8.com/ios/50/menu--v1.png" alt="menu--v1" />
             </div>
             <h2 class="flex-al-ce flex-jus-ce std-header-font">
-                <a routerLink="/">UrbanKart</a>
+                <a routerLink="/" class="font-40">UrbanKart</a>
             </h2>
 
-            <div>
-                <button>Login</button>
+            <div class="flex-jus-fe flex-al-ce g-20">
+                <a href="/auth/login">
+                    <button>Login</button>
+                </a>
+                <a class="cart flex-jus-ce flex-al-ce relative">
+                    <img width="25" height="25" src="https://img.icons8.com/ios/50/shopping-cart--v1.png" alt="shopping-cart--v1"/>
+                </a>
             </div>
         </div>
-        @if(onHover){
-        <div class="flex-al-ce flex-jus-fs g-20 w-100" [class.bottom-navbar]="onHover">
+        <div class="hide-bottom-navbar flex-al-ce flex-jus-fs g-20 w-100" [class.show-bottom-navbar]="onHover">
             <div class="flex-al-ce flex-jus-fs g-20 w-100">
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">Home</a>
+                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">Home</a>
                 </div>
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">Products</a>
+                    <a routerLink="/products/categories" class="font-20 font-w-500 std-tagline-font">Shop by types</a>
                 </div>
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">Categories</a>
+                    <a routerLink="/products" class="font-20 font-w-500 std-tagline-font">Products</a>
                 </div>
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">News</a>
+                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">News</a>
                 </div>
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">About</a>
+                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">About</a>
                 </div>
                 <div>
-                    <a class="font-20 font-w-500 std-tagline-font">Contact</a>
+                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">Contact</a>
                 </div>
             </div>
         </div>
-        }
     </div>
 </nav>

@@ -13,5 +13,9 @@ export const routes: Routes = [
     {
         path:"auth",
         loadChildren: () => import("./Auth/auth.routes").then(m => m.AUTHROUTES)
-    }
+    },
+    {
+        path:"products",
+        loadChildren: () => import("./Products/product.route").then(m => m.PRODUCTROUTES)
+    },
 ];

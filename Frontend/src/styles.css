@@ -11,6 +11,7 @@
 body {
     position: relative;
     overflow-x: hidden;
+    padding-top: 80px !important;
 }
 
 * {
@@ -109,8 +110,8 @@ body {
     padding: 40px;
 }
 
-.pt-20 {
-    padding-top: 20px;
+.pt-80 {
+    padding: 80px;
 }
 
 .mgx-40 {
@@ -132,6 +133,7 @@ body {
 .mgb-40 {
     margin-bottom: 40px;
 }
+
 
 .font-20 {
     font-size: 20px;
@@ -244,6 +246,19 @@ body {
     height: 10px;
     border-radius: 50%;
     margin: 0 15px;
+}
+
+.arrow {
+    border: 0.5px solid black;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px;
+    transition: all 0.2s ease-in-out;
 }
 
 input {

@@ -1,3 +1,4 @@
+import { skip } from "node:test";
 import { CreateOrder } from "../controllers/orderController";
 import AppDataSource from "../datasource";
 import { Address } from "../entities/Address";
@@ -82,8 +83,10 @@ export class OrderService {
         }
     }
 
-    static async getOrdersByUser(userId: string) {
-        return await this.orderRepo.find({
+    static async getOrdersByUser(userId: string, skip: number, limit: number) {
+        return await this.orderRepo.findAndCount({
+            skip: skip,
+            take: limit,
             where: { user: { id: userId } },
             relations: ['orderProducts', 'orderProducts.product']
         });
@@ -98,28 +101,31 @@ export class OrderService {
         return order;
     }
 
-    static async filterByDate(userId: string, startDate: Date, endDate: Date) {
-        return await AppDataSource.createQueryBuilder()
-            .select('orders')
-            .from(Orders, 'orders')
+    static async filterByDate(userId: string, startDate: Date, endDate: Date, skip: number, limit: number) {
+        const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
+        return qb
             .where('orders.user_id = :userId', { userId })
             .andWhere('orders.createdAt BETWEEN :startDate AND :endDate', { startDate, endDate })
-            .getMany();
+            .orderBy('orders.createdAt', 'DESC')
+            .skip(skip)
+            .take(limit)
+            .getManyAndCount();
     }
 
-    static async filterByStatus(userId: string, status: OrderStatus) {
-        return await AppDataSource.createQueryBuilder()
-            .select('orders')
-            .from(Orders, 'orders')
+    static async filterByStatus(userId: string, status: OrderStatus, limit: number, skip: number) {
+        const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
+        return qb    
             .where('orders.user_id = :userId', { userId })
             .andWhere('orders.status = :status', { status })
-            .getMany();
+            .orderBy('orders.createdAt','DESC')
+            .skip(skip)
+            .take(limit)
+            .getManyAndCount();
     }
 
-    static async filterByCategory(userId: string, category: string) {
-        return await AppDataSource.createQueryBuilder()
-            .select('orders')
-            .from(Orders, 'orders')
+    static async filterByCategory(userId: string, category: string, limit:number, skip: number) {
+        const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
+        return qb    
             .leftJoinAndSelect('orders.orderProducts', 'orderProducts')
             .leftJoinAndSelect('orderProducts.product', 'product')
             .leftJoinAndSelect('product.subCategories', 'subCategory')
@@ -127,7 +133,10 @@ export class OrderService {
             .leftJoinAndSelect('category.types', 'type')
             .where('orders.user_id = :userId', { userId })
             .andWhere('category.category_name LIKE :cat OR subCategory.subcategory_name LIKE :cat OR type.type_name LIKE :cat', { cat: `%${category}%` })
-            .getMany();
+            .orderBy('orders.createdAt','DESC')
+            .skip(skip)
+            .take(limit)
+            .getManyAndCount();
     }
 
     static async updateStatus(orderId: number, status: OrderStatus) {

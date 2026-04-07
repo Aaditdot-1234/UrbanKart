@@ -1,0 +1,31 @@
+.categories-page-navigation .circle{
+    height: 5px;
+    width: 5px;
+    background-color: black;
+}
+
+.item {
+    position: relative;
+    height: 318px;
+    width: calc(25% - 15px);
+    background-color: var(--bg);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item .overlay {
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.item .circle {
+    margin: 0px;
+}
+
+.item .arrow:hover {
+    background-color: black;
+    color: white;
+    transform: scale(1.4);
+}

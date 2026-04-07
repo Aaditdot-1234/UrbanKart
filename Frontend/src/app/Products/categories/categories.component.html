@@ -1,0 +1,31 @@
+<div class="categories-page pt-80">
+    <div class="categories-page-navigation flex-al-ce flex-jus-fs bg-gold p-20 mgb-20">
+        <h2 class="font-w-600 std-header-font">Home</h2>
+        <div class="circle"></div>
+        <h2 class="font-w-400 std-header-font color-lighgrey">Categories</h2>
+    </div>
+    <h1 class="font-40 font-w-600 std-header-font mgb-40">Categories</h1>
+    <div class="flex-al-ce flex-jus-fs flex-wrap g-20">
+        @for (category of Categories; track $index) {
+            <div class="item">
+                <div class="overlay flex-jus-sb">
+                    <div class="flex-jus-sb flex-al-end">
+                        <div class="flex-dir flex-al-bs flex-jus-ce">
+                            <h1 class="font-40 font-w-600 std-header-font">{{category.category_name}}</h1>
+                            <p class="std-tagline-font font-20 font-w-500">10 products</p>
+                        </div>
+                    </div>
+                    <div class="flex-jus-sb flex-al-end">
+                        <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                            <p routerLink="/products" class="font-20">&nearr;</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="pagination">
+        
+    </div>
+</div>
+<app-footer></app-footer>

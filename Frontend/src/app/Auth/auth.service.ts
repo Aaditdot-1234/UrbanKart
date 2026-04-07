@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Login, LogoutResponse, OTPResponse, Register, RegisterResponse, User } from '../models/auth.model';
+import { Login, LogoutResponse, OTPResponse, Register, RegisterResponse, User } from '../models/auth';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({

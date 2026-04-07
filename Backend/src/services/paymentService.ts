@@ -19,21 +19,24 @@ export class PaymentService {
         return payment;
     }
 
-    static async getPaymentsByUser(userId: string) {
-        return await this.paymentRepo.find({
+    static async getPaymentsByUser(userId: string, limit: number, skip:number) {
+        return await this.paymentRepo.findAndCount({
+            skip: skip,
+            take: limit,
             where: { order: { user: { id: userId } } },
             relations: ['order']
         });
     }
 
-    static async getAllPayments(status?: PaymentStatus, method?: PaymentMethod): Promise<Payments[]> {
+    static async getAllPayments(limit:number, skip: number, status?: PaymentStatus, method?: PaymentMethod): Promise<[Payments[], number]> {
         const qb = this.paymentRepo.createQueryBuilder('payment')
             .leftJoinAndSelect('payment.order', 'order');
 
         if (status) qb.andWhere('payment.payment_status = :status', { status });
         if (method) qb.andWhere('payment.payment_method = :method', { method });
 
-        return await qb.getMany();
+        qb.orderBy('payment.createdAt', 'DESC').skip(skip).take(limit);
+        return await qb.getManyAndCount();
     }
 
     static async updatePaymentStatus(paymentId: number, userId: string, newStatus: PaymentStatus) {

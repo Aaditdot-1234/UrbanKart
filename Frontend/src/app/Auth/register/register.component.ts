@@ -4,11 +4,12 @@ import { PasswordValidators } from '../../shared/CustomValidators/passwordValida
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Subject, switchMap, takeUntil } from 'rxjs';
-import { Login, Register } from '../../models/auth.model';
+import { Login, Register } from '../../models/auth';
+import { FooterComponent } from "../../shared/components/footer/footer.component";
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, FooterComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })

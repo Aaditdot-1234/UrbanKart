@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
 import { CartService } from "../services/cartService";
 import { Users } from "../entities/Users";
+import AppDataSource from "../datasource";
+import { Cart } from "../entities/Cart";
 
 export class CartController {
     static addToCart = asyncHandler(async (req: Request, res: Response) => {
@@ -27,6 +29,17 @@ export class CartController {
         await CartService.deleteCartItem(user.id, +cart_item_id);
         res.status(200).json({ message: "Cart item deleted successfully." });
     });
+
+    static getCartItems = asyncHandler(async (req:Request, res:Response) => {
+        const user = req.user as Users;
+        const cartRepo = AppDataSource.getRepository(Cart);
+        
+        const cartItems = await cartRepo.find({
+            where: {user: user},
+        })
+
+        res.status(200).json({message: "CartItems fetched successfully", cartItems});
+    })
 
     static calculateTotal = asyncHandler(async (req: Request, res: Response) => {
         const user = req.user as Users;

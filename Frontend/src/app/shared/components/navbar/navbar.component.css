@@ -1,15 +1,20 @@
 nav {
     position: fixed;
+    top:0;
     z-index: 10;
     width: 100%;
-    padding: 25px 60px;
     background-color: transparent;
 }
 
 .navbar {
-    height: 65px;
-    background-color: transparent;
-    transition: height 0.3s ease, background-color 0.3s ease
+    height: 80px;
+    background-color: white;
+    transition: height 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0px 5px 6px -6px rgba(0, 0, 0, 0.5);
+}
+
+.top-navbar{
+    padding: 10px 60px;
 }
 
 .navbar-menu {
@@ -20,21 +25,19 @@ nav {
     background-color: white;
 }
 
-.bottom-navbar {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
+.cart{
+    height: 42px;
+    width: 42px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
-.animate-navbar {
-    height: 75px;
-    background-color: white;
+.cart:hover{
+    scale: 1.2;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
-.nav-menu a,
-h2 a {
+a {
     color: var(--text);
     text-decoration: none;
 }
@@ -46,4 +49,36 @@ h2 a {
 .menu:hover {
     scale: 1.2;
     transform: rotate(360deg);
+}
+
+.hide-bottom-navbar {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    padding: 5px 60px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+.hide-bottom-navbar>div{
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+.hide-bottom-navbar div div{
+    padding: 10px;
+}
+
+.show-bottom-navbar{
+    opacity: 1;
+    top: 100%;
+    box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.5);
+}
+
+.hide-bottom-navbar div div:hover{
+    border-bottom: 2px solid black;
+}
+
+.hide-bottom-navbar div div:hover a{
+    font-weight: 600;
 }

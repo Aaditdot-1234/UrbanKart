@@ -44,7 +44,8 @@ export class ProductService {
             productImages: imageUrls
         });
 
-        return await this.productRepo.save(product);
+        const savedProduct = await this.productRepo.save(product);
+        return savedProduct;
     }
 
     static async updateProduct(id: number, data: Partial<Products>) {
@@ -61,7 +62,8 @@ export class ProductService {
         product.subCategories = data.subCategories ?? product.subCategories;
         product.productImages = data.productImages ?? product.productImages;
 
-        return await this.productRepo.save(product);
+        const savedProduct = await this.productRepo.save(product);
+        return savedProduct;
     }
 
     static async deleteProduct(id: number) {
@@ -75,8 +77,10 @@ export class ProductService {
         return await this.productRepo.save(product);
     }
 
-    static async getAllProducts() {
-        return await this.productRepo.find({
+    static async getAllProducts(limit: number, skip: number) {
+        return await this.productRepo.findAndCount({
+            skip: skip,
+            take: limit,
             where: {is_deleted: false}
         });
     }

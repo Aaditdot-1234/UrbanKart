@@ -36,8 +36,10 @@ export class ReviewService {
         }
     }
 
-    static async getReviewsByProduct(productId: number) {
-        const reviews = await this.reviewRepo.find({
+    static async getReviewsByProduct(productId: number, limit: number, skip: number) {
+        const [reviews, total] = await this.reviewRepo.findAndCount({
+            skip: skip,
+            take: limit,
             where: { product: { product_id: productId } },
             relations: ['user']
         });
@@ -46,7 +48,7 @@ export class ReviewService {
             throw new NotFound("No reviews found for this product");
         }
 
-        return reviews;
+        return {reviews, total};
     }
 
     static async deleteReview(reviewId: number, userId: string) {

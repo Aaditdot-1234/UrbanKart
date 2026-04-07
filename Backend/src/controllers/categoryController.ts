@@ -8,10 +8,13 @@ import { NextFunction, Request, Response } from "express";
 
 export class CategoryController {
     static filterProducts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 9;
+        const skip = (page - 1) * limit;
+
         const { name, minPrice, maxPrice, typeId } = req.query as { name?: string, minPrice?: number, maxPrice?: number, typeId?: string };
         const qb = AppDataSource.getRepository(Products).createQueryBuilder("product");
-
-        console.log({ name, minPrice, maxPrice, typeId });
 
         qb.leftJoinAndSelect("product.subCategories", "subCategory")
             .leftJoinAndSelect("subCategory.categories", "category")
@@ -31,27 +34,67 @@ export class CategoryController {
             qb.andWhere("type.type_id LIKE :typeId", { typeId: Number(typeId) })
         }
 
-        const products = await qb.getMany();
+        qb.skip(skip).take(limit);
 
-        res.status(200).json(products);
+        const [products, total] = await qb.getManyAndCount();
+
+        const totalPages = Math.ceil(total / limit);
+
+        res.status(200).json({message: 'Products filtered successfully.', products, meta: {
+            totalItems: total,
+            itemCount: products.length,
+            itemsPerPage: limit,
+            totalPages: totalPages,
+            currentPage: page,
+        }});
     })
 
     static getAllCategories = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 12;
+        const skip = (page - 1) * limit;
+
         const categoryRepo = AppDataSource.getRepository(Categories);
-        const categories = await categoryRepo.find();
-        res.status(200).json(categories);
+        const [categories, total] = await categoryRepo.findAndCount({
+            skip: skip,
+            take: limit,
+        });
+
+        const totalPages = Math.ceil(total / limit);
+        res.status(200).json({message: 'Categories fetched successfully', categories, meta: {
+            totalItems: total,
+            itemCount: categories.length,
+            itemsPerPage: limit,
+            totalPages: totalPages,
+            currentPage: page,
+        }});
     })
 
     static getAllSubCategories = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 9;
+        const skip = (page - 1) * limit;
+
         const subCategoryRepo = AppDataSource.getRepository(SubCategories);
-        const subCategories = await subCategoryRepo.find();
-        res.status(200).json(subCategories);
+        const [subCategories, total] = await subCategoryRepo.findAndCount({
+            skip: skip,
+            take: limit
+        });
+        
+        const totalPages = Math.ceil(total / limit);
+        res.status(200).json({message: 'Subcategories fetched successfully', subCategories, meta: {
+            totalItems: total,
+            itemCount: subCategories.length,
+            itemsPerPage: limit,
+            totalPages: totalPages,
+            currentPage: page,
+        }});
     })
 
     static getAllTypes = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const typeRepo = AppDataSource.getRepository(Types);
         const types = await typeRepo.find();
-        res.status(200).json(types);
+        res.status(200).json({message: 'Types fetched successfully', types});
     })
 
     static getCategoryByProduct = asyncHandler(async (req: Request<{ product_id: string }>, res: Response, next: NextFunction) => {
@@ -61,6 +104,6 @@ export class CategoryController {
             where: { product_id: +product_id },
             relations: ["subCategories", "subCategories.categories", "subCategories.categories.types"]
         });
-        res.status(200).json(product);
+        res.status(200).json({message: 'Category fetched successfully by product', product});
     })
 }   
