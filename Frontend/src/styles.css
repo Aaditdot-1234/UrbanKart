@@ -157,7 +157,7 @@ body {
     font-weight: 600;
 }
 
-.color-lightgrey{
+.color-lightgrey {
     color: lightgrey;
 }
 
@@ -165,13 +165,15 @@ body {
     color: grey;
 }
 
-.success-color{
+.success-color {
     background-color: green;
 }
-.error-color{
+
+.error-color {
     background-color: red;
 }
-.info-color{
+
+.info-color {
     background-color: blue;
 }
 
@@ -255,7 +257,7 @@ input:focus {
     outline: none;
 }
 
-input::placeholder{
+input::placeholder {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 15px;
     font-weight: 500;
@@ -295,17 +297,4 @@ button:hover {
     z-index: 2;
     top: 0;
     left: 0;
-}
-
-
-nav{
-    position: fixed;
-    z-index: 10;
-    width: 100%;
-    padding: 25px 50px;
-    background-color: transparent;
-}
-.nav-menu a, h2 a{
-    color: var(--std-rust-brown-color);
-    text-decoration: none;
 }

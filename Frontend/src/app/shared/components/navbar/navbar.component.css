@@ -1,10 +1,49 @@
-.navbar{
+nav {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    padding: 25px 60px;
+    background-color: transparent;
+}
+
+.navbar {
     height: 65px;
     background-color: transparent;
     transition: height 0.3s ease, background-color 0.3s ease
 }
 
-.animate-navbar{
+.navbar-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+}
+
+.bottom-navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+}
+
+.animate-navbar {
     height: 75px;
     background-color: white;
+}
+
+.nav-menu a,
+h2 a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.menu {
+    transition: all 0.3s ease;
+}
+
+.menu:hover {
+    scale: 1.2;
+    transform: rotate(360deg);
 }

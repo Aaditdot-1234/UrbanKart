@@ -1,45 +1,46 @@
+<app-navbar />
 <router-outlet />
 
 @if (toast.toastState$ | async; as msg) {
-    <div class="global-toast flex-jus-sb flex-al-ce">
-        @if(msg.errorStatus >= 400){
-            <div class="error-color"></div>
-            <div>
-                <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/ff0000/error--v1.png" alt="error--v1"/>
-            </div>
-            <div>
-                <div>
-                    <h1 class="font-20 font-w-500 std-header-font">Error</h1>
-                </div>
-                <div>{{msg.errorMessage}}</div>
-            </div>
-        }
-        @else if(msg.errorStatus === 200 ||  msg.errorStatus == 201){
-            <div class="success-color"></div>
-            <div>
-                <img width="24" height="24" src="https://img.icons8.com/material-rounded/24/00ff00/ok--v1.png" alt="ok--v1"/>
-            </div>
-            <div>
-                <div>
-                    <h1 class="font-20 font-w-500 std-header-font">Success</h1>
-                </div>
-                <div>{{msg.errorMessage}}</div>
-            </div>
-        }
-        @else{
-            <div class="info-color"></div>
-            <div>
-                <img width="24" height="24" src="https://img.icons8.com/ios-glyphs/30/0000ff/info--v1.png" alt="info--v1"/>
-            </div>
-            <div>
-                <div>
-                    <h1 class="font-20 font-w-500 std-header-font">Information</h1>
-                </div>
-                <div>{{msg.errorMessage}}</div>
-            </div>
-        }
-        <div (onclick)="toast.clearToast()">
-            <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/multiply.png" alt="multiply"/>
-        </div>
+<div class="global-toast flex-jus-sb flex-al-ce">
+    @if(msg.errorStatus >= 400){
+    <div class="error-color"></div>
+    <div>
+        <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/ff0000/error--v1.png" alt="error--v1" />
     </div>
+    <div>
+        <div>
+            <h1 class="font-20 font-w-500 std-header-font">Error</h1>
+        </div>
+        <div>{{msg.errorMessage}}</div>
+    </div>
+    }
+    @else if(msg.errorStatus === 200 || msg.errorStatus == 201){
+    <div class="success-color"></div>
+    <div>
+        <img width="24" height="24" src="https://img.icons8.com/material-rounded/24/00ff00/ok--v1.png" alt="ok--v1" />
+    </div>
+    <div>
+        <div>
+            <h1 class="font-20 font-w-500 std-header-font">Success</h1>
+        </div>
+        <div>{{msg.errorMessage}}</div>
+    </div>
+    }
+    @else{
+    <div class="info-color"></div>
+    <div>
+        <img width="24" height="24" src="https://img.icons8.com/ios-glyphs/30/0000ff/info--v1.png" alt="info--v1" />
+    </div>
+    <div>
+        <div>
+            <h1 class="font-20 font-w-500 std-header-font">Information</h1>
+        </div>
+        <div>{{msg.errorMessage}}</div>
+    </div>
+    }
+    <div (onclick)="toast.clearToast()">
+        <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/multiply.png" alt="multiply" />
+    </div>
+</div>
 }

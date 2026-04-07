@@ -1,0 +1,40 @@
+<nav class="flex-jus-ce flex-dir g-20 navbar" [class.animate-navbar]="isScrolled">
+    <div class="relative">
+        <div class="flex-al-ce flex-jus-sb w-100">
+            <div class="menu" (click)="onHover = !onHover">
+                <img width="25" height="25" src="https://img.icons8.com/ios/50/menu--v1.png" alt="menu--v1" />
+            </div>
+            <h2 class="flex-al-ce flex-jus-ce std-header-font">
+                <a routerLink="/">UrbanKart</a>
+            </h2>
+
+            <div>
+                <button>Login</button>
+            </div>
+        </div>
+        @if(onHover){
+        <div class="flex-al-ce flex-jus-fs g-20 w-100" [class.bottom-navbar]="onHover">
+            <div class="flex-al-ce flex-jus-fs g-20 w-100">
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">Home</a>
+                </div>
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">Products</a>
+                </div>
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">Categories</a>
+                </div>
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">News</a>
+                </div>
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">About</a>
+                </div>
+                <div>
+                    <a class="font-20 font-w-500 std-tagline-font">Contact</a>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</nav>
