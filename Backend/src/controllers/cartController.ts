@@ -6,36 +6,40 @@ import AppDataSource from "../datasource";
 import { Cart } from "../entities/Cart";
 
 export class CartController {
-    static addToCart = asyncHandler(async (req: Request, res: Response) => {
+    static addToCart = asyncHandler(async (req: Request<{}, any, {product_id: number, quantity?: number}>, res: Response) => {
         const { product_id, quantity } = req.body;
         const user = req.user as Users;
 
-        await CartService.addToCart(user.id, product_id, quantity);
-        res.status(200).json({ message: "Product added to cart successfully." });
+        const activeCart = await CartService.addToCart(user.id, product_id, quantity);
+        res.status(200).json({ message: "Product added to cart successfully.", activeCart });
     });
 
     static updateCartItem = asyncHandler(async (req: Request<{}, any, { cart_item_id: number, quantity: number }>, res: Response) => {
         const { cart_item_id, quantity } = req.body;
         const user = req.user as Users;
 
-        await CartService.updateCartItem(user.id, +cart_item_id, quantity);
-        res.status(200).json({ message: "Cart item updated successfully." });
+        const activeCart = await CartService.updateCartItem(user.id, +cart_item_id, quantity);
+        res.status(200).json({ message: "Cart item updated successfully.", activeCart });
     });
 
     static deleteCartItem = asyncHandler(async (req: Request, res: Response) => {
-        const { cart_item_id } = req.body;
+        const { cart_item_id } = req.params;
         const user = req.user as Users;
 
-        await CartService.deleteCartItem(user.id, +cart_item_id);
-        res.status(200).json({ message: "Cart item deleted successfully." });
+        const activeCart = await CartService.deleteCartItem(user.id, +cart_item_id);
+        res.status(200).json({ message: "Cart item deleted successfully.", activeCart });
     });
 
-    static getCartItems = asyncHandler(async (req:Request, res:Response) => {
+    static getActiveCart = asyncHandler(async (req:Request, res:Response) => {
         const user = req.user as Users;
         const cartRepo = AppDataSource.getRepository(Cart);
         
-        const cartItems = await cartRepo.find({
-            where: {user: user},
+        const cartItems = await cartRepo.findOne({
+            where: {
+                user: {id: user.id},
+                is_active: true,
+            },
+            relations: ['cartItems']
         })
 
         res.status(200).json({message: "CartItems fetched successfully", cartItems});

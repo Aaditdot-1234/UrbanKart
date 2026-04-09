@@ -19,6 +19,23 @@ export class CategoryController {
         qb.leftJoinAndSelect("product.subCategories", "subCategory")
             .leftJoinAndSelect("subCategory.categories", "category")
             .leftJoinAndSelect("category.types", "type")
+            .select([
+                'product.product_id',
+                'product.product_name',
+                'product.product_description',
+                'product.product_price',
+                'product.manufacturing_date',
+                'product.expiry_date',
+                'product.stock',
+                'subCategory.subcategory_id',
+                'subCategory.subcategory_name',
+                'subCategory.subcategory_description',
+                'category.category_id',
+                'category.category_name',
+                'category.category_description',
+                'type.type_id',
+                'type.type_name',
+            ])
             .where("product.is_deleted = :is_deleted", { is_deleted: false })
 
         if (name) {
@@ -100,10 +117,26 @@ export class CategoryController {
     static getCategoryByProduct = asyncHandler(async (req: Request<{ product_id: string }>, res: Response, next: NextFunction) => {
         const { product_id } = req.params;
         const productRepo = AppDataSource.getRepository(Products);
-        const product = await productRepo.findOne({
-            where: { product_id: +product_id },
-            relations: ["subCategories", "subCategories.categories", "subCategories.categories.types"]
-        });
+
+        const product = await AppDataSource.getRepository(Products).createQueryBuilder('products')
+            .leftJoinAndSelect('products.subCategories', 'sub')
+            .leftJoinAndSelect('sub.categories', 'cat')
+            .leftJoinAndSelect('cat.types', 'types')
+            .select([
+                'products.product_id',
+                'products.product_name',
+                'sub.subcategory_id',
+                'sub.subcategory_name',
+                'sub.subcategory_description',
+                'cat.category_id',
+                'cat.category_name',
+                'cat.category_description',
+                'types.type_id',
+                'types.type_name',
+            ])
+            .where('products.product_id = :id', {id: product_id})
+            .getOne();
+
         res.status(200).json({message: 'Category fetched successfully by product', product});
     })
 }   

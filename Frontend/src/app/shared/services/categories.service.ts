@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CategoriesByProduct, ExtendedProductWithSubCategories, GetCategories, GetSubCategories, GetTypes } from '../../models/category';
+import { CategoriesByProduct, CategoryByProduct, ExtendedProductWithSubCategories, GetCategories, GetSubCategories, GetTypes } from '../../models/category';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,12 @@ export class CategoriesService {
     return this.http.get<GetTypes>(`${this.apiUrl}/get-all-types`);
   }
 
-  getAllCategories(){
-    return this.http.get<GetCategories>(`${this.apiUrl}/get-all`);
+  getAllCategories(page:number, limit: number){
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<GetCategories>(`${this.apiUrl}/get-all`, {params});
   }
 
   getAllSubCategories(){
@@ -23,7 +27,7 @@ export class CategoriesService {
   }
   
   getCategoriesByProduct(productId: number){
-    return this.http.get<ExtendedProductWithSubCategories>(`${this.apiUrl}/get-by-product/${productId}`);
+    return this.http.get<CategoryByProduct>(`${this.apiUrl}/get-by-product/${productId}`);
   }
 
   filterProducts(){

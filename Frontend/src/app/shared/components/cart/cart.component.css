@@ -1,0 +1,66 @@
+.cart{
+    width: 100%;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+.close-cart{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-cart:hover{
+    scale: 1.2;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.cart-product{
+    height: 180px;
+}
+
+.cart-product>.product-image{
+    height: 150px;
+}
+
+.cart-item-wrapper{
+    --img-height: 180px;
+    width: 225px;
+}
+
+.update-cart .circle {
+    background-color: lightgrey;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.update-cart>div:first-child{
+    background-color: rgb(230, 230, 230);
+    padding: 8px;
+    border-radius: 16px;
+}
+
+.cart-Items{
+    height: 600px;
+}
+
+.cart-item{
+    height: 150px;
+    padding: 20px;
+}
+.cart-item > div:nth-child(2){
+    width: 55%;
+}
+.cart-item > div:last-child{
+    width: 25%;
+}
+
+.bg-img{
+    height: 100%;
+    width: 20%;
+    border-radius: 10px;
+    background-image: url('/hero2.jpg');
+}

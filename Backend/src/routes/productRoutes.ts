@@ -8,6 +8,6 @@ productRouter.post('/create', requireAuth, requireAdmin, ProductController.creat
 productRouter.patch('/update/:id', requireAuth, requireAdmin, ProductController.updateProduct);
 productRouter.delete('/delete/:id', requireAuth, requireAdmin, ProductController.deleteProduct);
 productRouter.get('/get-all', ProductController.getAllProducts);
-productRouter.get('/get-by-id/:id', requireAuth, ProductController.getProductById);
+productRouter.get('/get-by-id/:id', ProductController.getProductById);
 
 export default productRouter;

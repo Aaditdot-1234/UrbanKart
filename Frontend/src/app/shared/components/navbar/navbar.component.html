@@ -12,9 +12,9 @@
                 <a href="/auth/login">
                     <button>Login</button>
                 </a>
-                <a class="cart flex-jus-ce flex-al-ce relative">
+                <div (click)="onCartClick()" class="cart flex-jus-ce flex-al-ce relative">
                     <img width="25" height="25" src="https://img.icons8.com/ios/50/shopping-cart--v1.png" alt="shopping-cart--v1"/>
-                </a>
+                </div>
             </div>
         </div>
         <div class="hide-bottom-navbar flex-al-ce flex-jus-fs g-20 w-100" [class.show-bottom-navbar]="onHover">

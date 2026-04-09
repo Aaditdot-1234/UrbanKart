@@ -4,36 +4,57 @@ import { CategoriesService } from '../../shared/services/categories.service';
 import { Subject, takeUntil } from 'rxjs';
 import { RouterLink } from "@angular/router";
 import { FooterComponent } from "../../shared/components/footer/footer.component";
-import { Meta } from '../../models/auth';
+import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 
 @Component({
   selector: 'app-categories',
-  imports: [RouterLink, FooterComponent],
+  imports: [RouterLink, FooterComponent, PaginationComponent],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>(); 
+  private destroy$ = new Subject<void>();
+  currentPage:number = 1;
+  pageSize: number = 12;
   Categories!: Categories[];
-  meta!: Meta;
-
-  constructor(private categoryService: CategoriesService){}
+  totalPages: number[] = [];
+  totalItems:number = 0
+  
+  constructor(private categoryService: CategoriesService) { }
 
   ngOnInit(): void {
-    this.categoryService.getAllCategories().pipe(
+    this.fetchData();
+  }
+
+  fetchData(page: number = this.currentPage) {
+    this.categoryService.getAllCategories(page, this.pageSize).pipe(
       takeUntil(this.destroy$),
     ).subscribe({
       next: (res) => {
-        console.log(res.message);
-        console.log(res.categories);
         this.Categories = res.categories;
-        this.meta = res.meta;
-      }, 
+        this.currentPage = res.meta.currentPage;
+        this.totalItems = res.meta.totalItems;
+
+        // for (let i = 0; i < res.meta.totalPages; i++) {
+        //   this.totalPages.push(i);
+        // }
+
+        this.totalPages = Array.from(
+          {length: res.meta.totalPages},
+          (_, i) => i+1
+        );
+      },
       error: (err) => {
         console.error(err);
       }
     })
-    console.log(this.Categories);
+
+  }
+
+  handlePageChange(page: number) {
+    if(page !== this.currentPage){
+      this.fetchData(page);
+    }
   }
 
   ngOnDestroy(): void {

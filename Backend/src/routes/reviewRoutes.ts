@@ -8,4 +8,3 @@ reviewRouter.get('/get-all/:productId', ReviewController.getReviews);
 reviewRouter.delete('/delete/:reviewId', ReviewController.deleteReview);
 
 export default reviewRouter;
-

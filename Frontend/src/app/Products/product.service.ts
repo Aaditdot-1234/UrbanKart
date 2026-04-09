@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CreateProduct, CreateProductRes, GetProducts, Product } from '../models/product';
 
@@ -10,8 +10,12 @@ export class ProductService {
   
   constructor(private http: HttpClient) { }
 
-  getAllProducts(){
-    return this.http.get<GetProducts>(`${this.apiUrl}/get-all`);
+  getAllProducts(page: number, limit: number){
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+
+    return this.http.get<GetProducts>(`${this.apiUrl}/get-all`, {params});
   }
 
   getProductById(productId:number){

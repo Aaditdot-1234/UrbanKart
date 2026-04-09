@@ -5,7 +5,7 @@
         <h2 class="font-w-400 std-header-font color-lighgrey">Categories</h2>
     </div>
     <h1 class="font-40 font-w-600 std-header-font mgb-40">Categories</h1>
-    <div class="flex-al-ce flex-jus-fs flex-wrap g-20">
+    <div class="flex-al-ce flex-jus-fs flex-wrap g-20 mgb-40">
         @for (category of Categories; track $index) {
             <div class="item">
                 <div class="overlay flex-jus-sb">
@@ -24,8 +24,6 @@
             </div>
         }
     </div>
-    <div class="pagination">
-        
-    </div>
+    <app-pagination [totalPages]="totalPages" [currentPage]="currentPage" (pageChange)="handlePageChange($event)"></app-pagination>
 </div>
 <app-footer></app-footer>

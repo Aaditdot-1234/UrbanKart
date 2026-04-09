@@ -1,0 +1,7 @@
+<div class="pagination w-100 flex-jus-ce flex-al-ce g-20">
+    @for (page of totalPages; track $index) {
+    <div class="circle flex-jus-ce flex-al-ce" (click)="handlePageChange(page)" [class.active]="currentPage === page">
+        <h1 class="font-w-500 std-header-font" [class.active]="currentPage === page">{{page}}</h1>
+    </div>
+    }
+</div>

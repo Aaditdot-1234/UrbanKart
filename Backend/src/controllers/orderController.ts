@@ -14,8 +14,8 @@ export interface CreateOrder{
 export class OrderController {
     static createOrder = asyncHandler(async (req: Request<{}, any, CreateOrder>, res: Response) => {
         const loggedInUserInfo = req.user as Users;
-        await OrderService.createOrder(loggedInUserInfo.id, req.body);
-        res.status(200).json({ message: "Order created successfully." });
+        const order = await OrderService.createOrder(loggedInUserInfo.id, req.body);
+        res.status(200).json({ message: "Order created successfully.", order });
     });
 
     static getAllOrders = asyncHandler(async (req: Request, res: Response) => {

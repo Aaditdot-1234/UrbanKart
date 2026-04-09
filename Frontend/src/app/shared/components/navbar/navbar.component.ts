@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,6 +11,8 @@ import { RouterLink } from "@angular/router";
 export class NavbarComponent {
   onHover: boolean = false;
   isScrolled: boolean = false;
+
+  constructor(private cart: CartService){}
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -25,5 +28,9 @@ export class NavbarComponent {
   @HostListener('window:mouseleave', [])
   onMouseLeave() {
     this.onHover = false;
+  }
+
+  onCartClick(){
+    this.cart.toggleCardVisibility();
   }
 }

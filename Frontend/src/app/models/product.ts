@@ -1,3 +1,5 @@
+import { Meta } from "./auth";
+
 export interface Product {
     product_id: number;
     product_name: string;
@@ -28,4 +30,5 @@ export interface CreateProductRes{
 export interface GetProducts{
     message: string,
     products: Product[],
+    meta: Meta;
 }

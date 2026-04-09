@@ -1,0 +1,26 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { CreateReviews, GetReviews } from '../../models/reviews';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ReviewService {
+  private apiUrl = 'http://localhost:3000/review';
+  
+  constructor(private http: HttpClient) { }
+
+  addreview(productId: number, comment:string, rating: number){
+    return this.http.post<CreateReviews>(`${this.apiUrl}/create/${productId}`, {comment, rating});
+  }
+  getAllReviews(productId: number, page: number, limit: number ){
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+
+    return this.http.get<GetReviews>(`${this.apiUrl}/create/${productId}`, {params});
+  }
+  deleteReview(reviewId: number){
+    return this.http.delete<Omit<CreateReviews, 'review'>>(`${this.apiUrl}/create/${reviewId}`);
+  }
+}

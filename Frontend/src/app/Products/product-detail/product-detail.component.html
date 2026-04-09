@@ -1,0 +1,71 @@
+<div class="product-details">
+    <div>
+        <div class="navigation p-20 mgb-40">
+            <h1 class="std-header-font font-w-500">Home</h1>
+        </div>
+        <div class="product-info flex-jus-sb g-40 mgb-40">
+            <div class="product-images">
+                <div class="img-container mgb-20"></div>
+                <div class="flex-jus-fs flex-al-ce g-20">
+                    <div class="img-container extra-images"></div>
+                    <div class="img-container extra-images"></div>
+                    <div class="img-container extra-images"></div>
+                </div>
+            </div>
+            <div>
+                <div class="mgb-20">
+                    <h1 class="font-50 std-header-font font-w-500">{{productInfo.product_name}}</h1>
+                </div>
+                <div class="mgb-20">
+                    <h1 class="std-header-font font-w-500">{{type_name}} > {{category_name}} > {{subcategory_name}}</h1>
+                </div>
+                <div class="mgb-20">
+                    <h2 class="std-tagline-font font-w-500 color-grey">PRICE</h2>
+                    <div class="flex-jus-fs flex-al-ce g-40">
+                        <h3 class="font-40 font-w-500 std-header-font">${{productInfo.product_price}} USD</h3>
+                        <div class="sale-tag flex-jus-ce flex-al-ce">
+                            <h2 class=" font-w-600 std-tagline-font">SALE</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="mgb-20">
+                    <h3 class="std-tagline-font" style="color: green;">Tax included</h3>
+                </div>
+                <div class="mgb-20">
+                    <p class="std-tagline-font font-w-500 color-grey">{{productInfo.product_description}} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloremque, vitae? Eveniet alias vero animi fugiat optio vitae cupiditate doloremque magnam corrupti temporibus. Eos incidunt atque exercitationem quisquam dolorum culpa quia.</p>
+                </div>
+                <div class="flex-jus-fs flex-al-ce g-20 update-cart mgb-20">
+                    <div class="flex-jus-sb flex-al-ce g-10">
+                        <div class="circle">
+                            <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">-</h1>
+                        </div>
+                        <h3 class="std-tagline-font font-w-500">1</h3>
+                        <div class="circle">
+                            <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">+</h1>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="bg-gold" (click)="handleAddToCart()">Add to cart</button>
+                    </div>
+                </div>
+                <div>
+                    <button>Buy with Gpay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hurry-up">
+        <h1 class="font-50 std-header-font font-w-500">Hurry Up!</h1>
+        <p class="std-tagline-font font-w-500">Make sure you order before the offer closes. Hurry up! offer is ending soon.</p>
+    </div>
+    <div>
+        <h1 class="font-50 std-header-font font-w-500 mgb-20">You may also like</h1>
+        <div class="flex-jus-fs flex-al-ce g-20">
+            <app-product-card class="product-card"></app-product-card>
+            <app-product-card class="product-card"></app-product-card>
+            <app-product-card class="product-card"></app-product-card>
+            <app-product-card class="product-card"></app-product-card>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

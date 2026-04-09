@@ -5,7 +5,7 @@ const addressRoutes = Router();
 
 addressRoutes.post('/add', AddressController.addAddress);
 addressRoutes.get('/get-all', AddressController.getAllAddresses);
-addressRoutes.patch('/update', AddressController.updateAddress);
+addressRoutes.patch('/update/:addressId', AddressController.updateAddress);
 addressRoutes.delete('/delete/:addressId', AddressController.deleteAddress);
 
 export default addressRoutes;

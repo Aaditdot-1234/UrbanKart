@@ -1,1 +1,79 @@
-<p>cart works!</p>
+<div class="cart">
+    <div class="flex-ju-sb flex-al-ce mgb-20">
+        <div class="w-100">
+            <h1 class="font-40 std-header-font">Shopping cart</h1>
+        </div>
+        <div class="close-cart flex-jus-ce flex-al-ce" (click)="cart.toggleCardVisibility()">
+            <img width="30" height="30" src="https://img.icons8.com/ios/50/multiply.png" alt="multiply"/>
+        </div>
+    </div>
+
+    <div class="cart-Items">
+        @if(cart.cart$ | async; as activeCart){
+            @if(activeCart.cartItems.length > 0) {
+                @for (item of activeCart.cartItems; track $index) {
+                <div class="flex-jus-sb g-10 cart-item">
+                    <div class="img-container bg-img"></div>
+                    <div class="flex-dir flex-jus-sb">
+                        <div>
+                            <h1 class="font-w-500 std-header-font">{{item.product.product_name}}</h1>
+                        </div>
+                        <div class="update-cart flex-jus-sb">
+                            <div class="flex-jus-sb flex-al-ce g-10">
+                                <div class="circle">
+                                    <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">-</h1>
+                                </div>
+                                <h3 class="std-tagline-font font-w-500">1</h3>
+                                <div class="circle">
+                                    <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">+</h1>
+                                </div>
+                            </div>
+                            <div class="close-cart flex-jus-ce flex-al-ce" (click)="removeCartItem(item.cart_item_id)">
+                                <img width="30" height="30" src="https://img.icons8.com/ios/50/multiply.png" alt="multiply"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="std-header-font font-w-600">${{item.quantity * item.product.product_price}} USD</h2>
+                    </div>
+                </div>
+            }
+            <div class="discount">
+                <div>
+                    <h2 class="font-w-500 std-tagline-font">Subtotal</h2>
+                </div>
+                <div>
+                    <h2 class="font-w-600 std-header-font">${{subTotal}} USD</h2>
+                </div>
+            </div>
+            <div>
+                <button class="bg-gold">Checkout</button>
+            </div>
+            }
+            } @else {
+            <div class="empty-state flex-al-ce flex-dir g-20 mgb-20">
+                <div>
+                    <h1 class="font-50 std-header-font color-lightgrey">:&lpar;</h1>
+                </div>
+                <div>
+                    <h1 class="font-40 font-w-500 std-header-font">Your cart is empty</h1>
+                </div>
+            </div>
+            <div class="flex-jus-ce flex-al-ce">
+                <h2 class="std-header-font font-w-500 mgb-20" style="text-decoration: underline;">Continue shopping</h2>
+            </div>
+            <div class="flex-jus-ce flex-al-ce g-40">
+                @for (product of products; track $index) {
+                    <div class="cart-item-wrapper">
+                        <app-product-card [productInfo]="product" class="cart-product"></app-product-card>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @if((cart.cart$ | async)?.cartItems?.length) {
+    }@else {
+        
+    }
+</div>

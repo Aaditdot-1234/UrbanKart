@@ -9,4 +9,8 @@ export const PRODUCTROUTES:Routes = [
         path:'categories',
         loadComponent:() => import('./categories/categories.component').then(m => m.CategoriesComponent)
     },
+    {
+        path:'productDetail/:productId',
+        loadComponent:() => import('./product-detail/product-detail.component').then(m => m.ProductDetailComponent)
+    },
 ]

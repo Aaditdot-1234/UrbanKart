@@ -1,6 +1,15 @@
 <app-navbar />
 <router-outlet />
 
+@if(cart.cartVisible$ | async){
+    <div class="cart-overlay" [class.closing]="cart.isClosing$ | async" (click)="cart.toggleCardVisibility()"></div>
+    
+    <div class="cart-drawer" [class.closing]="cart.isClosing$ | async">
+        <app-cart></app-cart>
+    </div>
+}
+
+
 @if (toast.toastState$ | async; as msg) {
 <div class="global-toast flex-jus-sb flex-al-ce">
     @if(msg.errorStatus >= 400){
@@ -39,7 +48,7 @@
         <div>{{msg.errorMessage}}</div>
     </div>
     }
-    <div (onclick)="toast.clearToast()">
+    <div (click)="toast.clearToast()">
         <img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/multiply.png" alt="multiply" />
     </div>
 </div>

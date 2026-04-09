@@ -1,0 +1,21 @@
+.pagination .circle{
+    height: 40px;
+    width: 40px;
+    border: 1px solid black;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.pagination .circle:hover{
+    scale: 1.2;
+    background-color: black;
+}
+
+.pagination .circle:hover h1{
+    color: white;
+}
+
+.active{
+    background-color: black;
+    color: white;
+}

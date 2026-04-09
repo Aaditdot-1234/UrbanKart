@@ -16,7 +16,22 @@ export class PaymentService {
         if (payment.order.user.id !== userId) {
             throw new UnauthorisedError('You are not authorized to access this payment');
         }
-        return payment;
+        return await AppDataSource.getRepository(Payments).createQueryBuilder('payments')
+            .leftJoinAndSelect('payments.order','order')
+            .select([
+                'payments.payment_id',
+                'payments.amount_paid',
+                'payments.payment_date',
+                'payments.payment_method',
+                'payments.payment_status',
+                'payments.createdAt',
+                'payments.updatedAt',
+                'order.order_id',
+                'order.totalAmount',
+                'order.status'
+            ])
+            .where('payments.payment_id = :id', {id: payment.payment_id})
+            .getOne();
     }
 
     static async getPaymentsByUser(userId: string, limit: number, skip:number) {

@@ -43,7 +43,7 @@ export class AuthService {
     )
   }
 
-  forgotpassword(email: string, otp:string, password: string) {
+  forgotpassword(email: string, otp: string, password: string) {
     return this.http.patch<RegisterResponse>(this.apiUrl + '/forgot-password', { email, otp, password }).pipe(
       tap((response) => {
         this.currentUser$.next(response.user);
@@ -59,8 +59,8 @@ export class AuthService {
     return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
 
-  getOTP(email:string){
-    return this.http.patch<OTPResponse>(`${this.apiUrl}/getOTP`, {email});
+  getOTP(email: string) {
+    return this.http.patch<OTPResponse>(`${this.apiUrl}/getOTP`, { email });
   }
 
   updateUserInfo(updatedDetails: Partial<User>) {
@@ -73,5 +73,10 @@ export class AuthService {
 
   isAdmin() {
     return this.currentUser$.value?.role === 'admin';
+  }
+
+  isLoggedIn() {
+    const hasToken = !!localStorage.getItem('access_token');
+    return !!this.currentUser$.value || hasToken;
   }
 }

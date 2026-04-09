@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Login } from '../../models/auth';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { FooterComponent } from "../../shared/components/footer/footer.component";
+import { CartService } from '../../shared/services/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private auth:AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private auth:AuthService, private router: Router, private cart: CartService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -25,10 +26,14 @@ export class LoginComponent implements OnDestroy {
 
   handleLogin(){
     this.auth.login(this.loginForm.value as Login).pipe(
+      switchMap((loginRes) => {
+        console.log(loginRes.message);
+        return this.cart.getActiveCart();
+      }),
       takeUntil(this.destroy$)      
     ).subscribe({
       next: (response) => {
-        console.log(response.message);
+        console.log('Cart Loaded',response.message);
         this.router.navigate(['/home']);
       },
       error: (err) => {
@@ -36,11 +41,7 @@ export class LoginComponent implements OnDestroy {
       }
     })
   }
-
-  forgotPassword(){
-    
-  }
-
+  
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

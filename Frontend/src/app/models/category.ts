@@ -45,7 +45,7 @@ export interface ExtendedCategoriesWithTypes extends Categories{
     types: Types;
 }
 
-export interface ExtendedSubCategoriesWithCategories extends Categories{
+export interface ExtendedSubCategoriesWithCategories extends SubCategories{
     categories: ExtendedCategoriesWithTypes;
 }
 
@@ -57,4 +57,9 @@ export interface CategoriesByProduct{
     message: string,
     product: ExtendedProductWithSubCategories[];
     meta: Meta,
+}
+
+export interface CategoryByProduct{
+    message: string,
+    product: ExtendedProductWithSubCategories;
 }

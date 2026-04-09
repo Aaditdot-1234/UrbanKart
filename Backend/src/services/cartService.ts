@@ -6,22 +6,26 @@ import { Users } from "../entities/Users";
 import { NotFound } from "../errors/appError";
 
 export class CartService {
-    static async addToCart(userId: string, productId: number, quantity: number) {
+    static async addToCart(userId: string, productId: number, quantity: number = 1) {
         const queryRunner = AppDataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
         try {
-            const user = await queryRunner.manager.findOne(Users, {
-                where: { id: userId },
-                relations: ['carts', 'carts.cartItems', 'carts.cartItems.product']
+            let activeCart = await queryRunner.manager.findOne(Cart, {
+                where: {
+                    user : { id: userId },
+                    is_active: true
+                },
+                relations: ['cartItems', 'cartItems.product']
             });
 
-            if (!user) throw new NotFound("User not found");
-
-            let activeCart = user.carts?.find(cart => cart.is_active);
-
             if (!activeCart) {
+                let user = await queryRunner.manager.findOne(Users,{
+                    where: {id: userId}
+                })
+                if(!user) throw new NotFound('User not found');
+
                 activeCart = queryRunner.manager.create(Cart, {
                     user,
                     is_active: true,
@@ -48,7 +52,7 @@ export class CartService {
 
             await queryRunner.manager.save(cartItem);
             await queryRunner.commitTransaction();
-            return activeCart;
+            return await this.getActiveCartWithRelations(userId);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error;
@@ -59,7 +63,7 @@ export class CartService {
 
     static async updateCartItem(userId: string, cartItemId: number, quantity: number) {
         const cartItemRepo = AppDataSource.getRepository(CartItems);
-        
+
         const item = await cartItemRepo.findOne({
             where: { cart_item_id: cartItemId, cart: { user: { id: userId }, is_active: true } }
         });
@@ -67,7 +71,9 @@ export class CartService {
         if (!item) throw new NotFound("Cart item not found");
 
         item.quantity = quantity;
-        return await cartItemRepo.save(item);
+        await cartItemRepo.save(item);
+
+        return await this.getActiveCartWithRelations(userId);
     }
 
     static async deleteCartItem(userId: string, cartItemId: number) {
@@ -77,21 +83,41 @@ export class CartService {
         });
 
         if (!item) throw new NotFound("Cart item not found");
-        return await cartItemRepo.remove(item);
+        await cartItemRepo.remove(item);
+
+        return await this.getActiveCartWithRelations(userId);
     }
 
     static async calculateTotal(userId: string) {
-        const user = await AppDataSource.getRepository(Users).findOne({
-            where: { id: userId },
-            relations: ['carts', 'carts.cartItems', 'carts.cartItems.product']
+        const activeCart = await AppDataSource.getRepository(Cart).findOne({
+            where: {
+                user: { id: userId },
+                is_active: true
+            },
+            relations: ['cartItems', 'cartItems.product']
         });
 
-        if (!user) throw new NotFound("User not found");
-        const activeCart = user.carts?.find(cart => cart.is_active);
         if (!activeCart) throw new NotFound("Cart not found");
 
         return activeCart.cartItems.reduce((acc, item) => {
-            return acc + (item.product.product_price * item.quantity);
+            const price = item.product.product_price || 0;
+            const quantity = item.quantity || 0;
+            return acc + (price * quantity);
         }, 0);
+    }
+
+    private static async getActiveCartWithRelations(userId: string) {
+        const cartRepo = AppDataSource.getRepository(Cart);
+
+        return await cartRepo.findOne({
+            where: {
+                user: { id: userId },
+                is_active: true
+            },
+            relations: [
+                'cartItems',
+                'cartItems.product'
+            ]
+        })
     }
 }

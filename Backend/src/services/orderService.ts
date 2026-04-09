@@ -15,7 +15,7 @@ export class OrderService {
         const { addressId, payment_method, payment_status } = body;
         const queryRunner = AppDataSource.createQueryRunner();
         await queryRunner.connect();
-        await queryRunner.startTransaction();
+        await queryRunner.startTransaction()
 
         try {
             const user = await queryRunner.manager.findOne(Users, {
@@ -74,9 +74,28 @@ export class OrderService {
             await queryRunner.manager.save(payment);
             await queryRunner.commitTransaction();
 
-            return order;
+            return await AppDataSource.getRepository(Orders).createQueryBuilder('orders')
+                .leftJoinAndSelect('orders.orderProducts', 'items')
+                .leftJoinAndSelect('items.product', 'product')
+                .leftJoinAndSelect('orders.address', 'address')
+                .select([
+                    'orders.order_id',
+                    'orders.totalAmount',
+                    'orders.status',
+                    'orders.createdAt',
+                    'orders.updatedAt',
+                    'items.quantity',
+                    'items.price',
+                    'product.product_name',
+                    'address.address'
+                ])
+                .where('orders.order_id = :id', { id: order.order_id })
+                .getOne();
+
         } catch (error) {
-            await queryRunner.rollbackTransaction();
+            if (queryRunner.isTransactionActive) {
+                await queryRunner.rollbackTransaction();
+            }
             throw error;
         } finally {
             await queryRunner.release();
@@ -114,26 +133,27 @@ export class OrderService {
 
     static async filterByStatus(userId: string, status: OrderStatus, limit: number, skip: number) {
         const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
-        return qb    
+        return qb
             .where('orders.user_id = :userId', { userId })
             .andWhere('orders.status = :status', { status })
-            .orderBy('orders.createdAt','DESC')
+            .orderBy('orders.createdAt', 'DESC')
             .skip(skip)
             .take(limit)
             .getManyAndCount();
     }
 
-    static async filterByCategory(userId: string, category: string, limit:number, skip: number) {
+    static async filterByCategory(userId: string, category: string, limit: number, skip: number) {
         const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
-        return qb    
-            .leftJoinAndSelect('orders.orderProducts', 'orderProducts')
-            .leftJoinAndSelect('orderProducts.product', 'product')
-            .leftJoinAndSelect('product.subCategories', 'subCategory')
-            .leftJoinAndSelect('subCategory.categories', 'category')
-            .leftJoinAndSelect('category.types', 'type')
+        return qb
+            .leftJoin('orders.orderProducts', 'orderProducts')
+            .leftJoin('orderProducts.product', 'product')
+            .leftJoin('product.subCategories', 'subCategory')
+            .leftJoin('subCategory.categories', 'category')
+            .leftJoin('category.types', 'type')
+            .select(['orders.order_id', 'orders.totalAmount', 'orders.status', 'orders.createdAt', 'orders.updatedAt'])
             .where('orders.user_id = :userId', { userId })
             .andWhere('category.category_name LIKE :cat OR subCategory.subcategory_name LIKE :cat OR type.type_name LIKE :cat', { cat: `%${category}%` })
-            .orderBy('orders.createdAt','DESC')
+            .orderBy('orders.createdAt', 'DESC')
             .skip(skip)
             .take(limit)
             .getManyAndCount();

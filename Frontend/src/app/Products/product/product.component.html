@@ -1,8 +1,64 @@
-<div class="flex-al-ce flex-jus-ce flex-wrap pt-80">
-    @for (product of products; track $index) {
-        <div>
-            <h1>{{product.product_name}}</h1>
-            <h2>{{product.product_price}}</h2>
+<div class="mgb-40">
+    <div class="product-page flex-al-fs flex-jus-fs pt-80 g-20">
+        <div class="filter-side-bar flex-dir flex-al-bs flex-jus-fs">
+
+            <div class="filter-section">
+                <label class="font-w-500 std-tagline-font">Sort By</label>
+                <div class="flex-jus-fs filter">
+                    <h2 class="font-w-500 std-header-font">Order</h2>
+                    <select name="sort" id="sort-select">
+                        <option value="best-selling">Best Selling</option>
+                        <option value="price-low-high">Price: Low to High</option>
+                        <option value="price-high-low">Price: High to Low</option>
+                        <option value="newest">Newest Arrivals</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section mgt-20">
+                <label class="font-w-500 std-tagline-font">Availability</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-container font-w-500 std-tagline-font">
+                        <input type="checkbox" name="in-stock">
+                        <span class="checkmark"></span> In Stock
+                    </label>
+                    <label class="checkbox-container font-w-500 std-tagline-font">
+                        <input type="checkbox" name="out-stock">
+                        <span class="checkmark"></span> Out of Stock
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section mgt-20">
+                <label class="font-w-500 std-header-font">Price Range</label>
+                <div class="price-inputs flex-al-ce">
+                    <input type="number" placeholder="Min" class="price-field">
+                    <span>-</span>
+                    <input type="number" placeholder="Max" class="price-field">
+                </div>
+            </div>
+
+            <div class="filter-section mgt-20">
+                <label class="font-w-500 std-header-font">Subcategories</label>
+                <div class="checkbox-group scrollable-list">
+                    <label class="checkbox-container font-w-500 std-tagline-font">
+                        <input type="checkbox"> <span class="checkmark"></span> Electronics
+                    </label>
+                    <label class="checkbox-container font-w-500 std-tagline-font">
+                        <input type="checkbox"> <span class="checkmark"></span> Fashion
+                    </label>
+                    <label class="checkbox-container font-w-500 std-tagline-font">
+                        <input type="checkbox"> <span class="checkmark"></span> Home Decor
+                    </label>
+                </div>
+            </div>
         </div>
-    }
+        <div class="product-container flex-al-fs flex-jus-fs flex-wrap g-20">
+            @for (product of products; track $index) {
+            <app-product-card [productInfo]="product" class="product-card"></app-product-card>
+            }
+        </div>
+    </div>
+    <app-pagination [totalPages]="totalPages" [currentPage]="currentPage" (pageChange)="handlePageChange($event)"></app-pagination>
 </div>
+<app-footer></app-footer>
