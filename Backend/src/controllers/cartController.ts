@@ -34,15 +34,15 @@ export class CartController {
         const user = req.user as Users;
         const cartRepo = AppDataSource.getRepository(Cart);
         
-        const cartItems = await cartRepo.findOne({
+        const activeCart = await cartRepo.findOne({
             where: {
                 user: {id: user.id},
                 is_active: true,
             },
-            relations: ['cartItems']
+            relations: ['cartItems', 'cartItems.product']
         })
 
-        res.status(200).json({message: "CartItems fetched successfully", cartItems});
+        res.status(200).json({message: "CartItems fetched successfully", activeCart});
     })
 
     static calculateTotal = asyncHandler(async (req: Request, res: Response) => {

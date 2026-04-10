@@ -49,24 +49,13 @@ export class CartComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(activeCart => {
       if (activeCart && activeCart.cartItems && activeCart.cartItems.length > 0) {
-        this.fetchTotal();
+        this.subTotal = activeCart.cartItems.reduce((acc, res) => {
+          return acc + (res.quantity * res.product.product_price)
+        }, 0)
       } else {
         this.subTotal = 0;
       }
     });
-  }
-
-  fetchTotal() {
-    this.cart.calculateTotal().pipe(
-      takeUntil(this.destroy$),
-    ).subscribe({
-      next: (res) => {
-        this.subTotal = res.total;
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    })
   }
 
   removeCartItem(itemId: number){

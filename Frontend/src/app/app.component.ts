@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   constructor(public toast: ToastService, public cart: CartService, private auth: AuthService) { }
 
   ngOnInit(): void {
+    console.log(this.auth.isLoggedIn());
     if(this.auth.isLoggedIn()){
       this.cart.getActiveCart().subscribe();
     }
