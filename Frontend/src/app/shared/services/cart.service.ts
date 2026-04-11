@@ -34,8 +34,8 @@ export class CartService {
       )
     );
   }
-  updateCart(cartItemId: number, quantity: number){
-    return this.http.patch<GetCart>(`${this.apiUrl}/update`, {cartItemId, quantity}).pipe(
+  updateCart(cart_item_id: number, quantity: number){
+    return this.http.patch<GetCart>(`${this.apiUrl}/update`, {cart_item_id, quantity}).pipe(
       tap((cart) => 
         this.activeCart$.next(cart.activeCart)
       )
@@ -64,6 +64,7 @@ export class CartService {
     }
     else{
       this.cartVisible.next(true);
+      this.getActiveCart().subscribe();
     }
   }
 }

@@ -35,6 +35,11 @@
     width: 30px;
     padding: 0;
     margin: 0;
+    cursor: pointer;
+}
+
+.update-cart .circle:hover {
+    background-color: rgb(168, 168, 168);
 }
 
 .update-cart>div:first-child{

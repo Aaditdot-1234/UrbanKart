@@ -19,9 +19,9 @@ export class ProductDetailComponent  implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
   productId !: string | null;
   productInfo!: Product;
-  category_name!: string;
-  subcategory_name!: string;
-  type_name!: string;
+  category_name: string = '';
+  subcategory_name: string = '';
+  type_name: string = '';
 
   constructor(private route: ActivatedRoute, private product: ProductService, private toast:ToastService, private cart: CartService, private category: CategoriesService){}
 
@@ -51,9 +51,12 @@ export class ProductDetailComponent  implements OnInit, OnDestroy{
       takeUntil(this.destroy$),
     ).subscribe({
       next: (res) => {
-        this.subcategory_name = res.product.subCategories.subcategory_name;
-        this.category_name = res.product.subCategories.categories.category_name;
-        this.type_name = res.product.subCategories.categories.types.type_name;
+        if(res?.product?.subCategories){
+          const sub = res.product.subCategories
+          this.subcategory_name = sub.subcategory_name;
+          this.category_name = sub.categories?.category_name;
+          this.type_name = sub.categories?.types?.type_name;
+        }
       }, 
       error: (err) => {
         console.error(err);
@@ -67,15 +70,12 @@ export class ProductDetailComponent  implements OnInit, OnDestroy{
     ).subscribe({
       next: (res) => {
         this.toast.showToast(200, res.message);
+        this.cart.toggleCardVisibility();
       },
       error: (err) => {
         console.error(err);
       }
     })
-
-    setTimeout(() => {
-      this.cart.toggleCardVisibility();
-    },1000)
   }
 
   ngOnDestroy(): void {

@@ -10,16 +10,16 @@ export class AddressService {
   private apiUrl = "http://localhost:3000/address"
   constructor(private http: HttpClient) { }
 
-  createAddress(address:string, title:string, setAsDefault:string){
+  createAddress(address:string, title:string, setAsDefault:boolean){
     return this.http.post<CreateAddress>(`${this.apiUrl}/add`, {address, title, setAsDefault})
   }
   getAllAddress(){
-    return this.http.get<GetAddress>(`${this.apiUrl}/add`)
+    return this.http.get<GetAddress>(`${this.apiUrl}/get-all`)
   }
-  updateAddress(address?:string, title?:string, setAsDefault?:string){
-    return this.http.patch<UpdateAddress>(`${this.apiUrl}/add`, {address, title, setAsDefault})
+  updateAddress(addressId: number, address?:string, title?:string, setAsDefault?:string){
+    return this.http.patch<UpdateAddress>(`${this.apiUrl}/update/${addressId}`, {address, title, setAsDefault})
   }
-  deleteAddress(){
-    return this.http.delete<Omit<CreateAddress, 'address'>>(`${this.apiUrl}/add`)
+  deleteAddress(addressId: number){
+    return this.http.delete<Omit<CreateAddress, 'address'>>(`${this.apiUrl}/delete/${addressId}`)
   }
 }

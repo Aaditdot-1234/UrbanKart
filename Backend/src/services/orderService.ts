@@ -1,18 +1,17 @@
 import { skip } from "node:test";
-import { CreateOrder } from "../controllers/orderController";
 import AppDataSource from "../datasource";
 import { Address } from "../entities/Address";
 import { OrderedProducts } from "../entities/OrderedProducts";
 import { Orders, OrderStatus } from "../entities/Orders";
-import { Payments, PaymentStatus } from "../entities/Payments";
+import { PaymentMethod, Payments, PaymentStatus } from "../entities/Payments";
 import { Users } from "../entities/Users";
 import { NotFound, ValidationError } from "../errors/appError";
+import { Products } from "../entities/Products";
 
 export class OrderService {
     private static orderRepo = AppDataSource.getRepository(Orders);
 
-    static async createOrder(userId: string, body: CreateOrder) {
-        const { addressId, payment_method, payment_status } = body;
+    static async createOrder(userId: string, addressId: number) {
         const queryRunner = AppDataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction()
@@ -58,6 +57,22 @@ export class OrderService {
                     order: order,
                 })
             })
+            
+            for(const item of activeCart.cartItems){
+                const updateResult = await queryRunner.manager.createQueryBuilder()
+                    .update(Products)
+                    .set({
+                        stock: () => 'stock - :quantity'
+                    })
+                    .where('product_id = :id', {id:item.product.product_id})
+                    .andWhere('stock >= :quantity', {quantity: item.quantity})
+                    .setParameter('quantity', item.quantity)
+                    .execute();
+
+                if(updateResult.affected === 0){
+                    throw new ValidationError (`Product ${item.product.product_name} is out of stock.`);
+                }
+            }
 
             await queryRunner.manager.save(orderItems);
             activeCart.is_active = false;
@@ -67,8 +82,8 @@ export class OrderService {
                 order: order,
                 amount_paid: order.totalAmount,
                 payment_date: new Date(),
-                payment_method,
-                payment_status
+                payment_method: PaymentMethod.NotSelected,
+                payment_status: PaymentStatus.Pending
             });
 
             await queryRunner.manager.save(payment);
@@ -159,11 +174,7 @@ export class OrderService {
             .getManyAndCount();
     }
 
-    static async updateStatus(orderId: number, status: OrderStatus) {
-        if (!Object.values(OrderStatus).includes(status)) {
-            throw new ValidationError(`Invalid status. Valid values: ${Object.values(OrderStatus).join(', ')}`);
-        }
-
+    static async updateStatus(orderId: number, paymentId: number) {
         const order = await this.orderRepo.findOne({
             where: { order_id: orderId },
             relations: ['payment']
@@ -174,13 +185,9 @@ export class OrderService {
             throw new ValidationError(`Cannot update a ${order.status} order.`);
         }
 
-        order.status = status;
+        order.status = OrderStatus.Completed;
 
-        if (order.payment) {
-            if (status === OrderStatus.Delivered) order.payment.payment_status = PaymentStatus.Completed;
-            else if (status === OrderStatus.Cancelled) order.payment.payment_status = PaymentStatus.Refunded;
-            await AppDataSource.getRepository(Payments).save(order.payment);
-        }
+        order.payment.payment_status = PaymentStatus.Completed;
 
         return await this.orderRepo.save(order);
     }

@@ -1,17 +1,19 @@
 <div class="product" (click)="redirectTo()">
     <div class="product-image img-container mgb-20"></div>
     <div class="product-info flex-jus-ce flex-al-bs flex-dir">
-        <div class="mgb-10">
-            <p class="font-w-600 std-tagline-font">{{productInfo.product_name}}</p>
-        </div>
-        <div class="mgb-20">
-            <p class="font-w-500 std-tagline-font color-lightgrey">{{productInfo.product_description}}</p>
-        </div>
-        <div class="mgb-10">
-            <h1 class="font-w-600 std-header-font">{{productInfo.product_price}}</h1>
-        </div>
-        <div class="quick-add" (click)="handleAddToCart(); $event.stopPropagation()">
-            <p class="font-w-600 std-tagline-font">Quick Add</p>
-        </div>
+        @if (productInfo) {
+            <div class="mgb-10">
+                <p class="font-w-600 std-tagline-font">{{productInfo.product_name}}</p>
+            </div>
+            <div class="mgb-20">
+                <p class="font-w-500 std-tagline-font color-lightgrey">{{productInfo.product_description}}</p>
+            </div>
+            <div class="mgb-10">
+                <h1 class="font-w-600 std-header-font">{{productInfo.product_price}}</h1>
+            </div>
+            <div class="quick-add" (click)="handleAddToCart(); $event.stopPropagation()">
+                <p class="font-w-600 std-tagline-font">Quick Add</p>
+            </div>
+        }
     </div>
 </div>

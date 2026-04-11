@@ -5,7 +5,8 @@ export enum PaymentMethod {
     Credit = 'Credit card',
     Debit = 'Debit card',
     Cash = 'Cash on Delivery',
-    Bank = 'Bank Transfer'
+    Bank = 'Bank Transfer',
+    NotSelected = 'not selected'
 }
 
 export enum PaymentStatus {

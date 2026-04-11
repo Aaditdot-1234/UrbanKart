@@ -23,15 +23,12 @@ export class ProductCardComponent implements OnDestroy{
     ).subscribe({
       next: (res) => {
         this.toast.showToast(200, res.message);
+        this.cart.toggleCardVisibility();
       },
       error: (err) => {
         console.error(err);
       }
     })
-
-    setTimeout(() => {
-      this.cart.toggleCardVisibility();
-    },1000)
   }
 
   redirectTo(){

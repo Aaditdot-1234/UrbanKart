@@ -6,7 +6,7 @@ import { Payments } from "./Payments";
 
 export enum OrderStatus {
     Pending = 'pending',
-    Shipped = 'shipped',
+    Completed = 'completed',
     Delivered = 'delivered',
     Cancelled = 'cancelled'
 }

@@ -5,16 +5,11 @@ import { OrderStatus } from "../entities/Orders";
 import { PaymentMethod, PaymentStatus } from "../entities/Payments";
 import { Users } from "../entities/Users";
 
-export interface CreateOrder{
-    addressId: number, 
-    payment_status: PaymentStatus, 
-    payment_method: PaymentMethod
-}
-
 export class OrderController {
-    static createOrder = asyncHandler(async (req: Request<{}, any, CreateOrder>, res: Response) => {
+    static creationOfOrder = asyncHandler(async (req: Request, res: Response) => {
+        const {addressId} = req.body as {addressId:number}
         const loggedInUserInfo = req.user as Users;
-        const order = await OrderService.createOrder(loggedInUserInfo.id, req.body);
+        const order = await OrderService.createOrder(loggedInUserInfo.id, addressId);
         res.status(200).json({ message: "Order created successfully.", order });
     });
 
@@ -101,10 +96,9 @@ export class OrderController {
         }});
     });
 
-    static updateOrderStatus = asyncHandler(async (req: Request<{orderId: number}>, res: Response) => {
-        const { orderId } = req.params;
-        const { status } = req.body;
-        await OrderService.updateStatus(+orderId, status as OrderStatus);
-        res.status(200).json({ message: `Order status updated to '${status}'.` });
+    static updateOrderStatus = asyncHandler(async (req: Request<{orderId: number, paymentId: number}>, res: Response) => {
+        const { orderId, paymentId } = req.body;
+        await OrderService.updateStatus(+orderId, paymentId);
+        res.status(200).json({ message: `Order status updated to '${OrderStatus.Completed} and payment status is updated to ${PaymentStatus.Completed}'.` });
     });
 }

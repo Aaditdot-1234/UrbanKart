@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { ProductCardComponent } from "../product-card/product-card.component";
 import { Product } from '../../../models/product';
 import { ToastService } from '../../services/toast.service';
+import { ProductCardComponent } from '../product-card/product-card.component';
 
 @Component({
   selector: 'app-cart',
@@ -15,7 +15,7 @@ import { ToastService } from '../../services/toast.service';
 export class CartComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   subTotal!: number;
-  products: Product[] = [
+  recommendedProducts: Product[] = [
     {
       product_id: 101,
       product_name: "Ultra-Wide Gaming Monitor",
@@ -58,7 +58,7 @@ export class CartComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeCartItem(itemId: number){
+  removeCartItem(itemId: number) {
     this.cart.deleteFromCart(itemId).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
@@ -69,6 +69,31 @@ export class CartComponent implements OnInit, OnDestroy {
         console.error(err);
       }
     })
+  }
+
+  updateCartItem(itemId: number, quantity: number, change: number) {
+    console.log(itemId);
+    let changedQuantity = quantity + change;
+
+    // if (!itemId || isNaN(itemId)) {
+    //   console.error("Update failed: itemId is invalid", itemId);
+    //   return;
+    // }
+
+    console.log(itemId);
+
+    if (changedQuantity > 0) {
+      this.cart.updateCart(itemId, changedQuantity).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: (res) => {
+          console.log(res.message)
+        }
+      })
+    }
+    else {
+      this.removeCartItem(itemId);
+    }
   }
 
   ngOnDestroy(): void {
