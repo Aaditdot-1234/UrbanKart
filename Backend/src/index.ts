@@ -16,6 +16,8 @@ import { Users } from "./entities/Users";
 import { seed } from "./seeding/seed";
 import passport from "passport";
 import "./auth/passport";
+import './cronjob/cronjob';
+import images from "./controllers/imagesController";
 
 async function main() {
     await AppDataSource.initialize();
@@ -51,7 +53,8 @@ async function main() {
     app.use('/address', requireAuth, addressRouter);
     app.use('/order', requireAuth, orderRouter);
     app.use('/payment', requireAuth, paymentRoutes);
-    app.use('/review', requireAuth, reviewRoutes);
+    app.use('/review', reviewRoutes);
+    app.use('/images', express.static('public'));
 
     app.use(errorHandler);
 

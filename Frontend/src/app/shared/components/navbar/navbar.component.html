@@ -9,11 +9,59 @@
             </h2>
 
             <div class="flex-jus-fe flex-al-ce g-20">
-                <a href="/auth/login">
+                <a *appToggleVisibility="!auth.isLoggedIn()" href="/auth/login">
                     <button>Login</button>
                 </a>
-                <div (click)="onCartClick()" class="cart flex-jus-ce flex-al-ce relative">
-                    <img width="25" height="25" src="https://img.icons8.com/ios/50/shopping-cart--v1.png" alt="shopping-cart--v1"/>
+                <div class="dropdown" *appToggleVisibility="auth.isLoggedIn()">
+                    <div class="cart flex-jus-ce flex-al-ce relative">
+                        <img width="25" height="25" src="https://img.icons8.com/ios-glyphs/30/user--v1.png"
+                            alt="user--v1" />
+                    </div>
+                    <div class="dropdown-menu flex-dir flex-al-fs g-10">
+                        <a *appToggleVisibility="!auth.isAdmin()"
+                            [routerLink]="`/profile/${auth.currentUser$.value?.id}`"
+                            class="flex-jus-fs flex-al-ce g-10">
+                            <img width="20" height="20" src="https://img.icons8.com/ios-glyphs/30/user--v1.png"
+                                alt="user--v1" />
+                            <h2 class="font-w-500 std-tagline-font">Profile</h2>
+                        </a>
+                        <a *appToggleVisibility="auth.isAdmin()"
+                            [routerLink]="`/admin/${auth.currentUser$.value?.id}/dashboard`"
+                            class="flex-jus-fs flex-al-ce g-10">
+                            <img width="20" height="20" src="https://img.icons8.com/ios-glyphs/30/user--v1.png"
+                                alt="user--v1" />
+                            <h2 class="font-w-500 std-tagline-font">Admin Dashboard</h2>
+                        </a>
+                        <a [routerLink]="`/profile/${auth.currentUser$.value?.id}/orders`"
+                            class="flex-jus-fs flex-al-ce g-10">
+                            <img width="20" height="20" src="https://img.icons8.com/ios/50/purchase-order.png"
+                                alt="purchase-order" />
+                            <h2 class="font-w-500 std-tagline-font">Orders</h2>
+                        </a>
+                        <a [routerLink]="`/profile/${auth.currentUser$.value?.id}/payments`"
+                            class="flex-jus-fs flex-al-ce g-10">
+                            <img width="20" height="20"
+                                src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/external-payments-social-media-ui-tanah-basah-basic-outline-tanah-basah.png"
+                                alt="external-payments-social-media-ui-tanah-basah-basic-outline-tanah-basah" />
+                            <h2 class="font-w-500 std-tagline-font">Payments</h2>
+                        </a>
+                        <a routerLink="/home" class="flex-jus-fs flex-al-ce g-10">
+                            <img width="20" height="20" src="https://img.icons8.com/ios/50/like--v1.png"
+                                alt="like--v1" />
+                            <h2 class="font-w-500 std-tagline-font">Wishlist</h2>
+                        </a>
+                        <hr>
+                        <div class="flex-jus-fs flex-al-ce g-10" (click)="onLogout()">
+                            <img width="20" height="20" src="https://img.icons8.com/ios/50/exit--v1.png"
+                                alt="exit--v1" />
+                            <h2 class="font-w-500 std-tagline-font">Logout</h2>
+                        </div>
+                    </div>
+                </div>
+                <div *appToggleVisibility="auth.isLoggedIn()" (click)="onCartClick()"
+                    class="cart flex-jus-ce flex-al-ce relative">
+                    <img width="25" height="25" src="https://img.icons8.com/ios/50/shopping-cart--v1.png"
+                        alt="shopping-cart--v1" />
                 </div>
             </div>
         </div>

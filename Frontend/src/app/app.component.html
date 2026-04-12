@@ -2,11 +2,11 @@
 <router-outlet />
 
 @if(cart.cartVisible$ | async){
-    <div class="cart-overlay" [class.closing]="cart.isClosing$ | async" (click)="cart.toggleCardVisibility()"></div>
-    
-    <div class="cart-drawer" [class.closing]="cart.isClosing$ | async">
-        <app-cart></app-cart>
-    </div>
+<div class="cart-overlay" [class.closing]="cart.isClosing$ | async" (click)="cart.toggleCardVisibility()"></div>
+
+<div class="cart-drawer" [class.closing]="cart.isClosing$ | async">
+    <app-cart></app-cart>
+</div>
 }
 
 

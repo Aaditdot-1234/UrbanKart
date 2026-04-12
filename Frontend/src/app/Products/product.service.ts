@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateProduct, CreateProductRes, GetProducts, Product } from '../models/product';
+import { CreateProduct, CreateProductRes, GetProducts, Product, UploadImagesRes } from '../models/product';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
   private apiUrl = 'http://localhost:3000/product';
-  
+  private imagesUrl = 'http://localhost:3000/images';
+
   constructor(private http: HttpClient) { }
 
   getAllProducts(page: number, limit: number){
@@ -22,15 +23,21 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/get-by-id/${productId}`);
   }
 
+  uploadImages(files: File[]){
+    const formData = new FormData();
+    files.forEach(file => formData.append('images', file));
+    return this.http.post<UploadImagesRes>(`${this.imagesUrl}/upload`, formData, { withCredentials: true });
+  }
+
   createProduct( productDetails: CreateProduct ){
-    return this.http.post<CreateProductRes>(`${this.apiUrl}/create`, productDetails);
+    return this.http.post<CreateProductRes>(`${this.apiUrl}/create`, productDetails, { withCredentials: true });
   }
 
   updateProduct(productId: number, productDetails: Partial<CreateProduct>){
-    return this.http.patch<CreateProductRes>(`${this.apiUrl}/update/${productId}`, productDetails);
+    return this.http.patch<CreateProductRes>(`${this.apiUrl}/update/${productId}`, productDetails, { withCredentials: true });
   }
 
   deleteProduct( productId: number ){
-    return this.http.delete<Omit<CreateProductRes, 'product'>>(`${this.apiUrl}/delete/${productId}`);
+    return this.http.delete<Omit<CreateProductRes, 'product'>>(`${this.apiUrl}/delete/${productId}`, { withCredentials: true });
   }
 }

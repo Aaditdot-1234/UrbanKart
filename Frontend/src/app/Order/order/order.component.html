@@ -1,1 +1,100 @@
-<p>order works!</p>
+<div class="flex-jus-sb place-order">
+    <div>
+        <h1 class="std-header-font font-w-600 font-50 mgb-40">Order Summary</h1>
+        <div class="flex-dir flex-al-fs g-20 mgb-40">
+            @if(Cart.cart$ | async; as activeCart){
+            @for(item of activeCart.cartItems; track $index){
+            <div class="flex-jus-sb g-10 cart-item">
+                <div class="img-container bg-img"></div>
+                <div class="flex-dir flex-jus-sb">
+                    <div>
+                        <h1 class="font-w-500 std-header-font">{{item.product.product_name}}</h1>
+                    </div>
+                    <div>
+                        <p class="font-w-500 std-tagline-font color-grey">{{item.product.product_description}}</p>
+                    </div>
+                    <div class="update-cart flex-jus-sb">
+                        <div class="flex-jus-sb flex-al-ce g-10">
+                            <h3 class="std-tagline-font font-w-500">Quantity: {{item.quantity}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="std-header-font font-w-600">${{item.quantity * item.product.product_price}} USD</h2>
+                </div>
+            </div>
+            }
+            }
+        </div>
+        <div class="mgb-40">
+            <div class="flex-jus-sb mgb-20">
+                <p class="std-tagline-font">Subtotal</p>
+                <p class="std-tagline-font">${{subTotal}} USD</p>
+            </div>
+            <div class="flex-jus-sb mgb-20">
+                <p class="std-tagline-font">Shipping</p>
+                <p class="std-tagline-font">$0 USD</p>
+            </div>
+            <div class="mgb-20">
+                <hr>
+            </div>
+            <div class="flex-jus-sb">
+                <p class="std-tagline-font">Total</p>
+                <p class="std-tagline-font">${{subTotal}} USD</p>
+            </div>
+        </div>
+        <div>
+            <button (click)="handleCreateOrder()">Place Order</button>
+        </div>
+    </div>
+    <div class="user-shipping-details">
+        <div>
+            <h1 class="std-header-font font-w-600 font-50 mgb-40 color-white">User shipping Address</h1>
+        </div>
+        <div>
+            @if(auth.currentUser$ | async; as user){
+            <p class="std-tagline-font color-grey mgb-40">{{user.name}}, is this where you want to get your order
+                delivered?</p>
+            }
+        </div>
+        <div>
+            <div>
+                <p class="std-tagline-font color-white mgb-20">Shipping Address</p>
+            </div>
+            <div class="mgb-40">
+                <select name="address" id="address" class="std-tagline-font" [(ngModel)]="selectedAddressId">
+                    <option value="">Select Address</option>
+                    @for(address of addresses; track $index){
+                    <option [value]="address.address_id">{{address.address}}</option>
+                    }
+                </select>
+            </div>
+            @if(newAddress){
+            <form action="" class="flex-dir flex-al-bs g-20" [formGroup]="newAddressForm"
+                (ngSubmit)="handleCreateAddress()">
+                <div class="flex-dir flex-al-fs w-100 g-10">
+                    <label for="" class="std-tagline-font color-white">Address</label>
+                    <textarea name="" id="" formControlName="address"></textarea>
+                </div>
+                <div class="flex-jus-sb flex-al-ce w-100">
+                    <div class="flex-dir flex-al-fs g-10">
+                        <label for="" class="std-tagline-font color-white">Title</label>
+                        <input type="text" formControlName="title">
+                    </div>
+                    <div class="flex-jus-ce g-10" style="padding-top: 25px;">
+                        <input type="checkbox" formControlName="setDefault">
+                        <label for="" class="std-tagline-font color-white">Set as default</label>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" [disabled]="newAddressForm.invalid" class="std-button">Create new
+                        Address</button>
+                </div>
+            </form>
+            }@else {
+            <button class="std-button" (click)="toggleNewAddress()">Add New Address</button>
+            }
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

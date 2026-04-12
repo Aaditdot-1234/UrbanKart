@@ -1,18 +1,23 @@
-import { Component, HostListener } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Router, RouterLink } from "@angular/router";
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../../Auth/auth.service';
+import { Subject, takeUntil } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
+import { ToggleVisibilityDirective } from "../../Directives/toggle-visibility.directive";
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [RouterLink, ToggleVisibilityDirective],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
   onHover: boolean = false;
   isScrolled: boolean = false;
 
-  constructor(private cart: CartService){}
+  constructor(private cart: CartService, public auth: AuthService, private router: Router, private toast: ToastService) { }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -30,7 +35,26 @@ export class NavbarComponent {
     this.onHover = false;
   }
 
-  onCartClick(){
+  onCartClick() {
     this.cart.toggleCardVisibility();
+  }
+
+  onLogout() {
+    this.auth.logout().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (res) => {
+        this.toast.showToast(200, 'Logout successfully');
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

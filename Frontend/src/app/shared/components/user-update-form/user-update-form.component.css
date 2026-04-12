@@ -1,0 +1,42 @@
+.update-user-card {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.update-user-card input {
+    width: 100%;
+}
+
+.update-user-card button {
+    min-width: 180px;
+    transition: all 0.2s ease;
+}
+
+.update-user-card button:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .flex-jus-sb {
+        flex-direction: column;
+    }
+}
+
+.close-cart {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-cart:hover {
+    scale: 1.2;
+    background-color: rgba(0, 0, 0, 0.2);
+}

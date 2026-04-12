@@ -1,1 +1,71 @@
-<p>payment works!</p>
+<div class="flex-jus-sb payment-page">
+
+    <div class="payment-left">
+        <h1 class="std-header-font font-w-600 font-50 mgb-40">Payment</h1>
+        <p class="std-tagline-font color-grey mgb-40">Choose your preferred payment method to complete your order.</p>
+
+        <div class="flex-dir g-20 mgb-40">
+            @for(method of paymentMethods; track method.id){
+            <div class="method-card" [class.method-selected]="selectedMethod === method.id"
+                (click)="selectMethod(method.id)">
+                <div class="flex-jus-sb flex-al-ce">
+                    <div>
+                        <h3 class="std-header-font">{{method.label}}</h3>
+                        <p class="std-tagline-font color-grey">{{method.description}}</p>
+                    </div>
+                    <div class="radio-circle" [class.radio-active]="selectedMethod === method.id">
+                        @if(selectedMethod === method.id){
+                        <div class="radio-dot"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <button (click)="confirmPayment()" [disabled]="!selectedMethod" class="confirm-btn">
+            Confirm Payment
+        </button>
+    </div>
+
+    <div class="payment-right">
+        <h1 class="std-header-font font-w-600 font-50 mgb-40 color-white">Order Summary</h1>
+
+        @if(orderDetails){
+        <div class="order-info flex-dir g-20 mgb-40">
+            <div class="info-row flex-jus-sb flex-al-ce">
+                <p class="std-tagline-font color-white">Order ID</p>
+                <p class="std-tagline-font color-grey">#{{orderDetails.order_id}}</p>
+            </div>
+            <hr class="divider">
+            <div class="info-row flex-jus-sb flex-al-ce">
+                <p class="std-tagline-font color-white">Status</p>
+                <span class="status-badge">{{orderDetails.status}}</span>
+            </div>
+            <hr class="divider">
+            <div class="info-row flex-jus-sb flex-al-ce">
+                <p class="std-tagline-font color-white">Delivery Address</p>
+                <p class="std-tagline-font color-grey address-text">{{orderDetails.address?.address}}</p>
+            </div>
+            <hr class="divider">
+            <div class="info-row flex-jus-sb flex-al-ce">
+                <p class="std-tagline-font color-white">Total Amount</p>
+                <h2 class="std-header-font font-w-600 color-white">${{orderDetails.totalAmount}} USD</h2>
+            </div>
+        </div>
+        } @else {
+        <div class="loading-state flex-dir flex-al-ce g-10">
+            <div class="loading-spinner"></div>
+            <p class="std-tagline-font color-grey">Loading order details...</p>
+        </div>
+        }
+
+        @if(selectedMethodLabel){
+        <div class="selected-method-display">
+            <p class="std-tagline-font color-grey mgb-10">Paying via</p>
+            <h3 class="std-header-font color-white">{{selectedMethodLabel}}</h3>
+        </div>
+        }
+    </div>
+</div>
+<app-footer></app-footer>

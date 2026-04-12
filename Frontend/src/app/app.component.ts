@@ -13,15 +13,8 @@ import { AuthService } from './Auth/auth.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'Frontend';
 
   constructor(public toast: ToastService, public cart: CartService, private auth: AuthService) { }
-
-  ngOnInit(): void {
-    console.log(this.auth.isLoggedIn());
-    if(this.auth.isLoggedIn()){
-      this.cart.getActiveCart().subscribe();
-    }
-  }
 }

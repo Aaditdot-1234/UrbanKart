@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Cart, GetCart, GetTotal} from '../../models/cart';
+import { Cart, GetCart, GetTotal } from '../../models/cart';
 import { BehaviorSubject, tap } from 'rxjs';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private activeCart$ = new BehaviorSubject<Cart| null>(null);
+  private activeCart$ = new BehaviorSubject<Cart | null>(null);
   cart$ = this.activeCart$.asObservable();
 
   private cartVisible = new BehaviorSubject<boolean>(false);
@@ -18,51 +19,55 @@ export class CartService {
 
   private apiUrl = 'http://localhost:3000/cart';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) {
+    if (this.auth.isLoggedIn()) {
+      this.getActiveCart().subscribe();
+    }
+  }
 
-  addToCart(product_id: number, quantity?: number){
-    return this.http.post<GetCart>(`${this.apiUrl}/add`, {product_id, quantity}).pipe(
-      tap((cart) => 
+  addToCart(product_id: number, quantity?: number) {
+    return this.http.post<GetCart>(`${this.apiUrl}/add`, { product_id, quantity }).pipe(
+      tap((cart) =>
         this.activeCart$.next(cart.activeCart)
       )
     );
   }
-  deleteFromCart(cartItemId: number){
+  deleteFromCart(cartItemId: number) {
     return this.http.delete<GetCart>(`${this.apiUrl}/delete/${cartItemId}`).pipe(
-      tap((cart) => 
+      tap((cart) =>
         this.activeCart$.next(cart.activeCart)
       )
     );
   }
-  updateCart(cart_item_id: number, quantity: number){
-    return this.http.patch<GetCart>(`${this.apiUrl}/update`, {cart_item_id, quantity}).pipe(
-      tap((cart) => 
+  updateCart(cart_item_id: number, quantity: number) {
+    return this.http.patch<GetCart>(`${this.apiUrl}/update`, { cart_item_id, quantity }).pipe(
+      tap((cart) =>
         this.activeCart$.next(cart.activeCart)
       )
     );
   }
-  getActiveCart(){
+  getActiveCart() {
     return this.http.get<GetCart>(`${this.apiUrl}/get-cart`).pipe(
-      tap((res) => 
+      tap((res) =>
         this.activeCart$.next(res.activeCart)
       )
     );
   }
-  calculateTotal(){
+  calculateTotal() {
     return this.http.get<GetTotal>(`${this.apiUrl}/total`)
   }
 
-  toggleCardVisibility(){
-    if(this.cartVisible.value){
-      
+  toggleCardVisibility() {
+    if (this.cartVisible.value) {
+
       this.isClosing.next(true);
 
       setTimeout(() => {
         this.cartVisible.next(false);
         this.isClosing.next(false);
-      },500);
+      }, 500);
     }
-    else{
+    else {
       this.cartVisible.next(true);
       this.getActiveCart().subscribe();
     }

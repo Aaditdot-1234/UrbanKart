@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Login, LogoutResponse, OTPResponse, Register, RegisterResponse, User } from '../models/auth';
+import { GetAllUsers, Login, LogoutResponse, OTPResponse, Register, RegisterResponse, User } from '../models/auth';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
@@ -8,7 +8,12 @@ import { BehaviorSubject, tap } from 'rxjs';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/auth';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    const user = localStorage.getItem('user');
+    if (user) {
+      this.currentUser$.next(JSON.parse(user));
+    }
+  }
   currentUser$ = new BehaviorSubject<Omit<User, 'password'> | null>(null);
 
   register(registerDetails: Register) {
@@ -22,6 +27,7 @@ export class AuthService {
   login(loginDetails: Login) {
     return this.http.post<RegisterResponse>(this.apiUrl + '/login', loginDetails).pipe(
       tap((response) => {
+        localStorage.setItem('user', JSON.stringify(response.user));
         this.currentUser$.next(response.user);
       })
     );
@@ -30,17 +36,14 @@ export class AuthService {
   logout() {
     return this.http.post<LogoutResponse>(this.apiUrl + '/logout', {}).pipe(
       tap(() => {
+        localStorage.removeItem('user');
         this.currentUser$.next(null);
       })
     );
   }
 
   lockUser(userId: string) {
-    return this.http.patch(`${this.apiUrl}/users/${userId}/logout`, {}).pipe(
-      tap(() => {
-        this.currentUser$.next(null);
-      })
-    )
+    return this.http.patch<{ message: string }>(`${this.apiUrl}/users/${userId}/lock`, {});
   }
 
   forgotpassword(email: string, otp: string, password: string) {
@@ -52,11 +55,13 @@ export class AuthService {
   }
 
   getUser(userId: string) {
-    return this.http.get<RegisterResponse>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<RegisterResponse>(`${this.apiUrl}/users/${userId}`);
   }
 
-  getAllusers() {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  getAllusers(page: number, limit: number) {
+    const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+
+    return this.http.get<GetAllUsers>(`${this.apiUrl}/users`, { params });
   }
 
   getOTP(email: string) {
@@ -64,7 +69,7 @@ export class AuthService {
   }
 
   updateUserInfo(updatedDetails: Partial<User>) {
-    return this.http.patch<RegisterResponse>(`${this.apiUrl}/user/update-info`, updatedDetails, { withCredentials: true }).pipe(
+    return this.http.patch<RegisterResponse>(`${this.apiUrl}/users/update-info`, updatedDetails, { withCredentials: true }).pipe(
       tap((response) => {
         this.currentUser$.next(response.user);
       })
@@ -76,7 +81,14 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    const hasToken = !!localStorage.getItem('access_token');
-    return !!this.currentUser$.value || hasToken;
+    return !!this.currentUser$.value;
+  }
+
+  getMe() {
+    return this.http.get<RegisterResponse>(`${this.apiUrl}/users/me`).pipe(
+      tap((response) => {
+        this.currentUser$.next(response.user);
+      })
+    );
   }
 }

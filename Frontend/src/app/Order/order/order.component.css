@@ -1,0 +1,85 @@
+.place-order>div {
+    width: 50%;
+    padding: 80px 60px;
+}
+
+.place-order>:last-child {
+    background-color: var(--text);
+}
+
+.cart-item {
+    background-color: rgb(255, 246, 236);
+    height: 150px;
+    padding: 20px;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+.cart-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cart-item>div:nth-child(2) {
+    width: 55%;
+}
+
+.cart-item>div:last-child {
+    width: 25%;
+}
+
+.bg-img {
+    height: 100%;
+    width: 20%;
+    border-radius: 10px;
+    background-image: url('/hero2.jpg');
+}
+
+.color-white {
+    color: white;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: rgb(255, 246, 236);
+}
+
+select option {
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+textarea {
+    height: 100px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid white;
+    outline: none;
+    color: white;
+    background-color: transparent;
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid white;
+    outline: none;
+    color: white;
+    background-color: transparent;
+}
+
+.std-button {
+    border: none;
+    outline: none;
+    color: white;
+    background-color: var(--primary);
+    cursor: pointer;
+}
+
+.std-button:hover {
+    background-color: var(--secondary);
+}

@@ -8,12 +8,21 @@ import { NextFunction, Request, Response } from "express";
 
 export class CategoryController {
     static filterProducts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        
+
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 9;
         const skip = (page - 1) * limit;
 
-        const { name, minPrice, maxPrice, typeId } = req.query as { name?: string, minPrice?: number, maxPrice?: number, typeId?: string };
+        const { name, minPrice, maxPrice, typeId, categoryId, subCategoryId } = req.query as {
+            name?: string, minPrice?: string, maxPrice?: string,
+            typeId?: string, categoryId?: string, subCategoryId?: string
+        };
+
+        // Parse comma-separated ID lists for multi-checkbox support
+        const typeIds = typeId ? typeId.split(',').map(Number).filter(n => !isNaN(n) && n > 0) : [];
+        const categoryIds = categoryId ? categoryId.split(',').map(Number).filter(n => !isNaN(n) && n > 0) : [];
+        const subCategoryIds = subCategoryId ? subCategoryId.split(',').map(Number).filter(n => !isNaN(n) && n > 0) : [];
+
         const qb = AppDataSource.getRepository(Products).createQueryBuilder("product");
 
         qb.leftJoinAndSelect("product.subCategories", "subCategory")
@@ -42,13 +51,19 @@ export class CategoryController {
             qb.andWhere("category.category_name LIKE :name OR subCategory.subcategory_name LIKE :name OR type.type_name LIKE :name OR product.product_name LIKE :name", { name: `%${name}%` });
         }
         if (minPrice) {
-            qb.andWhere("product.product_price >= :minPrice", { minPrice: Number(minPrice) })
+            qb.andWhere("product.product_price >= :minPrice", { minPrice: Number(minPrice) });
         }
         if (maxPrice) {
-            qb.andWhere("product.product_price <= :maxPrice", { maxPrice: Number(maxPrice) })
+            qb.andWhere("product.product_price <= :maxPrice", { maxPrice: Number(maxPrice) });
         }
-        if (typeId) {
-            qb.andWhere("type.type_id LIKE :typeId", { typeId: Number(typeId) })
+        if (typeIds.length > 0) {
+            qb.andWhere("type.type_id IN (:...typeIds)", { typeIds });
+        }
+        if (categoryIds.length > 0) {
+            qb.andWhere("category.category_id IN (:...categoryIds)", { categoryIds });
+        }
+        if (subCategoryIds.length > 0) {
+            qb.andWhere("subCategory.subcategory_id IN (:...subCategoryIds)", { subCategoryIds });
         }
 
         qb.skip(skip).take(limit);
@@ -57,13 +72,15 @@ export class CategoryController {
 
         const totalPages = Math.ceil(total / limit);
 
-        res.status(200).json({message: 'Products filtered successfully.', products, meta: {
-            totalItems: total,
-            itemCount: products.length,
-            itemsPerPage: limit,
-            totalPages: totalPages,
-            currentPage: page,
-        }});
+        res.status(200).json({
+            message: 'Products filtered successfully.', products, meta: {
+                totalItems: total,
+                itemCount: products.length,
+                itemsPerPage: limit,
+                totalPages: totalPages,
+                currentPage: page,
+            }
+        });
     })
 
     static getAllCategories = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -78,13 +95,15 @@ export class CategoryController {
         });
 
         const totalPages = Math.ceil(total / limit);
-        res.status(200).json({message: 'Categories fetched successfully', categories, meta: {
-            totalItems: total,
-            itemCount: categories.length,
-            itemsPerPage: limit,
-            totalPages: totalPages,
-            currentPage: page,
-        }});
+        res.status(200).json({
+            message: 'Categories fetched successfully', categories, meta: {
+                totalItems: total,
+                itemCount: categories.length,
+                itemsPerPage: limit,
+                totalPages: totalPages,
+                currentPage: page,
+            }
+        });
     })
 
     static getAllSubCategories = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -97,21 +116,23 @@ export class CategoryController {
             skip: skip,
             take: limit
         });
-        
+
         const totalPages = Math.ceil(total / limit);
-        res.status(200).json({message: 'Subcategories fetched successfully', subCategories, meta: {
-            totalItems: total,
-            itemCount: subCategories.length,
-            itemsPerPage: limit,
-            totalPages: totalPages,
-            currentPage: page,
-        }});
+        res.status(200).json({
+            message: 'Subcategories fetched successfully', subCategories, meta: {
+                totalItems: total,
+                itemCount: subCategories.length,
+                itemsPerPage: limit,
+                totalPages: totalPages,
+                currentPage: page,
+            }
+        });
     })
 
     static getAllTypes = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         const typeRepo = AppDataSource.getRepository(Types);
         const types = await typeRepo.find();
-        res.status(200).json({message: 'Types fetched successfully', types});
+        res.status(200).json({ message: 'Types fetched successfully', types });
     })
 
     static getCategoryByProduct = asyncHandler(async (req: Request<{ product_id: string }>, res: Response, next: NextFunction) => {
@@ -134,9 +155,9 @@ export class CategoryController {
                 'types.type_id',
                 'types.type_name',
             ])
-            .where('products.product_id = :id', {id: product_id})
+            .where('products.product_id = :id', { id: product_id })
             .getOne();
 
-        res.status(200).json({message: 'Category fetched successfully by product', product});
+        res.status(200).json({ message: 'Category fetched successfully by product', product });
     })
 }   

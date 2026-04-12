@@ -1,0 +1,88 @@
+<div class="manage-orders-page">
+  <div class="page-nav flex-al-ce flex-jus-fs bg-gold p-20">
+    <h2 class="font-w-600 std-header-font">Home</h2>
+    <div class="circle" style="background-color: black;"></div>
+    <h2 class="font-w-400 std-header-font color-grey">My Orders</h2>
+  </div>
+
+  <div class="page-body flex-al-fs flex-jus-fs g-20">
+
+    <aside class="filter-sidebar flex-dir flex-al-bs flex-jus-fs">
+
+      <div class="filter-section">
+        <div class="flex-jus-sb flex-al-ce">
+          <h2 class="font-w-600 std-header-font">Filters</h2>
+          @if(isFiltering) {
+          <button class="clear-btn std-tagline-font" (click)="clearFilters()">Clear all</button>
+          }
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <label class="std-tagline-font font-w-600">Order Status</label>
+        <div class="status-pills flex-dir g-10">
+          @for(status of statuses; track status) {
+          <button class="pill-btn std-tagline-font" [class.pill-active]="activeStatus === status"
+            (click)="filterByStatus(status)">
+            {{ status === 'all' ? 'All Orders' : (status.charAt(0).toUpperCase() + status.slice(1)) }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <label class="std-tagline-font font-w-600">Date Range</label>
+        <div class="flex-dir g-10 date-inputs">
+          <div class="flex-dir g-10">
+            <label class="std-tagline-font color-grey date-label">From</label>
+            <input type="date" [(ngModel)]="startDate" class="date-input std-tagline-font" />
+          </div>
+          <div class="flex-dir g-10">
+            <label class="std-tagline-font color-grey date-label">To</label>
+            <input type="date" [(ngModel)]="endDate" class="date-input std-tagline-font" />
+          </div>
+          @if(dateError) {
+          <p class="std-tagline-font date-error">{{ dateError }}</p>
+          }
+          <button class="apply-btn std-tagline-font" (click)="applyDateFilter()">Apply</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="orders-content flex-dir g-20">
+      <div class="content-header flex-jus-sb flex-al-ce">
+        <h1 class="font-40 font-w-600 std-header-font">My Orders</h1>
+        @if(totalItems > 0) {
+        <p class="std-tagline-font color-grey">{{ totalItems }} order{{ totalItems !== 1 ? 's' : '' }} found</p>
+        }
+      </div>
+
+      @if(displayOrders.length === 0) {
+      <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+        <p class="empty-emoji">📦</p>
+        <h3 class="font-20 font-w-600 std-header-font">No orders found</h3>
+        <p class="std-tagline-font color-grey">
+          {{ isFiltering ? 'Try adjusting your filters.' : 'Your order history will appear here once you make a
+          purchase.' }}
+        </p>
+        @if(isFiltering) {
+        <button class="std-tagline-font" (click)="clearFilters()">Clear Filters</button>
+        }
+      </div>
+      } @else {
+      <div class="list flex-dir g-10">
+        @for(order of displayOrders; track $any(order).order_id) {
+        <app-order-card [order]="$any(order)"></app-order-card>
+        }
+      </div>
+      @if(totalPages.length > 1) {
+      <app-pagination [totalPages]="totalPages" [currentPage]="currentPage" (pageChange)="handlePageChange($event)">
+      </app-pagination>
+      }
+      }
+    </div>
+
+  </div>
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,38 @@
+<div class="manage-payments-page">
+  <div class="page-nav flex-al-ce flex-jus-fs bg-gold p-20">
+    <h2 class="font-w-600 std-header-font">Home</h2>
+    <div class="circle" style="background-color: black;"></div>
+    <h2 class="font-w-400 std-header-font color-grey">My Payments</h2>
+  </div>
+
+  <div class="page-body flex-dir g-20">
+    <div class="content-header flex-jus-sb flex-al-ce">
+      <h1 class="font-40 font-w-600 std-header-font">My Payments</h1>
+      @if(totalItems > 0) {
+      <p class="std-tagline-font color-grey">{{ totalItems }} payment{{ totalItems !== 1 ? 's' : '' }} found</p>
+      }
+    </div>
+
+    @if(payments.length === 0) {
+    <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+      <p class="empty-emoji">💳</p>
+      <h3 class="font-20 font-w-600 std-header-font">No payments yet</h3>
+      <p class="std-tagline-font color-grey">Your payment history will appear here after your first transaction.</p>
+    </div>
+    } @else {
+    <div class="list flex-dir g-10">
+      @for(payment of payments; track payment.payment_id) {
+      <app-payments-card [payment]="payment"></app-payments-card>
+      }
+    </div>
+    @if(totalPages.length > 1) {
+    <app-pagination
+      [totalPages]="totalPages"
+      [currentPage]="currentPage"
+      (pageChange)="handlePageChange($event)">
+    </app-pagination>
+    }
+    }
+  </div>
+</div>
+<app-footer></app-footer>

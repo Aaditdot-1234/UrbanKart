@@ -8,6 +8,5 @@ paymentRoutes.get('/get-all', requireAdmin, PaymentController.getAllPayments);
 paymentRoutes.get('/get-by-id/:paymentId', requireAdmin, PaymentController.getPaymentById);
 paymentRoutes.get('/get-by-order/:orderId', PaymentController.getPaymentByOrder);
 paymentRoutes.get('/get-my-payments', PaymentController.getMyPayments);
-paymentRoutes.patch('/update/:paymentId', requireAdmin, PaymentController.updatePayment);
 
 export default paymentRoutes;

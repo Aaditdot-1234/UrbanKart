@@ -1,1 +1,89 @@
-<p>user-update-form works!</p>
+<div class="update-user-card flex-dir g-20">
+
+    <div class="flex-jus-sb flex-al-ce">
+        <h2 class="std-header-font font-30">Update Profile</h2>
+        <div class="close-cart flex-jus-ce flex-al-ce" (click)="toggleCardVisibility()">
+            <img width="30" height="30" src="https://img.icons8.com/ios/50/multiply.png" alt="multiply" />
+        </div>
+    </div>
+
+    <form [formGroup]="updateUserform" class="flex-dir g-20">
+
+        <div class="flex-jus-sb g-20">
+
+            <div class="flex-dir g-10 w-100">
+                <label class="std-tagline-font">Name</label>
+                <input type="text" placeholder="Enter Name" formControlName="name">
+
+                @if(updateUserform.get('name')?.invalid && (updateUserform.get('name')?.touched ||
+                updateUserform.get('name')?.dirty)) {
+                <div class="error flex-al-ce g-10 show">
+                    <img src="error.png" class="err-img">
+                    <div>
+                        @if(updateUserform.get('name')?.errors?.['required']) {
+                        <p>Name is required</p>
+                        }
+                        @if(updateUserform.get('name')?.errors?.['minlength']) {
+                        <p>Name must be at least 3 characters</p>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="flex-dir g-10 w-100">
+                <label class="std-tagline-font">Email</label>
+                <input type="text" placeholder="Enter Email" formControlName="email">
+
+                @if(updateUserform.get('email')?.invalid && (updateUserform.get('email')?.touched ||
+                updateUserform.get('email')?.dirty)) {
+                <div class="error flex-al-ce g-10 show">
+                    <img src="error.png" class="err-img">
+                    <div>
+                        @if(updateUserform.get('email')?.errors?.['required']) {
+                        <p>Email is required</p>
+                        }
+                        @if(updateUserform.get('email')?.errors?.['email']) {
+                        <p>Invalid email format</p>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+        </div>
+
+        <div class="flex-jus-sb g-20">
+
+            <div class="flex-dir g-10 w-100">
+                <label class="std-tagline-font">Phone</label>
+                <input type="text" placeholder="Enter Phone Number" formControlName="phone">
+
+                @if(updateUserform.get('phone')?.invalid && (updateUserform.get('phone')?.touched ||
+                updateUserform.get('phone')?.dirty)) {
+                <div class="error flex-al-ce g-10 show">
+                    <img src="error.png" class="err-img">
+                    <div>
+                        @if(updateUserform.get('phone')?.errors?.['required']) {
+                        <p>Phone number is required</p>
+                        }
+                        @if(updateUserform.get('phone')?.errors?.['pattern']) {
+                        <p>Enter valid 10-digit phone number</p>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="w-100"></div>
+
+        </div>
+
+        <div class="flex-jus-fe">
+            <button type="button" [disabled]="updateUserform.invalid" (click)="handleUpdateform()">
+                Update Profile
+            </button>
+        </div>
+
+    </form>
+</div>

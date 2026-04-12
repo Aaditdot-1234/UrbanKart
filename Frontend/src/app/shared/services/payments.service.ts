@@ -9,32 +9,32 @@ export class PaymentsService {
   private apiUrl = "http://localhost:3000/payment"
   constructor(private http: HttpClient) { }
 
-  getAllPayments(page: number, limit: number, status?: string, method?: string){
+  getAllPayments(page: number, limit: number, status?: string, method?: string) {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
-      if(status){
-        params = params.set('status', status)
-      } 
-      if(method){
-        params = params.set('method', method)
-      }
+    if (status) {
+      params = params.set('status', status)
+    }
+    if (method) {
+      params = params.set('method', method)
+    }
 
-    return this.http.get<GetPayments>(`${this.apiUrl}/get-all`, {params});
+    return this.http.get<GetPayments>(`${this.apiUrl}/get-all`, { params });
   }
 
-  getPaymentById(paymentId: number){
+  getPaymentById(paymentId: number) {
     return this.http.get<GetByOrder>(`${this.apiUrl}/get-by-id/${paymentId}`);
   }
-  getPaymentByOrderId(orderId: number){
+  getPaymentByOrderId(orderId: number) {
     return this.http.get<GetByOrder>(`${this.apiUrl}/get-by-order/${orderId}`);
   }
-  
-  getMyPayments(page: number, limit: number){
+
+  getMyPayments(page: number, limit: number) {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.http.get<GetPayments>(`${this.apiUrl}/get-all`, {params});
+    return this.http.get<GetPayments>(`${this.apiUrl}/get-my-payments`, { params });
   }
 }

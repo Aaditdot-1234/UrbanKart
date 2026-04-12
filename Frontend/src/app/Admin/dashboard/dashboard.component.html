@@ -1,0 +1,103 @@
+<div class="profile-page">
+
+    @if(userInfo) {
+    <div class="profile-header flex-jus-sb flex-al-ce">
+        <div class="flex-al-ce g-20">
+            <div class="avatar flex-jus-ce flex-al-ce">
+                <h1 class="std-header-font avatar-initials">{{ getInitials(userInfo.name) }}</h1>
+            </div>
+            <div class="flex-dir g-10">
+                <h1 class="font-40 font-w-600 std-header-font header-name">{{ userInfo.name }}</h1>
+                <div class="flex-al-ce g-10">
+                    <span class="role-badge std-tagline-font">{{ userInfo.role | titlecase }}</span>
+                    <div class="status-dot" [class.dot-active]="userInfo.isActive"
+                        [class.dot-inactive]="!userInfo.isActive">
+                    </div>
+                    <p class="std-tagline-font header-sub">{{ userInfo.isActive ? 'Active' : 'Inactive' }}</p>
+                </div>
+                <p class="std-tagline-font header-sub">Member since {{ userInfo.createdAt | date:'MMMM yyyy' }}</p>
+            </div>
+        </div>
+
+        <div class="header-stats flex-al-ce g-40">
+            <div class="stat-block flex-dir flex-al-ce g-10">
+                <h2 class="font-40 font-w-600 std-header-font header-name">{{ usersTotalItems }}</h2>
+                <p class="std-tagline-font header-sub">Total Users</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-section mgb-40">
+        <div class="section-title flex-al-ce g-10 mgb-20">
+            <div class="title-accent"></div>
+            <h2 class="font-30 font-w-600 std-header-font">Personal Information</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Full Name</p>
+                <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.name }}</h3>
+            </div>
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Email Address</p>
+                <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.email }}</h3>
+            </div>
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Phone Number</p>
+                <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.phone || '—' }}</h3>
+            </div>
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Address</p>
+                <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.address || '—' }}</h3>
+            </div>
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Account Status</p>
+                <div class="flex-al-ce g-10">
+                    <span class="status-badge" [ngClass]="userInfo.isActive ? 'status-delivered' : 'status-cancelled'">
+                        {{ userInfo.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                    @if(userInfo.isLocked) {
+                    <span class="status-badge status-cancelled">Locked</span>
+                    }
+                </div>
+            </div>
+            <div class="info-card flex-dir g-10">
+                <p class="std-tagline-font color-grey field-label">Member Since</p>
+                <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.createdAt | date:'dd MMM yyyy' }}</h3>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="profile-section mgb-40">
+        <div class="section-title flex-jus-sb flex-al-ce mgb-20">
+            <div class="flex-al-ce g-10">
+                <div class="title-accent"></div>
+                <h2 class="font-30 font-w-600 std-header-font">Recent Users</h2>
+            </div>
+            <a class="view-all-link flex-al-ce g-10" routerLink="/admin/users">
+                <p class="std-tagline-font">
+                    View all{{ usersTotalItems > 0 ? ' (' + usersTotalItems + ')' : '' }}
+                </p>
+                <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+                    <p class="font-20">&nearr;</p>
+                </div>
+            </a>
+        </div>
+
+        @if(users.length === 0) {
+        <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+            <p class="empty-emoji">👥</p>
+            <h3 class="font-20 font-w-600 std-header-font">No users yet</h3>
+            <p class="std-tagline-font color-grey">Registered users will appear here.</p>
+        </div>
+        } @else {
+        <div class="list flex-dir g-10">
+            @for(user of users; track user.id) {
+            <app-user-card [user]="user"></app-user-card>
+            }
+        </div>
+        }
+    </div>
+
+    <app-footer></app-footer>
+</div>

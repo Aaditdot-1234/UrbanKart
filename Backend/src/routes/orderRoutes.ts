@@ -7,10 +7,9 @@ const orderRouter = Router();
 orderRouter.post('/create', OrderController.creationOfOrder);
 orderRouter.get('/get-all', OrderController.getAllOrders);
 orderRouter.get('/get-by-id/:orderId', OrderController.getOrderById);
-orderRouter.patch('/update-status', requireAdmin, OrderController.updateOrderStatus);
+orderRouter.patch('/update-status', OrderController.updateOrderStatus);
 orderRouter.get('/filter-by-date', OrderController.filterorderbyDate)
 orderRouter.get('/filter-by-status', OrderController.filterOrderByStatus)
-orderRouter.get('/filter-by-category', OrderController.filterOrderByCategory)
 
 
 export default orderRouter;

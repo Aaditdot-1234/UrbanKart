@@ -29,7 +29,7 @@ export class AuthController {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.status(200).json({ message: "Login Successful.", userWithoutPassword });
+        res.status(200).json({ message: "Login Successful.", user: userWithoutPassword });
     });
 
     static logout = asyncHandler(async (req: Request, res: Response) => {
@@ -46,7 +46,7 @@ export class AuthController {
     });
 
     static getOTP = asyncHandler(async (req: Request, res: Response) => {
-        const { email} = req.body;
+        const { email } = req.body;
         const otp = await AuthService.requestOTP(email);
         res.status(201).json({ message: "OTP generated successfully.", otp });
     });
@@ -67,28 +67,33 @@ export class AuthController {
         const [users, total] = await userRepo.findAndCount({
             skip: skip,
             take: limit,
-            order: {createdAt: 'DESC'}
+            order: { createdAt: 'DESC' }
         });
 
-        const totalPages = Math.ceil(total/limit);
-        res.status(200).json({ message: "Users fetched successfully.", users, meta: {
-            totalItems: total,
-            itemCount: users.length,
-            itemsPerPage: limit,
-            totalPages: totalPages,
-            currentPage: page,
-        } });
+        const totalPages = Math.ceil(total / limit);
+        res.status(200).json({
+            message: "Users fetched successfully.", users, meta: {
+                totalItems: total,
+                itemCount: users.length,
+                itemsPerPage: limit,
+                totalPages: totalPages,
+                currentPage: page,
+            }
+        });
     });
 
     static getUserById = asyncHandler(async (req: Request<{ userId: string }>, res: Response) => {
         const { userId } = req.params;
         const userRepo = AppDataSource.getRepository(Users);
         const user = await userRepo.findOne({ where: { id: userId } })
-        res.status(200).json({ message: "User fetched successfully.", user });
+        if (!user) throw new NotFound("User Not found");
+        const { passwordHash, ...userWithoutPassword } = user;
+        res.status(200).json({ message: "User fetched successfully.", user: userWithoutPassword });
     })
 
-    static updateUserInfo = asyncHandler(async (req: Request, res: Response) => {
+    static updateUserInfo = asyncHandler(async (req: Request<{}, any, { name?: string, phone?: string, email?: string }>, res: Response) => {
         const { name, phone, email } = req.body;
+        const modifiedEmail = email?.toLowerCase().trim();
         const loggedInUserInfo = (req as any).user;
         const userRepo = AppDataSource.getRepository(Users);
 
@@ -96,11 +101,27 @@ export class AuthController {
         if (!user) throw new NotFound("User Not found");
 
         user.name = name ?? user.name;
-        user.email = email ?? user.email;
+        user.email = modifiedEmail ?? user.email;
         user.phone = phone ?? user.phone;
 
         const savedUser = await userRepo.save(user);
         const { passwordHash, ...userWithoutPassword } = savedUser;
         res.status(200).json({ message: "User information updated successfully.", user: userWithoutPassword });
     });
+
+    static getLoggedInUserinfo = asyncHandler(async (req: Request, res: Response) => {
+        const user = (req as any).user;
+
+        if (!user) {
+            throw new NotFound("User not authenticated");
+        }
+
+        const userRepo = AppDataSource.getRepository(Users);
+        const foundUser = await userRepo.findOne({ where: { id: user.id } });
+
+        if (!foundUser) throw new NotFound("User Not found");
+
+        const { passwordHash, ...userWithoutPassword } = foundUser;
+        res.status(200).json({ message: "User information fetched successfully.", user: userWithoutPassword });
+    })
 }

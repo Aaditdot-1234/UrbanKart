@@ -1,0 +1,98 @@
+.user-card {
+    background-color: var(--bg);
+    border: 1px solid #e8e1dc;
+    border-radius: 16px;
+    padding: 16px 24px;
+    transition: box-shadow 0.2s ease;
+}
+
+.user-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    flex-shrink: 0;
+}
+
+.avatar-locked {
+    background-color: #e0e0e0;
+}
+
+.avatar-text {
+    font-size: 16px !important;
+    color: var(--text) !important;
+    font-weight: 600;
+}
+
+.card-email {
+    font-size: 13px !important;
+}
+
+.card-date {
+    font-size: 13px !important;
+    white-space: nowrap;
+}
+
+.role-badge {
+    background-color: var(--primary);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px !important;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+}
+
+.badge-active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-inactive {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.badge-locked {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.lock-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1.5px solid #c62828;
+    background-color: transparent;
+    color: #c62828;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.lock-btn:hover {
+    background-color: #c62828;
+    color: white;
+}
+
+.lock-btn.btn-unlock {
+    border-color: #2e7d32;
+    color: #2e7d32;
+}
+
+.lock-btn.btn-unlock:hover {
+    background-color: #2e7d32;
+    color: white;
+}

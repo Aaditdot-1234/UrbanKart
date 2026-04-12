@@ -17,23 +17,23 @@ export class LoginComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private auth:AuthService, private router: Router, private cart: CartService) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private cart: CartService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     })
   }
 
-  handleLogin(){
+  handleLogin() {
     this.auth.login(this.loginForm.value as Login).pipe(
       switchMap((loginRes) => {
         console.log(loginRes.message);
         return this.cart.getActiveCart();
       }),
-      takeUntil(this.destroy$)      
+      takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
-        console.log('Cart Loaded',response.message);
+        console.log('Cart Loaded', response.message);
         this.router.navigate(['/home']);
       },
       error: (err) => {
@@ -41,7 +41,7 @@ export class LoginComponent implements OnDestroy {
       }
     })
   }
-  
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

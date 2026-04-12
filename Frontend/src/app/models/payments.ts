@@ -1,3 +1,4 @@
+import { Meta } from "./auth";
 import { Order } from "./order";
 
 export interface Payments {
@@ -8,17 +9,18 @@ export interface Payments {
     payment_status: string;
     createdAt: string;
     updatedAt: string;
-    order: Pick<Order, 'order_id' | 'totalAmount' | 'status'> |  Order;
-} 
-
-export interface GetPayments{
-    success: boolean; 
-    message: string;
-    payments: Payments[];
+    order: Pick<Order, 'order_id' | 'totalAmount' | 'status'> | Order;
 }
 
-export interface GetByOrder{
+export interface GetPayments {
     success: boolean;
     message: string;
-    payments: Payments | Omit<Payments, 'order'>;
+    payments: Payments[];
+    meta: Meta;
+}
+
+export interface GetByOrder {
+    success: boolean;
+    message: string;
+    payment: Payments | Omit<Payments, 'order'>;
 }

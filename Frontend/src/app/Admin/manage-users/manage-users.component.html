@@ -1,0 +1,55 @@
+<div class="profile-page">
+
+    <div class="profile-header flex-jus-sb flex-al-ce">
+        <div class="flex-dir g-10">
+            <h1 class="font-40 font-w-600 std-header-font header-name">Manage Users</h1>
+            <p class="std-tagline-font header-sub">{{ totalItems }} total registered users</p>
+        </div>
+    </div>
+
+    <div class="profile-section mgb-40">
+        <div class="section-title flex-jus-sb flex-al-ce mgb-20">
+            <div class="flex-al-ce g-10">
+                <div class="title-accent"></div>
+                <h2 class="font-30 font-w-600 std-header-font">All Users</h2>
+            </div>
+            <p class="std-tagline-font color-grey">Page {{ currentPage }} of {{ totalPages }}</p>
+        </div>
+
+        @if(isLoading) {
+        <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+            <p class="std-tagline-font color-grey">Loading users...</p>
+        </div>
+        } @else if(users.length === 0) {
+        <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+            <p class="empty-emoji">👥</p>
+            <h3 class="font-20 font-w-600 std-header-font">No users found</h3>
+            <p class="std-tagline-font color-grey">Registered users will appear here.</p>
+        </div>
+        } @else {
+        <div class="list flex-dir g-10">
+            @for(user of users; track user.id) {
+            <app-user-card [user]="user" [showLockButton]="true" (lockToggled)="onLockToggled($event)"></app-user-card>
+            }
+        </div>
+
+        @if(totalPages > 1) {
+        <div class="pagination flex-al-ce flex-jus-ce g-10 mgt-30">
+            <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+                &larr;
+            </button>
+            @for(page of getPages(); track page) {
+            <button class="page-btn" [class.page-active]="page === currentPage" (click)="goToPage(page)">
+                {{ page }}
+            </button>
+            }
+            <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+                &rarr;
+            </button>
+        </div>
+        }
+        }
+    </div>
+
+    <app-footer></app-footer>
+</div>

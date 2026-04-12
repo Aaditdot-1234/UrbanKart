@@ -1,1 +1,153 @@
-<p>profile-page works!</p>
+<div class="profile-page">
+  <div class="form-overlay" [class.show]="isVisible" (click)="toggleVisibility()">
+  </div>
+
+  <div class="form-drawer" [class.show]="isVisible">
+    <app-user-update-form (close)="getToggleValue()"></app-user-update-form>
+  </div>
+
+  @if(userInfo) {
+  <div class="profile-header flex-jus-sb flex-al-ce">
+    <div class="flex-al-ce g-20">
+      <div class="avatar flex-jus-ce flex-al-ce">
+        <h1 class="std-header-font avatar-initials">{{ getInitials(userInfo.name) }}</h1>
+      </div>
+      <div class="flex-dir g-10">
+        <h1 class="font-40 font-w-600 std-header-font header-name">{{ userInfo.name }}</h1>
+        <div class="flex-al-ce g-10">
+          <span class="role-badge std-tagline-font">{{ userInfo.role | titlecase }}</span>
+          <div class="status-dot" [class.dot-active]="userInfo.isActive" [class.dot-inactive]="!userInfo.isActive">
+          </div>
+          <p class="std-tagline-font header-sub">{{ userInfo.isActive ? 'Active' : 'Inactive' }}</p>
+        </div>
+        <p class="std-tagline-font header-sub">Member since {{ userInfo.createdAt | date:'MMMM yyyy' }}</p>
+      </div>
+    </div>
+
+    <div class="flex-dir flex-jus-sb flex-al-ce g-40">
+      <div>
+        <button (click)="toggleVisibility()">Edit Profile</button>
+      </div>
+      <div class="header-stats flex-al-ce g-40">
+        <div class="stat-block flex-dir flex-al-ce g-10">
+          <h2 class="font-40 font-w-600 std-header-font header-name">{{ ordersTotalItems }}</h2>
+          <p class="std-tagline-font header-sub">Orders</p>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-block flex-dir flex-al-ce g-10">
+          <h2 class="font-40 font-w-600 std-header-font header-name">{{ paymentsTotalItems }}</h2>
+          <p class="std-tagline-font header-sub">Payments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-section mgb-40">
+    <div class="section-title flex-al-ce g-10 mgb-20">
+      <div class="title-accent"></div>
+      <h2 class="font-30 font-w-600 std-header-font">Personal Information</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Full Name</p>
+        <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.name }}</h3>
+      </div>
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Email Address</p>
+        <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.email }}</h3>
+      </div>
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Phone Number</p>
+        <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.phone || '—' }}</h3>
+      </div>
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Address</p>
+        <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.address || '—' }}</h3>
+      </div>
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Account Status</p>
+        <div class="flex-al-ce g-10">
+          <span class="status-badge" [ngClass]="userInfo.isActive ? 'status-delivered' : 'status-cancelled'">
+            {{ userInfo.isActive ? 'Active' : 'Inactive' }}
+          </span>
+          @if(userInfo.isLocked) {
+          <span class="status-badge status-cancelled">Locked</span>
+          }
+        </div>
+      </div>
+      <div class="info-card flex-dir g-10">
+        <p class="std-tagline-font color-grey field-label">Member Since</p>
+        <h3 class="font-20 font-w-600 std-header-font">{{ userInfo.createdAt | date:'dd MMM yyyy' }}</h3>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div class="profile-section mgb-40">
+    <div class="section-title flex-jus-sb flex-al-ce mgb-20">
+      <div class="flex-al-ce g-10">
+        <div class="title-accent"></div>
+        <h2 class="font-30 font-w-600 std-header-font">Recent Orders</h2>
+      </div>
+      @if(userInfo) {
+      <a class="view-all-link flex-al-ce g-10" [routerLink]="['/profile', userInfo.id, 'orders']">
+        <p class="std-tagline-font">
+          View all{{ ordersTotalItems > 0 ? ' (' + ordersTotalItems + ')' : '' }}
+        </p>
+        <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+          <p class="font-20">&nearr;</p>
+        </div>
+      </a>
+      }
+    </div>
+
+    @if(orders.length === 0) {
+    <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+      <p class="empty-emoji">📦</p>
+      <h3 class="font-20 font-w-600 std-header-font">No orders yet</h3>
+      <p class="std-tagline-font color-grey">Your order history will appear here once you make a purchase.</p>
+    </div>
+    } @else {
+    <div class="list flex-dir g-10">
+      @for(order of orders; track order.order_id) {
+      <app-order-card [order]="order"></app-order-card>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="profile-section mgb-40">
+    <div class="section-title flex-jus-sb flex-al-ce mgb-20">
+      <div class="flex-al-ce g-10">
+        <div class="title-accent"></div>
+        <h2 class="font-30 font-w-600 std-header-font">Recent Payments</h2>
+      </div>
+      @if(userInfo) {
+      <a class="view-all-link flex-al-ce g-10" [routerLink]="['/profile', userInfo.id, 'payments']">
+        <p class="std-tagline-font">
+          View all{{ paymentsTotalItems > 0 ? ' (' + paymentsTotalItems + ')' : '' }}
+        </p>
+        <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
+          <p class="font-20">&nearr;</p>
+        </div>
+      </a>
+      }
+    </div>
+
+    @if(payments.length === 0) {
+    <div class="empty-state flex-dir flex-al-ce flex-jus-ce g-20">
+      <p class="empty-emoji">💳</p>
+      <h3 class="font-20 font-w-600 std-header-font">No payments yet</h3>
+      <p class="std-tagline-font color-grey">Your payment history will appear here after your first transaction.</p>
+    </div>
+    } @else {
+    <div class="list flex-dir g-10">
+      @for(payment of payments; track payment.payment_id) {
+      <app-payments-card [payment]="payment"></app-payments-card>
+      }
+    </div>
+    }
+  </div>
+
+  <app-footer></app-footer>
+</div>

@@ -2,16 +2,18 @@ import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGenerate
 import { Orders } from "./Orders";
 
 export enum PaymentMethod {
-    Credit = 'Credit card',
-    Debit = 'Debit card',
+    Credit = 'Credit Card',
+    Debit = 'Debit Card',
     Cash = 'Cash on Delivery',
     Bank = 'Bank Transfer',
+    Online = 'Online',
     NotSelected = 'not selected'
 }
 
 export enum PaymentStatus {
     Pending = "pending",
     Completed = "completed",
+    Cancelled = 'cancelled',
     Refunded = "Refunded",
 }
 

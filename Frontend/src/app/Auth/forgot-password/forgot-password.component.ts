@@ -28,9 +28,9 @@ export class ForgotPasswordComponent {
         takeUntil(this.destroy$)
       ).subscribe({
         next: (res) => {
-          alert(`Your OTP is ${res.otp}`);
           this.router.navigate(['/auth/reset-password'], {
-            queryParams: { email: emailValue }
+            queryParams: { email: emailValue },
+            state: { otp: res.otp }
           });
         },
         error: (err) => {

@@ -1,24 +1,24 @@
 import { Meta, User } from "./auth";
 import { Product } from "./product";
 
-export interface Reviews {
+export interface Reviews<Tuser = User> {
     rating: number;
     comments: string;
-    user: Pick<User, 'id'> | User;
+    user: Tuser;
     product: Product;
     review_id: number;
     is_delted: boolean;
     createdAt: string;
-    updatedAt:string;
+    updatedAt: string;
 }
 
-export interface CreateReviews{
+export interface CreateReviews {
     message: string;
     review: Reviews;
 }
 
-export interface GetReviews{
+export interface GetReviews<Tuser = User> {
     message: string;
-    review: Omit<Reviews, 'product'>;
+    reviews: Omit<Reviews<Tuser>, 'product'>[];
     meta: Meta;
 }

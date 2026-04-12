@@ -14,12 +14,17 @@ export interface Product {
 }
 
 export interface CreateProduct{
-    name:string,
-    description:string,
-    price: number,
+    product_name: string,
+    product_description: string,
+    product_price: number,
     stock: number,
     subCategoryId: number,
     imageUrls: string[]
+}
+
+export interface UploadImagesRes {
+    message: string;
+    imagePaths: string[];
 }
 
 export interface CreateProductRes{

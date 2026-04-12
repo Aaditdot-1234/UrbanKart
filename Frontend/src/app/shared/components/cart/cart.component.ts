@@ -5,6 +5,7 @@ import { AsyncPipe } from '@angular/common';
 import { Product } from '../../../models/product';
 import { ToastService } from '../../services/toast.service';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -42,7 +43,7 @@ export class CartComponent implements OnInit, OnDestroy {
     }
   ]
 
-  constructor(public cart: CartService, private toast: ToastService) { }
+  constructor(public cart: CartService, private toast: ToastService, private router: Router) { }
 
   ngOnInit(): void {
     this.cart.cart$.pipe(
@@ -72,15 +73,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   updateCartItem(itemId: number, quantity: number, change: number) {
-    console.log(itemId);
     let changedQuantity = quantity + change;
-
-    // if (!itemId || isNaN(itemId)) {
-    //   console.error("Update failed: itemId is invalid", itemId);
-    //   return;
-    // }
-
-    console.log(itemId);
 
     if (changedQuantity > 0) {
       this.cart.updateCart(itemId, changedQuantity).pipe(
@@ -94,6 +87,10 @@ export class CartComponent implements OnInit, OnDestroy {
     else {
       this.removeCartItem(itemId);
     }
+  }
+
+  redirectTo() {
+    this.router.navigate(['/order']);
   }
 
   ngOnDestroy(): void {

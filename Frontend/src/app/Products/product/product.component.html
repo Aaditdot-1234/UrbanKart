@@ -1,64 +1,93 @@
-<div class="mgb-40">
-    <div class="product-page flex-al-fs flex-jus-fs pt-80 g-20">
+<div class="mgb-40 pt-80">
+
+    <div class="search-bar-wrapper pt-80">
+        <div class="search-bar">
+            <span class="search-icon">&#128269;</span>
+            <input type="text" placeholder="Search products, categories, types..." [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearchChange()" class="search-input" />
+            @if (searchQuery) {
+            <button class="clear-search" (click)="searchQuery = ''; onSearchChange()">&#x2715;</button>
+            }
+        </div>
+    </div>
+
+    <div class="product-page flex-al-fs flex-jus-fs g-20">
+
         <div class="filter-side-bar flex-dir flex-al-bs flex-jus-fs">
 
-            <div class="filter-section">
-                <label class="font-w-500 std-tagline-font">Sort By</label>
-                <div class="flex-jus-fs filter">
-                    <h2 class="font-w-500 std-header-font">Order</h2>
-                    <select name="sort" id="sort-select">
-                        <option value="best-selling">Best Selling</option>
-                        <option value="price-low-high">Price: Low to High</option>
-                        <option value="price-high-low">Price: High to Low</option>
-                        <option value="newest">Newest Arrivals</option>
-                    </select>
-                </div>
+            <div class="flex-al-ce flex-jus-fs mgb-40">
+                <h2 class="font-w-500 std-header-font">Filter</h2>
+                <p *appToggleVisibility="isFiltering" class="font-w-500 std-tagline-font clear-btn"
+                    (click)="clearFilters()">Clear all</p>
             </div>
 
-            <div class="filter-section mgt-20">
-                <label class="font-w-500 std-tagline-font">Availability</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-container font-w-500 std-tagline-font">
-                        <input type="checkbox" name="in-stock">
-                        <span class="checkmark"></span> In Stock
-                    </label>
-                    <label class="checkbox-container font-w-500 std-tagline-font">
-                        <input type="checkbox" name="out-stock">
-                        <span class="checkmark"></span> Out of Stock
-                    </label>
-                </div>
+            @if (selectedCategoryIds.length > 0) {
+            <div class="filter-section mgb-20">
+                <label class="font-w-500 std-header-font">Category</label>
+                <p class="active-filter-badge font-w-500 std-tagline-font">
+                    Category filter active
+                    <button class="remove-badge"
+                        (click)="selectedCategoryIds = []; router.navigate([], {queryParams:{}}); applyFilters(1)">&#x2715;</button>
+                </p>
             </div>
+            }
 
             <div class="filter-section mgt-20">
                 <label class="font-w-500 std-header-font">Price Range</label>
                 <div class="price-inputs flex-al-ce">
-                    <input type="number" placeholder="Min" class="price-field">
-                    <span>-</span>
-                    <input type="number" placeholder="Max" class="price-field">
+                    <input type="number" placeholder="Min" class="price-field" [(ngModel)]="minPrice"
+                        (change)="onPriceChange()" min="0" />
+                    <span>–</span>
+                    <input type="number" placeholder="Max" class="price-field" [(ngModel)]="maxPrice"
+                        (change)="onPriceChange()" min="0" />
                 </div>
             </div>
 
             <div class="filter-section mgt-20">
                 <label class="font-w-500 std-header-font">Subcategories</label>
                 <div class="checkbox-group scrollable-list">
+                    @for (sub of subCategories; track sub.subcategory_id) {
                     <label class="checkbox-container font-w-500 std-tagline-font">
-                        <input type="checkbox"> <span class="checkmark"></span> Electronics
+                        <input type="checkbox" [checked]="isSubCategorySelected(sub.subcategory_id)"
+                            (change)="onSubCategoryToggle(sub.subcategory_id, $any($event.target).checked)" />
+                        <span class="checkmark"></span>
+                        {{ sub.subcategory_name }}
                     </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filter-section mgt-20">
+                <label class="font-w-500 std-header-font">Types</label>
+                <div class="checkbox-group scrollable-list">
+                    @for (type of types; track type.type_id) {
                     <label class="checkbox-container font-w-500 std-tagline-font">
-                        <input type="checkbox"> <span class="checkmark"></span> Fashion
+                        <input type="checkbox" [checked]="isTypeSelected(type.type_id)"
+                            (change)="onTypeToggle(type.type_id, $any($event.target).checked)" />
+                        <span class="checkmark"></span>
+                        {{ type.type_name }}
                     </label>
-                    <label class="checkbox-container font-w-500 std-tagline-font">
-                        <input type="checkbox"> <span class="checkmark"></span> Home Decor
-                    </label>
+                    }
                 </div>
             </div>
         </div>
-        <div class="product-container flex-al-fs flex-jus-fs flex-wrap g-20">
-            @for (product of products; track $index) {
-            <app-product-card [productInfo]="product" class="product-card"></app-product-card>
-            }
+
+        <div class="product-container flex-dir">
+            <p class="results-count font-w-500 std-tagline-font">
+                {{ totalItems }} product{{ totalItems !== 1 ? 's' : '' }} found
+            </p>
+            <div class="product-grid flex-al-fs flex-jus-fs flex-wrap g-20">
+                @for (product of products; track product.product_id) {
+                <app-product-card [productInfo]="product" class="product-card"></app-product-card>
+                }
+                @if (products.length === 0) {
+                <p class="no-results font-w-500 std-tagline-font">No products match your filters.</p>
+                }
+            </div>
         </div>
     </div>
-    <app-pagination [totalPages]="totalPages" [currentPage]="currentPage" (pageChange)="handlePageChange($event)"></app-pagination>
+
+    <app-pagination [totalPages]="totalPages" [currentPage]="currentPage" (pageChange)="handlePageChange($event)">
+    </app-pagination>
 </div>
 <app-footer></app-footer>

@@ -1,0 +1,78 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="product_name">Product Name</label>
+    <input id="product_name" type="text" formControlName="product_name" />
+    @if (form.get('product_name')?.invalid && form.get('product_name')?.touched) {
+      <span class="error">Product name is required (max 150 chars).</span>
+    }
+  </div>
+
+  <div>
+    <label for="product_description">Description</label>
+    <textarea id="product_description" formControlName="product_description" rows="4"></textarea>
+    @if (form.get('product_description')?.invalid && form.get('product_description')?.touched) {
+      <span class="error">Description is required.</span>
+    }
+  </div>
+
+  <div>
+    <label for="product_price">Price</label>
+    <input id="product_price" type="number" formControlName="product_price" min="0" step="0.01" />
+    @if (form.get('product_price')?.invalid && form.get('product_price')?.touched) {
+      <span class="error">A valid price is required.</span>
+    }
+  </div>
+
+  <div>
+    <label for="stock">Stock</label>
+    <input id="stock" type="number" formControlName="stock" min="0" />
+    @if (form.get('stock')?.invalid && form.get('stock')?.touched) {
+      <span class="error">Stock quantity is required.</span>
+    }
+  </div>
+
+  <div>
+    <label for="subCategoryId">Subcategory</label>
+    <select id="subCategoryId" formControlName="subCategoryId">
+      <option [ngValue]="null">Keep existing subcategory</option>
+      @for (sub of subCategories; track sub.subcategory_id) {
+        <option [ngValue]="sub.subcategory_id">{{ sub.subcategory_name }}</option>
+      }
+    </select>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" [(ngModel)]="replaceImages" [ngModelOptions]="{standalone: true}" />
+      Replace product images
+    </label>
+
+    @if (replaceImages) {
+      <input type="file" multiple accept="image/*" (change)="onFilesSelected($event)" />
+      <p class="hint">First image will be set as primary. Max 5 images.</p>
+
+      @if (previewUrls.length > 0) {
+        <div class="previews">
+          @for (url of previewUrls; track $index) {
+            <div class="preview-item">
+              <img [src]="url" alt="preview" />
+              @if ($index === 0) { <span class="primary-badge">Primary</span> }
+              <button type="button" (click)="removeFile($index)">Remove</button>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <div class="actions">
+    <button type="button" (click)="cancelled.emit()" [disabled]="loading">Cancel</button>
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Updating...' : 'Update Product' }}
+    </button>
+  </div>
+</form>

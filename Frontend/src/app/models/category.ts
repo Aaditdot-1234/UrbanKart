@@ -8,7 +8,7 @@ export interface Types {
     updatedAt: string,
 }
 
-export interface GetTypes{
+export interface GetTypes {
     message: string,
     types: Types[];
 }
@@ -21,7 +21,7 @@ export interface Categories {
     updatedAt: string,
 }
 
-export interface GetCategories{
+export interface GetCategories {
     message: string,
     categories: Categories[];
     meta: Meta;
@@ -35,31 +35,37 @@ export interface SubCategories {
     updatedAt: string,
 }
 
-export interface GetSubCategories{
+export interface GetSubCategories {
     message: string,
-    subCatgeories: SubCategories[];
+    subCategories: SubCategories[];
     meta: Meta
 }
 
-export interface ExtendedCategoriesWithTypes extends Categories{
+export interface ExtendedCategoriesWithTypes extends Categories {
     types: Types;
 }
 
-export interface ExtendedSubCategoriesWithCategories extends SubCategories{
+export interface ExtendedSubCategoriesWithCategories extends SubCategories {
     categories: ExtendedCategoriesWithTypes;
 }
 
-export interface ExtendedProductWithSubCategories extends Product{
+export interface ExtendedProductWithSubCategories extends Product {
     subCategories: ExtendedSubCategoriesWithCategories;
 }
 
-export interface CategoriesByProduct{
+export interface CategoriesByProduct {
     message: string,
     product: ExtendedProductWithSubCategories[];
     meta: Meta,
 }
 
-export interface CategoryByProduct{
+export interface FilterProducts {
+    message: string,
+    products: ExtendedProductWithSubCategories[];
+    meta: Meta,
+}
+
+export interface CategoryByProduct {
     message: string,
     product: ExtendedProductWithSubCategories;
 }

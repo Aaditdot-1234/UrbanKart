@@ -10,11 +10,21 @@ export interface ProductRequest {
     product_price: number;
     stock: number;
     subCategoryId: number;
-    imageUrls: ProductImages[];
+    imageUrls: string[];
+}
+
+export interface ProductUpdateRequest {
+    product_name?: string;
+    product_description?: string;
+    product_price?: number;
+    stock?: number;
+    subCategoryId?: number;
+    imageUrls?: string[];
 }
 
 export class ProductService {
     private static productRepo = AppDataSource.getRepository(Products);
+    private static imageRepo = AppDataSource.getRepository(ProductImages);
 
     static async createProduct(data: ProductRequest) {
         const {
@@ -25,7 +35,6 @@ export class ProductService {
             subCategoryId,
             imageUrls
         } = data;
-        console.log(data);
 
         const subCategory = await AppDataSource
             .getRepository(SubCategories)
@@ -33,7 +42,9 @@ export class ProductService {
 
         if (!subCategory) throw new Error("Subcategory not found");
 
-        console.log(subCategory);
+        const productImages = imageUrls.map((path, index) =>
+            this.imageRepo.create({ image_path: path, is_primary: index === 0 })
+        );
 
         const product = this.productRepo.create({
             product_name,
@@ -41,26 +52,41 @@ export class ProductService {
             product_price,
             stock,
             subCategories: subCategory,
-            productImages: imageUrls
+            productImages
         });
 
         const savedProduct = await this.productRepo.save(product);
         return savedProduct;
     }
 
-    static async updateProduct(id: number, data: Partial<Products>) {
+    static async updateProduct(id: number, data: ProductUpdateRequest) {
         const product = await this.productRepo.findOne({
-            where: { product_id: id }
+            where: { product_id: id },
+            relations: ['productImages']
         });
 
         if (!product) throw new NotFound("Product not found");
 
-        product.product_name = data.product_name ?? product.product_name;
-        product.product_description = data.product_description ?? product.product_description;
-        product.product_price = data.product_price ?? product.product_price;
-        product.stock = data.stock ?? product.stock;
-        product.subCategories = data.subCategories ?? product.subCategories;
-        product.productImages = data.productImages ?? product.productImages;
+        if (data.product_name !== undefined) product.product_name = data.product_name;
+        if (data.product_description !== undefined) product.product_description = data.product_description;
+        if (data.product_price !== undefined) product.product_price = data.product_price;
+        if (data.stock !== undefined) product.stock = data.stock;
+
+        if (data.subCategoryId !== undefined) {
+            const subCategory = await AppDataSource
+                .getRepository(SubCategories)
+                .findOneBy({ subcategory_id: Number(data.subCategoryId) });
+            if (!subCategory) throw new Error("Subcategory not found");
+            product.subCategories = subCategory;
+        }
+
+        if (data.imageUrls !== undefined) {
+            // Delete old images and replace with new ones
+            await this.imageRepo.delete({ product: { product_id: id } });
+            product.productImages = data.imageUrls.map((path, index) =>
+                this.imageRepo.create({ image_path: path, is_primary: index === 0 })
+            );
+        }
 
         const savedProduct = await this.productRepo.save(product);
         return savedProduct;

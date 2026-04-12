@@ -17,7 +17,7 @@
                     </div>
                     <div class="flex-jus-sb flex-al-end">
                         <div class="std-tagline-font circle arrow flex-al-ce flex-jus-ce">
-                            <p routerLink="/products" class="font-20">&nearr;</p>
+                            <p [routerLink]="['/products']" [queryParams]="{ categoryId: category.category_id }" class="font-20">&nearr;</p>
                         </div>
                     </div>
                 </div>

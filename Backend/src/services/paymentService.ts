@@ -17,7 +17,7 @@ export class PaymentService {
             throw new UnauthorisedError('You are not authorized to access this payment');
         }
         return await AppDataSource.getRepository(Payments).createQueryBuilder('payments')
-            .leftJoinAndSelect('payments.order','order')
+            .leftJoinAndSelect('payments.order', 'order')
             .select([
                 'payments.payment_id',
                 'payments.amount_paid',
@@ -30,11 +30,11 @@ export class PaymentService {
                 'order.totalAmount',
                 'order.status'
             ])
-            .where('payments.payment_id = :id', {id: payment.payment_id})
+            .where('payments.payment_id = :id', { id: payment.payment_id })
             .getOne();
     }
 
-    static async getPaymentsByUser(userId: string, limit: number, skip:number) {
+    static async getPaymentsByUser(userId: string, limit: number, skip: number) {
         return await this.paymentRepo.findAndCount({
             skip: skip,
             take: limit,
@@ -43,7 +43,7 @@ export class PaymentService {
         });
     }
 
-    static async getAllPayments(limit:number, skip: number, status?: PaymentStatus, method?: PaymentMethod): Promise<[Payments[], number]> {
+    static async getAllPayments(limit: number, skip: number, status?: PaymentStatus, method?: PaymentMethod): Promise<[Payments[], number]> {
         const qb = this.paymentRepo.createQueryBuilder('payment')
             .leftJoinAndSelect('payment.order', 'order');
 
@@ -54,52 +54,6 @@ export class PaymentService {
         return await qb.getManyAndCount();
     }
 
-    static async updatePaymentStatus(paymentId: number, userId: string, newStatus: PaymentStatus) {
-        const queryRunner = AppDataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        try {
-            const payment = await queryRunner.manager.findOne(Payments, {
-                where: { payment_id: paymentId },
-                relations: ['order', 'order.user']
-            });
-
-            if (!payment) throw new NotFound("Payment not found");
-            // if (payment.order.user.id !== userId) {
-            //     throw new UnauthorisedError("Not authorized to update this payment");
-            // }
-            if (!Object.values(PaymentStatus).includes(newStatus)) {
-                throw new ValidationError("Invalid payment status");
-            }
-            if ([PaymentStatus.Completed, PaymentStatus.Refunded].includes(payment.payment_status)) {
-                throw new ValidationError(`Cannot update a ${payment.payment_status} payment.`);
-            }
-
-            payment.payment_status = newStatus;
-
-            if (payment.payment_method === PaymentMethod.Cash) {
-                if (newStatus === PaymentStatus.Completed) payment.order.status = OrderStatus.Delivered;
-                else if (newStatus === PaymentStatus.Refunded) payment.order.status = OrderStatus.Cancelled;
-                else payment.order.status = OrderStatus.Pending;
-            } 
-            else {
-                if (newStatus === PaymentStatus.Completed) payment.order.status = OrderStatus.Shipped;
-                else if (newStatus === PaymentStatus.Refunded) payment.order.status = OrderStatus.Cancelled;
-                else payment.order.status = OrderStatus.Pending;
-            }
-
-            await queryRunner.manager.save(payment.order);
-            await queryRunner.manager.save(payment);
-            await queryRunner.commitTransaction();
-            return payment;
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-            throw error;
-        } finally {
-            await queryRunner.release();
-        }
-    }
 
     static async getPaymentById(paymentId: number) {
         const payment = await this.paymentRepo.findOne({ where: { payment_id: paymentId } });

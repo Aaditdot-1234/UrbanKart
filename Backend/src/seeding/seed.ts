@@ -547,10 +547,10 @@ export async function seed(dataSource: DataSource) {
             { status: OrderStatus.Delivered, payMethod: PaymentMethod.Cash, payStatus: PaymentStatus.Completed },
             { status: OrderStatus.Delivered, payMethod: PaymentMethod.Bank, payStatus: PaymentStatus.Completed },
             // Shipped + paid online (completed) or COD (still pending)
-            { status: OrderStatus.Shipped, payMethod: PaymentMethod.Credit, payStatus: PaymentStatus.Completed },
-            { status: OrderStatus.Shipped, payMethod: PaymentMethod.Debit, payStatus: PaymentStatus.Completed },
-            { status: OrderStatus.Shipped, payMethod: PaymentMethod.Cash, payStatus: PaymentStatus.Pending },
-            { status: OrderStatus.Shipped, payMethod: PaymentMethod.Bank, payStatus: PaymentStatus.Completed },
+            { status: OrderStatus.Completed, payMethod: PaymentMethod.Credit, payStatus: PaymentStatus.Completed },
+            { status: OrderStatus.Completed, payMethod: PaymentMethod.Debit, payStatus: PaymentStatus.Completed },
+            { status: OrderStatus.Completed, payMethod: PaymentMethod.Cash, payStatus: PaymentStatus.Pending },
+            { status: OrderStatus.Completed, payMethod: PaymentMethod.Bank, payStatus: PaymentStatus.Completed },
             // Pending order - paid online (processing) or unpaid COD/bank
             { status: OrderStatus.Pending, payMethod: PaymentMethod.Credit, payStatus: PaymentStatus.Completed },
             { status: OrderStatus.Pending, payMethod: PaymentMethod.Debit, payStatus: PaymentStatus.Completed },

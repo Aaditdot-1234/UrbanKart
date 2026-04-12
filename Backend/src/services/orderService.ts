@@ -57,20 +57,20 @@ export class OrderService {
                     order: order,
                 })
             })
-            
-            for(const item of activeCart.cartItems){
+
+            for (const item of activeCart.cartItems) {
                 const updateResult = await queryRunner.manager.createQueryBuilder()
                     .update(Products)
                     .set({
                         stock: () => 'stock - :quantity'
                     })
-                    .where('product_id = :id', {id:item.product.product_id})
-                    .andWhere('stock >= :quantity', {quantity: item.quantity})
+                    .where('product_id = :id', { id: item.product.product_id })
+                    .andWhere('stock >= :quantity', { quantity: item.quantity })
                     .setParameter('quantity', item.quantity)
                     .execute();
 
-                if(updateResult.affected === 0){
-                    throw new ValidationError (`Product ${item.product.product_name} is out of stock.`);
+                if (updateResult.affected === 0) {
+                    throw new ValidationError(`Product ${item.product.product_name} is out of stock.`);
                 }
             }
 
@@ -129,7 +129,7 @@ export class OrderService {
     static async getOrderById(orderId: number) {
         const order = await this.orderRepo.findOne({
             where: { order_id: orderId },
-            relations: ['orderProducts', 'orderProducts.product']
+            relations: ['orderProducts', 'orderProducts.product', 'address']
         });
         if (!order) throw new NotFound("Order not found");
         return order;
@@ -157,37 +157,39 @@ export class OrderService {
             .getManyAndCount();
     }
 
-    static async filterByCategory(userId: string, category: string, limit: number, skip: number) {
-        const qb = AppDataSource.getRepository(Orders).createQueryBuilder('orders')
-        return qb
-            .leftJoin('orders.orderProducts', 'orderProducts')
-            .leftJoin('orderProducts.product', 'product')
-            .leftJoin('product.subCategories', 'subCategory')
-            .leftJoin('subCategory.categories', 'category')
-            .leftJoin('category.types', 'type')
-            .select(['orders.order_id', 'orders.totalAmount', 'orders.status', 'orders.createdAt', 'orders.updatedAt'])
-            .where('orders.user_id = :userId', { userId })
-            .andWhere('category.category_name LIKE :cat OR subCategory.subcategory_name LIKE :cat OR type.type_name LIKE :cat', { cat: `%${category}%` })
-            .orderBy('orders.createdAt', 'DESC')
-            .skip(skip)
-            .take(limit)
-            .getManyAndCount();
-    }
-
-    static async updateStatus(orderId: number, paymentId: number) {
+    static async updateStatus(orderId: number, payment_method: string) {
         const order = await this.orderRepo.findOne({
             where: { order_id: orderId },
             relations: ['payment']
         });
 
         if (!order) throw new NotFound("Order");
-        if (order.status === OrderStatus.Delivered || order.status === OrderStatus.Cancelled) {
+        if (order.status === OrderStatus.Delivered || order.status === OrderStatus.Cancelled || order.status === OrderStatus.Completed) {
             throw new ValidationError(`Cannot update a ${order.status} order.`);
         }
 
         order.status = OrderStatus.Completed;
 
-        order.payment.payment_status = PaymentStatus.Completed;
+        if (payment_method === 'Cash on Delivery') {
+            order.payment.payment_method = PaymentMethod.Cash;
+        } else if (payment_method === 'Online') {
+            order.payment.payment_method = PaymentMethod.Online;
+        } else if (payment_method === 'Bank Transfer') {
+            order.payment.payment_method = PaymentMethod.Bank;
+        } else if (payment_method === 'Debit Card') {
+            order.payment.payment_method = PaymentMethod.Debit;
+        } else if (payment_method === 'Credit Card') {
+            order.payment.payment_method = PaymentMethod.Credit;
+        } else {
+            throw new ValidationError("Invalid payment method");
+        }
+
+        if (order.payment.payment_method === PaymentMethod.Cash) {
+            order.payment.payment_status = PaymentStatus.Pending;
+        } else {
+            order.payment.payment_status = PaymentStatus.Completed;
+            order.payment.payment_date = new Date();
+        }
 
         return await this.orderRepo.save(order);
     }
