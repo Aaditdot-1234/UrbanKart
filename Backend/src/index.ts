@@ -59,15 +59,17 @@ async function main() {
     app.use('/api/order', requireAuth, orderRouter);
     app.use('/api/payment', requireAuth, paymentRoutes);
     app.use('/api/review', reviewRoutes);
+    app.use('/api/images', images);
     app.use('/Images', express.static(path.join(__dirname, '../productImages')));
 
-    app.use(errorHandler);
-
+    
     const publicPath = path.join(__dirname, 'public')
     app.use(express.static(publicPath))
     app.get('/{*path}', (req,res) => {
         res.sendFile(path.join(publicPath, 'index.html'))
     })
+    
+    app.use(errorHandler);
 
     app.listen(3000, () => console.log('Server is running on http://localhost:3000'));
 }

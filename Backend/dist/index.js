@@ -23,8 +23,8 @@ const seed_1 = require("./seeding/seed");
 const passport_1 = __importDefault(require("passport"));
 require("./auth/passport");
 require("./cronjob/cronjob");
+const imagesController_1 = __importDefault(require("./controllers/imagesController"));
 const path_1 = __importDefault(require("path"));
-const ratelimiter_1 = require("./middleware/ratelimiter");
 async function main() {
     await datasource_1.default.initialize();
     const app = (0, express_1.default)();
@@ -45,7 +45,7 @@ async function main() {
     app.use(express_1.default.json());
     app.use((0, cookie_parser_1.default)());
     app.use(passport_1.default.initialize());
-    app.use(ratelimiter_1.globalLimiter);
+    // app.use(globalLimiter);
     app.use('/api/auth', authRoutes_1.default);
     app.use('/api/category', categoryRoutes_1.default);
     app.use('/api/product', productRoutes_1.default);
@@ -54,13 +54,14 @@ async function main() {
     app.use('/api/order', authMidlleware_1.requireAuth, orderRoutes_1.default);
     app.use('/api/payment', authMidlleware_1.requireAuth, paymentRoutes_1.default);
     app.use('/api/review', reviewRoutes_1.default);
-    app.use('/api/images', express_1.default.static('public'));
-    app.use(errorHandler_1.errorHandler);
+    app.use('/api/images', imagesController_1.default);
+    app.use('/Images', express_1.default.static(path_1.default.join(__dirname, '../productImages')));
     const publicPath = path_1.default.join(__dirname, 'public');
     app.use(express_1.default.static(publicPath));
     app.get('/{*path}', (req, res) => {
         res.sendFile(path_1.default.join(publicPath, 'index.html'));
     });
+    app.use(errorHandler_1.errorHandler);
     app.listen(3000, () => console.log('Server is running on http://localhost:3000'));
 }
 main();

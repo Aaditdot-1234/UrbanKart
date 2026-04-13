@@ -81,7 +81,6 @@ export class ProductService {
         }
 
         if (data.imageUrls !== undefined) {
-            // Delete old images and replace with new ones
             await this.imageRepo.delete({ product: { product_id: id } });
             product.productImages = data.imageUrls.map((path, index) =>
                 this.imageRepo.create({ image_path: path, is_primary: index === 0 })

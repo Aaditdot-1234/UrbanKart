@@ -17,7 +17,7 @@ class ProductService {
             .findOneBy({ subcategory_id: Number(subCategoryId) });
         if (!subCategory)
             throw new Error("Subcategory not found");
-        const productImages = imageUrls.map((path, index) => this.imageRepo.create({ image_path: path, is_primary: index === 0 }));
+        const productImages = imageUrls.map((url, index) => this.imageRepo.create({ image_path: url, is_primary: index === 0 }));
         const product = this.productRepo.create({
             product_name,
             product_description,
@@ -53,7 +53,6 @@ class ProductService {
             product.subCategories = subCategory;
         }
         if (data.imageUrls !== undefined) {
-            // Delete old images and replace with new ones
             await this.imageRepo.delete({ product: { product_id: id } });
             product.productImages = data.imageUrls.map((path, index) => this.imageRepo.create({ image_path: path, is_primary: index === 0 }));
         }
