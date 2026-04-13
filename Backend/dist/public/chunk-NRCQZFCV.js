@@ -1,1 +1,1 @@
-import"./chunk-2NFLSA4Y.js";var t=[{path:":id/dashboard",loadComponent:()=>import("./chunk-HGA6C2UQ.js").then(o=>o.DashboardComponent)},{path:"users",loadComponent:()=>import("./chunk-PFQ25OHS.js").then(o=>o.ManageUsersComponent)}];export{t as ADMINROUTES};
+import "./chunk-2NFLSA4Y.js"; var t = [{ path: ":id/dashboard", loadComponent: () => import("./chunk-HGA6C2UQ.js").then(o => o.DashboardComponent) }, { path: "users", loadComponent: () => import("./chunk-PFQ25OHS.js").then(o => o.ManageUsersComponent) }]; export { t as ADMINROUTES };
