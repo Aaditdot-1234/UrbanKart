@@ -13,6 +13,27 @@ export class OrderController {
         res.status(200).json({ message: "Order created successfully.", order });
     });
 
+    static creationOfDirectOrder = asyncHandler(async (req: Request, res: Response) => {
+        const { addressId, productId, quantity } = req.body as {
+            addressId: number,
+            productId: number,
+            quantity: number
+        };
+
+        const loggedInUserInfo = req.user as Users;
+        const order = await OrderService.createDirectOrder(
+            loggedInUserInfo.id,
+            addressId,
+            productId,
+            quantity
+        );
+
+        res.status(201).json({
+            message: "Direct order created successfully.",
+            order
+        });
+    });
+
     static getAllOrders = asyncHandler(async (req: Request, res: Response) => {
         const loggedInUserInfo = req.user as Users;
         const page = parseInt(req.query.page as string) || 1;

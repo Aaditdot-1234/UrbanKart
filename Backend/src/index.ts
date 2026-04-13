@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import AppDataSource from "./datasource";
 import express from 'express';
 import cors from 'cors';
@@ -18,6 +19,8 @@ import passport from "passport";
 import "./auth/passport";
 import './cronjob/cronjob';
 import images from "./controllers/imagesController";
+import path from "path";
+import { globalLimiter } from "./middleware/ratelimiter";
 
 async function main() {
     await AppDataSource.initialize();
@@ -46,17 +49,25 @@ async function main() {
     app.use(cookieParser());
     app.use(passport.initialize());
 
-    app.use('/auth', authRouter);
-    app.use('/category', categoryRouter);
-    app.use('/product', productRouter);
-    app.use('/cart', requireAuth, cartRouter);
-    app.use('/address', requireAuth, addressRouter);
-    app.use('/order', requireAuth, orderRouter);
-    app.use('/payment', requireAuth, paymentRoutes);
-    app.use('/review', reviewRoutes);
-    app.use('/images', express.static('public'));
+    app.use(globalLimiter);
+
+    app.use('/api/auth', authRouter);
+    app.use('/api/category', categoryRouter);
+    app.use('/api/product', productRouter);
+    app.use('/api/cart', requireAuth, cartRouter);
+    app.use('/api/address', requireAuth, addressRouter);
+    app.use('/api/order', requireAuth, orderRouter);
+    app.use('/api/payment', requireAuth, paymentRoutes);
+    app.use('/api/review', reviewRoutes);
+    app.use('/api/images', express.static('public'));
 
     app.use(errorHandler);
+
+    const publicPath = path.join(__dirname, 'public')
+    app.use(express.static(publicPath))
+    app.get('/{*path}', (req,res) => {
+        res.sendFile(path.join(publicPath, 'index.html'))
+    })
 
     app.listen(3000, () => console.log('Server is running on http://localhost:3000'));
 }

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const paymentController_1 = require("../controllers/paymentController");
+const authMidlleware_1 = require("../middleware/authMidlleware");
+const paymentRoutes = (0, express_1.Router)();
+paymentRoutes.get('/get-all', authMidlleware_1.requireAdmin, paymentController_1.PaymentController.getAllPayments);
+paymentRoutes.get('/get-by-id/:paymentId', authMidlleware_1.requireAdmin, paymentController_1.PaymentController.getPaymentById);
+paymentRoutes.get('/get-by-order/:orderId', paymentController_1.PaymentController.getPaymentByOrder);
+paymentRoutes.get('/get-my-payments', paymentController_1.PaymentController.getMyPayments);
+exports.default = paymentRoutes;

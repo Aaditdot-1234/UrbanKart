@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authController_1 = require("../controllers/authController");
+const authMidlleware_1 = require("../middleware/authMidlleware");
+const authRouter = (0, express_1.Router)();
+authRouter.post('/register', authController_1.AuthController.register);
+authRouter.post('/login', authController_1.AuthController.login);
+authRouter.post('/logout', authMidlleware_1.requireAuth, authController_1.AuthController.logout);
+authRouter.get('/users', authMidlleware_1.requireAuth, authMidlleware_1.requireAdmin, authController_1.AuthController.getAllUsers);
+authRouter.get('/users/:userId', authMidlleware_1.requireAuth, authController_1.AuthController.getUserById);
+authRouter.patch('/getOTP', authController_1.AuthController.getOTP);
+authRouter.patch('/users/:userId/lock', authMidlleware_1.requireAuth, authMidlleware_1.requireAdmin, authController_1.AuthController.lockUserAccount);
+authRouter.patch('/forgot-password', authController_1.AuthController.forgotPassword);
+authRouter.patch('/users/update-info', authMidlleware_1.requireAuth, authController_1.AuthController.updateUserInfo);
+authRouter.get('/users/me', authMidlleware_1.requireAuth, authController_1.AuthController.getLoggedInUserinfo);
+exports.default = authRouter;

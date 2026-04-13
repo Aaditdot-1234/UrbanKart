@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authMidlleware_1 = require("../middleware/authMidlleware");
+const productController_1 = require("../controllers/productController");
+const productRouter = (0, express_1.Router)();
+productRouter.post('/create', authMidlleware_1.requireAuth, authMidlleware_1.requireAdmin, productController_1.ProductController.createProduct);
+productRouter.patch('/update/:id', authMidlleware_1.requireAuth, authMidlleware_1.requireAdmin, productController_1.ProductController.updateProduct);
+productRouter.delete('/delete/:id', authMidlleware_1.requireAuth, authMidlleware_1.requireAdmin, productController_1.ProductController.deleteProduct);
+productRouter.get('/get-all', productController_1.ProductController.getAllProducts);
+productRouter.get('/get-by-id/:id', productController_1.ProductController.getProductById);
+exports.default = productRouter;

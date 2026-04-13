@@ -117,6 +117,91 @@ export class OrderService {
         }
     }
 
+    static async createDirectOrder(userId: string, addressId: number, productId: number, quantity: number) {
+        const queryRunner = AppDataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const user = await queryRunner.manager.findOne(Users, { where: { id: userId } });
+            const product = await queryRunner.manager.findOne(Products, { where: { product_id: productId } });
+
+            if (!user) throw new NotFound("User not found");
+            if (!product) throw new NotFound("Product not found");
+            if (quantity <= 0) throw new ValidationError("Quantity must be at least 1.");
+
+            const chosenAddress = await queryRunner.manager.findOne(Address, {
+                where: { address_id: addressId, user: { id: userId } }
+            });
+            if (!chosenAddress) throw new NotFound("Address not found.");
+
+            const totalAmount = Number(product.product_price) * quantity;
+
+            const order = queryRunner.manager.create(Orders, {
+                user,
+                totalAmount,
+                status: OrderStatus.Pending,
+                address: chosenAddress,
+            });
+            await queryRunner.manager.save(order);
+
+            const orderItem = queryRunner.manager.create(OrderedProducts, {
+                quantity: quantity,
+                product: product,
+                price: product.product_price,
+                order: order,
+            });
+            await queryRunner.manager.save(orderItem);
+
+            const updateResult = await queryRunner.manager.createQueryBuilder()
+                .update(Products)
+                .set({ stock: () => `stock - ${quantity}` })
+                .where('product_id = :id', { id: productId })
+                .andWhere('stock >= :quantity', { quantity })
+                .execute();
+
+            if (updateResult.affected === 0) {
+                throw new ValidationError(`Product ${product.product_name} is out of stock or insufficient quantity.`);
+            }
+
+            const payment = queryRunner.manager.create(Payments, {
+                order: order,
+                amount_paid: totalAmount,
+                payment_date: new Date(),
+                payment_method: PaymentMethod.NotSelected,
+                payment_status: PaymentStatus.Pending
+            });
+            await queryRunner.manager.save(payment);
+
+            await queryRunner.commitTransaction();
+
+            return await AppDataSource.getRepository(Orders).createQueryBuilder('orders')
+                .leftJoinAndSelect('orders.orderProducts', 'items')
+                .leftJoinAndSelect('items.product', 'product')
+                .leftJoinAndSelect('orders.address', 'address')
+                .select([
+                    'orders.order_id',
+                    'orders.totalAmount',
+                    'orders.status',
+                    'orders.createdAt',
+                    'items.quantity',
+                    'items.price',
+                    'product.product_name',
+                    'address.address'
+                ])
+                .where('orders.order_id = :id', { id: order.order_id })
+                .getOne();
+
+        } catch (error) {
+            if (queryRunner.isTransactionActive) {
+                await queryRunner.rollbackTransaction();
+            }
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
     static async getOrdersByUser(userId: string, skip: number, limit: number) {
         return await this.orderRepo.findAndCount({
             skip: skip,
