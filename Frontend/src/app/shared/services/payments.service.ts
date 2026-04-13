@@ -6,7 +6,7 @@ import { GetByOrder, GetPayments } from '../../models/payments';
   providedIn: 'root'
 })
 export class PaymentsService {
-  private apiUrl = "http://localhost:3000/payment"
+  private apiUrl = "/api/payment"
   constructor(private http: HttpClient) { }
 
   getAllPayments(page: number, limit: number, status?: string, method?: string) {

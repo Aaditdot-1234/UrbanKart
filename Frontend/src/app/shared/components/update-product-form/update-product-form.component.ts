@@ -15,9 +15,10 @@ import { Product } from '../../../models/product';
 export class UpdateProductFormComponent implements OnInit {
   @Input({ required: true }) product!: Product;
   @Output() updated = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
-  form!: FormGroup;
+  form: FormGroup;
+
   subCategories: SubCategories[] = [];
   selectedFiles: File[] = [];
   previewUrls: string[] = [];
@@ -31,20 +32,31 @@ export class UpdateProductFormComponent implements OnInit {
     private fb: FormBuilder,
     private productService: ProductService,
     private categoriesService: CategoriesService
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.form = this.fb.group({
-      product_name: [this.product.product_name, [Validators.required, Validators.maxLength(150)]],
-      product_description: [this.product.product_description, Validators.required],
-      product_price: [this.product.product_price, [Validators.required, Validators.min(0)]],
-      stock: [this.product.stock, [Validators.required, Validators.min(0)]],
+      product_name: ['', [Validators.required, Validators.maxLength(150)]],
+      product_description: ['', Validators.required],
+      product_price: [0, [Validators.required, Validators.min(0)]],
+      stock: [0, [Validators.required, Validators.min(0)]],
       subCategoryId: [null],
     });
+  }
 
-    this.categoriesService.getAllSubCategories().subscribe({
-      next: (res) => this.subCategories = res.subCategories,
-      error: () => this.error = 'Failed to load subcategories.'
+  ngOnInit() {
+    if (this.product) {
+      this.form.patchValue({
+        product_name: this.product.product_name,
+        product_description: this.product.product_description,
+        product_price: this.product.product_price,
+        stock: this.product.stock,
+      });
+    }
+
+    this.categoriesService.getAllSubCategories(1, 1000).subscribe({
+      next: (res) => {
+        this.subCategories = res.subCategories;
+      },
+      error: () => (this.error = 'Failed to load subcategories.')
     });
   }
 

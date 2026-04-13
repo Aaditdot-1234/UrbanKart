@@ -28,15 +28,3 @@
         flex-direction: column;
     }
 }
-
-.close-cart {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.close-cart:hover {
-    scale: 1.2;
-    background-color: rgba(0, 0, 0, 0.2);
-}

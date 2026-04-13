@@ -7,7 +7,7 @@ import { CreateAddress, GetAddress, UpdateAddress } from '../../models/address';
 })
 export class AddressService {
 
-  private apiUrl = "http://localhost:3000/address"
+  private apiUrl = "/api/address"
   constructor(private http: HttpClient) { }
 
   createAddress(address:string, title:string, setAsDefault:boolean){

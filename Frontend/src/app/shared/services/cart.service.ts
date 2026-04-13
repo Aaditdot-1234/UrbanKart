@@ -17,7 +17,7 @@ export class CartService {
   private isClosing = new BehaviorSubject<boolean>(false);
   isClosing$ = this.isClosing.asObservable();
 
-  private apiUrl = 'http://localhost:3000/cart';
+  private apiUrl = '/api/cart';
 
   constructor(private http: HttpClient, private auth: AuthService) {
     if (this.auth.isLoggedIn()) {

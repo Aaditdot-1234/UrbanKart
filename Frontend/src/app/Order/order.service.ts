@@ -7,12 +7,23 @@ import { FilterOrders, GetAllOrders, GetOrder } from '../models/order';
 })
 export class OrderService {
 
-  private apiUrl = "http://localhost:3000/order";
+  private apiUrl = "/api/order";
   constructor(private http: HttpClient) { }
 
   createOrder(addressId: number) {
     return this.http.post<GetOrder>(`${this.apiUrl}/create`, { addressId });
   }
+  
+  createDirectOrder(addressId: number, productId: number, quantity: number) {
+    const payload = {
+      addressId,
+      productId,
+      quantity
+    };
+
+    return this.http.post<GetOrder>(`${this.apiUrl}/buyNow`, payload);
+  }
+
   getAllOrders(page: number, limit: number) {
     const params = new HttpParams()
       .set('page', page.toString())

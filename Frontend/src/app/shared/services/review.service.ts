@@ -7,12 +7,12 @@ import { User } from '../../models/auth';
   providedIn: 'root'
 })
 export class ReviewService {
-  private apiUrl = 'http://localhost:3000/review';
+  private apiUrl = '/api/review';
 
   constructor(private http: HttpClient) { }
 
-  addreview(productId: number, comment: string, rating: number) {
-    return this.http.post<CreateReviews>(`${this.apiUrl}/create/${productId}`, { comment, rating });
+  addreview(productId: number, comments: string, rating: number) {
+    return this.http.post<CreateReviews>(`${this.apiUrl}/create/${productId}`, { comments, rating });
   }
   getAllReviews(productId: number, page: number, limit: number) {
     const params = new HttpParams()

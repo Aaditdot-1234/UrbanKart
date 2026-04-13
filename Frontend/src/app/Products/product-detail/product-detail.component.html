@@ -1,7 +1,26 @@
 <div class="product-details">
+    <div class="form-overlay" [class.show]="isVisible" (click)="toggleUpdate()">
+    </div>
+
     <div>
-        <div class="navigation p-20 mgb-40">
-            <h1 class="std-header-font font-w-500">Home</h1>
+        <div class="form-drawer" [class.show]="isVisible">
+            <app-update-product-form [product]="productInfo" (close)="toggleUpdate()"
+                (updated)="toggleUpdate()"></app-update-product-form>
+        </div>
+    </div>
+
+    <div>
+        <div class="navigation p-20 flex-jus-sb flex-al-ce mgb-40">
+            <div class="flex-jus-fs flex-al-ce">
+                <h1 class="std-header-font font-w-500">Home</h1>
+                <div class="circle" style="background-color: black; height: 5px; width: 5px"></div>
+                <h1 class="std-header-font font-w-500">{{category_name}}</h1>
+                <div class="circle" style="background-color: black; height: 5px; width: 5px"></div>
+                @if (productInfo) {
+                <h1 class="std-header-font font-w-500">{{productInfo.product_name}}</h1>
+                }
+            </div>
+            <button *appToggleVisibility="auth.isAdmin()" (click)="toggleUpdate()">Update product details</button>
         </div>
         @if (productInfo) {
         <div class="product-info flex-jus-sb g-40 mgb-40">
@@ -23,7 +42,7 @@
                 <div class="mgb-20">
                     <h2 class="std-tagline-font font-w-500 color-grey">PRICE</h2>
                     <div class="flex-jus-fs flex-al-ce g-40">
-                        <h3 class="font-40 font-w-500 std-header-font">${{productInfo.product_price}} USD</h3>
+                        <h3 class="font-40 font-w-500 std-header-font">₹{{productInfo.product_price}} USD</h3>
                         <div class="sale-tag flex-jus-ce flex-al-ce">
                             <h2 class=" font-w-600 std-tagline-font">SALE</h2>
                         </div>
@@ -40,11 +59,11 @@
                 </div>
                 <div class="flex-jus-fs flex-al-ce g-20 update-cart mgb-20">
                     <div class="flex-jus-sb flex-al-ce g-10">
-                        <div class="circle">
+                        <div class="circle" (click)="updateQuantity(-1)">
                             <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">-</h1>
                         </div>
-                        <h3 class="std-tagline-font font-w-500">1</h3>
-                        <div class="circle">
+                        <h3 class="std-tagline-font font-w-500">{{quantity}}</h3>
+                        <div class="circle" (click)="updateQuantity(1)">
                             <h1 class="font-w-500 std-header-font flex-jus-ce flex-al-ce">+</h1>
                         </div>
                     </div>
@@ -53,7 +72,7 @@
                     </div>
                 </div>
                 <div>
-                    <button>Buy with Gpay</button>
+                    <button (click)="redirectTo()">Buy with Gpay</button>
                 </div>
             </div>
         </div>
@@ -74,8 +93,29 @@
         </div>
     </div>
     <div class="reviews">
-        <div>
+        <div class="flex-jus-sb flex-al-ce">
             <h1 class="font-40 std-header-font font-w-500 mgb-20">Reviews</h1>
+            <button (click)="toggleAddReview()">Add review</button>
+        </div>
+        <div *appToggleVisibility="addReview" class="mgb-40">
+            <form #reviewForm="ngForm" (ngSubmit)="handleAddReview()">
+                <div>
+                    <div class="flex-jus-fs flex-al-fs flex-dir mgb-40 g-10">
+                        <label for="comments" class="std-tagline-font">Comments</label>
+                        <textarea name="comments" id="comments" [(ngModel)]="comments" required></textarea>
+                    </div>
+
+                    <div  class="flex-jus-fs flex-al-fs flex-dir mgb-20 g-10">
+                        <label for="rating" class="std-tagline-font">Rating (1-5)</label>
+                        <input type="number" name="rating" id="rating" min="1" max="5" [(ngModel)]="rating"
+                            (input)="validateRating($event)" required>
+                        @if (rating < 1 || rating> 5) {
+                            <small style="color: red;">Rating must be between 1 and 5.</small>
+                            }
+                    </div>
+                </div>
+                <button type="submit" [disabled]="reviewForm.invalid">Submit</button>
+            </form>
         </div>
         <div class="flex-dir flex-jus-fs flex-al-fs g-20 mgb-20">
             @for(review of reviews; track review.review_id){

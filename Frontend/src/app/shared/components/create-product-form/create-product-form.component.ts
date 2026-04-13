@@ -13,7 +13,7 @@ import { SubCategories } from '../../../models/category';
 })
 export class CreateProductFormComponent implements OnInit {
   @Output() created = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
   form!: FormGroup;
   subCategories: SubCategories[] = [];
@@ -26,9 +26,7 @@ export class CreateProductFormComponent implements OnInit {
     private fb: FormBuilder,
     private productService: ProductService,
     private categoriesService: CategoriesService
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.form = this.fb.group({
       product_name: ['', [Validators.required, Validators.maxLength(150)]],
       product_description: ['', Validators.required],
@@ -36,8 +34,10 @@ export class CreateProductFormComponent implements OnInit {
       stock: [null, [Validators.required, Validators.min(0)]],
       subCategoryId: [null, Validators.required],
     });
+  }
 
-    this.categoriesService.getAllSubCategories().subscribe({
+  ngOnInit() {
+    this.categoriesService.getAllSubCategories(1, 1000).subscribe({
       next: (res) => this.subCategories = res.subCategories,
       error: () => this.error = 'Failed to load subcategories.'
     });

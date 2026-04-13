@@ -6,8 +6,8 @@ import { CreateProduct, CreateProductRes, GetProducts, Product, UploadImagesRes 
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:3000/product';
-  private imagesUrl = 'http://localhost:3000/images';
+  private apiUrl = '/api/product';
+  private imagesUrl = '/api/images';
 
   constructor(private http: HttpClient) { }
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ProductService } from '../product.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -12,10 +12,14 @@ import { ReviewCardComponent } from '../../shared/components/review-card/review-
 import { Reviews } from '../../models/reviews';
 import { ReviewService } from '../../shared/services/review.service';
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { UpdateProductFormComponent } from "../../shared/components/update-product-form/update-product-form.component";
+import { ToggleVisibilityDirective } from "../../shared/Directives/toggle-visibility.directive";
+import { AuthService } from '../../Auth/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [FooterComponent, ProductCardComponent, ReviewCardComponent, PaginationComponent],
+  imports: [FooterComponent, ProductCardComponent, ReviewCardComponent, PaginationComponent, UpdateProductFormComponent, ToggleVisibilityDirective, FormsModule],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.css'
 })
@@ -33,7 +37,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   totalPages: number[] = [];
   totalItems: number = 0;
 
-  constructor(private route: ActivatedRoute, private product: ProductService, private toast: ToastService, private cart: CartService, private category: CategoriesService, private review: ReviewService) { }
+  isVisible: boolean = false;
+  addReview: boolean = false;
+
+  comments!: string;
+  rating!: number;
+  quantity: number = 1;
+
+  constructor(private route: ActivatedRoute, private product: ProductService, private toast: ToastService, private cart: CartService, private category: CategoriesService, private review: ReviewService, public auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.productId = this.route.snapshot.paramMap.get('productId');
@@ -104,9 +115,55 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     })
   }
 
+  updateQuantity(change: number) {
+    const newQuantity = this.quantity + change;
+
+    if (newQuantity >= 1) {
+      this.quantity = newQuantity;
+    }
+  }
+
+  redirectTo() {
+    this.router.navigate(['/order'], {
+      queryParams: { productId: this.productId, quantity: this.quantity }
+    });
+  }
+
+  handleAddReview() {
+    if (this.productId) {
+      this.review.addreview(+this.productId, this.comments, this.rating).pipe(
+        takeUntil(this.destroy$),
+      ).subscribe({
+        next: (res) => {
+          this.reviews.push(res.review);
+        }
+      })
+    }
+
+    this.toggleAddReview();
+  }
+
+  validateRating(event: any) {
+    let value = event.target.value;
+
+    if (value > 5) {
+      this.rating = 5;
+    } else if (value < 1 && value !== null && value !== '') {
+      this.rating = 1;
+    }
+  }
+
   handlePageChange(page: number) {
     if (page === this.currentPage) return;
     this.fetchReviews(+this.productId!, page);
+  }
+
+  toggleUpdate() {
+    this.isVisible = !this.isVisible
+  }
+
+  toggleAddReview() {
+    this.addReview = !this.addReview;
   }
 
   ngOnDestroy(): void {

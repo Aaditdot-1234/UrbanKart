@@ -1,6 +1,12 @@
 <div class="mgb-40 pt-80">
+    <div class="form-overlay" [class.show]="isVisible" (click)="toggleNewProduct()">
+    </div>
 
-    <div class="search-bar-wrapper pt-80">
+    <div class="form-drawer" [class.show]="isVisible">
+        <app-create-product-form (created)="toggleNewProduct()" (close)="toggleNewProduct()"></app-create-product-form>
+    </div>
+
+    <div class="search-bar-wrapper flex-jus-sb pt-80">
         <div class="search-bar">
             <span class="search-icon">&#128269;</span>
             <input type="text" placeholder="Search products, categories, types..." [(ngModel)]="searchQuery"
@@ -8,6 +14,9 @@
             @if (searchQuery) {
             <button class="clear-search" (click)="searchQuery = ''; onSearchChange()">&#x2715;</button>
             }
+        </div>
+        <div *appToggleVisibility="auth.isAdmin()">
+            <button (click)="toggleNewProduct()">Add new Product</button>
         </div>
     </div>
 

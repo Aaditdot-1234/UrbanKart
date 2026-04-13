@@ -11,20 +11,22 @@ import { FormsModule } from "@angular/forms";
 import { SubCategories, Types } from '../../models/category';
 import { ToggleVisibilityDirective } from "../../shared/Directives/toggle-visibility.directive";
 import { CommonModule } from '@angular/common';
+import { CreateProductFormComponent } from "../../shared/components/create-product-form/create-product-form.component";
+import { AuthService } from '../../Auth/auth.service';
 
 @Component({
   selector: 'app-product',
-  imports: [FooterComponent, PaginationComponent, ProductCardComponent, FormsModule, ToggleVisibilityDirective, CommonModule],
+  imports: [FooterComponent, PaginationComponent, ProductCardComponent, FormsModule, ToggleVisibilityDirective, CommonModule, CreateProductFormComponent],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css'
 })
 export class ProductComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  isVisible: boolean = false;
 
   subCategories: SubCategories[] = [];
   types: Types[] = [];
 
-  // Filter state
   searchQuery: string = '';
   minPrice: number = 0;
   maxPrice: number = 0;
@@ -42,7 +44,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private category: CategoriesService,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    public auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -171,6 +174,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.selectedSubCategoryIds.length > 0 ||
       this.selectedCategoryIds.length > 0
     );
+  }
+
+  toggleNewProduct(){
+    this.isVisible = !this.isVisible;
   }
 
   ngOnDestroy(): void {

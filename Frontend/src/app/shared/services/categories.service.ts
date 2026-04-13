@@ -6,7 +6,7 @@ import { CategoriesByProduct, CategoryByProduct, ExtendedProductWithSubCategorie
   providedIn: 'root'
 })
 export class CategoriesService {
-  private apiUrl = 'http://localhost:3000/category';
+  private apiUrl = '/api/category';
 
   constructor(private http: HttpClient) { }
 

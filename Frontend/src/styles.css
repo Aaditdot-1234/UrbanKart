@@ -405,3 +405,57 @@ button:hover {
         transform: translateX(100%);
     }
 }
+
+.close-cart {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-cart:hover {
+    scale: 1.2;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+
+.form-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    z-index: 100;
+}
+
+.form-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.form-drawer {
+    padding: 20px;
+    position: fixed;
+    top: 5%;
+    right: 40px;
+    height: 90%;
+    width: 600px;
+
+    background: white;
+    border-radius: 12px;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+
+    transform: translateX(1500px);
+    transition: transform 0.4s ease;
+
+    z-index: 101;
+}
+
+.form-drawer.show {
+    transform: translateX(0);
+}

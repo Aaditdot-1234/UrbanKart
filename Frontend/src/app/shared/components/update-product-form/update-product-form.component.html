@@ -1,78 +1,88 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="product_name">Product Name</label>
-    <input id="product_name" type="text" formControlName="product_name" />
-    @if (form.get('product_name')?.invalid && form.get('product_name')?.touched) {
-      <span class="error">Product name is required (max 150 chars).</span>
-    }
+<form class="product-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+  <div class="flex-jus-sb flex-al-ce mgb-20">
+    <h2 class="std-header-font font-30">Update Profile</h2>
+    <div class="close-cart flex-jus-ce flex-al-ce" (click)="close.emit()">
+      <img width="30" height="30" src="https://img.icons8.com/ios/50/multiply.png" alt="multiply" />
+    </div>
   </div>
 
-  <div>
-    <label for="product_description">Description</label>
-    <textarea id="product_description" formControlName="product_description" rows="4"></textarea>
-    @if (form.get('product_description')?.invalid && form.get('product_description')?.touched) {
-      <span class="error">Description is required.</span>
-    }
-  </div>
+  <div class="fields">
+    <div class="flex-jus-fs flex-al-fs g-20 mgb-20">
+      <div class="flex-jus-ce flex-al-fs flex-dir g-10">
+        <label for="product_name" class="std-tagline-font">Product Name</label>
+        <input id="product_name" type="text" formControlName="product_name" />
+        @if (form.get('product_name')?.invalid && form.get('product_name')?.touched) {
+        <span class="error">Product name is required (max 150 chars).</span>
+        }
+      </div>
+      <div class="flex-jus-ce flex-al-fs flex-dir g-10">
+        <label for="product_price" class="std-tagline-font">Price</label>
+        <input id="product_price" type="number" formControlName="product_price" min="0" step="0.01" />
+        @if (form.get('product_price')?.invalid && form.get('product_price')?.touched) {
+        <span class="error">A valid price is required.</span>
+        }
+      </div>
+    </div>
 
-  <div>
-    <label for="product_price">Price</label>
-    <input id="product_price" type="number" formControlName="product_price" min="0" step="0.01" />
-    @if (form.get('product_price')?.invalid && form.get('product_price')?.touched) {
-      <span class="error">A valid price is required.</span>
-    }
-  </div>
 
-  <div>
-    <label for="stock">Stock</label>
-    <input id="stock" type="number" formControlName="stock" min="0" />
-    @if (form.get('stock')?.invalid && form.get('stock')?.touched) {
-      <span class="error">Stock quantity is required.</span>
-    }
-  </div>
+    <div class="flex-jus-fs flex-al-fs g-20 mgb-20">
+      <div class="flex-jus-fs flex-al-fs flex-dir g-10">
+        <label for="stock" class="std-tagline-font">Stock</label>
+        <input id="stock" type="number" formControlName="stock" min="0" />
+        @if (form.get('stock')?.invalid && form.get('stock')?.touched) {
+        <span class="error">Stock quantity is required.</span>
+        }
+      </div>
 
-  <div>
-    <label for="subCategoryId">Subcategory</label>
-    <select id="subCategoryId" formControlName="subCategoryId">
-      <option [ngValue]="null">Keep existing subcategory</option>
-      @for (sub of subCategories; track sub.subcategory_id) {
-        <option [ngValue]="sub.subcategory_id">{{ sub.subcategory_name }}</option>
-      }
-    </select>
-  </div>
+      <div class="flex-jus-fs flex-al-fs flex-dir g-10">
+        <label class="std-tagline-font">Images</label>
+        <input type="file" multiple accept="image/*" (change)="onFilesSelected($event)" />
+        <p class="hint std-tagline-font font-w-500">First image will be set as primary. Max 5 images.</p>
 
-  <div>
-    <label>
-      <input type="checkbox" [(ngModel)]="replaceImages" [ngModelOptions]="{standalone: true}" />
-      Replace product images
-    </label>
-
-    @if (replaceImages) {
-      <input type="file" multiple accept="image/*" (change)="onFilesSelected($event)" />
-      <p class="hint">First image will be set as primary. Max 5 images.</p>
-
-      @if (previewUrls.length > 0) {
+        @if (previewUrls.length > 0) {
         <div class="previews">
           @for (url of previewUrls; track $index) {
-            <div class="preview-item">
-              <img [src]="url" alt="preview" />
-              @if ($index === 0) { <span class="primary-badge">Primary</span> }
-              <button type="button" (click)="removeFile($index)">Remove</button>
-            </div>
+          <div class="preview-item">
+            <img [src]="url" alt="preview" />
+            @if ($index === 0) { <span class="primary-badge std-tagline-font">Primary</span> }
+            <button type="button" (click)="removeFile($index)">Remove</button>
+          </div>
           }
         </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex-jus-ce flex-al-fs flex-dir g-10 mgb-40">
+      <label for="subCategoryId" class="std-tagline-font">Subcategory</label>
+      <select id="subCategoryId" formControlName="subCategoryId">
+        <option [ngValue]="null" disabled>Select a subcategory</option>
+        @for (sub of subCategories; track sub.subcategory_id) {
+        <option [ngValue]="sub.subcategory_id">{{ sub.subcategory_name }}</option>
+        }
+      </select>
+      @if (form.get('subCategoryId')?.invalid && form.get('subCategoryId')?.touched) {
+      <span class="error std-tagline-font">Subcategory is required.</span>
       }
+    </div>
+
+    <div class="flex-jus-ce flex-al-fs flex-dir g-10 mgb-40">
+      <label for="product_description" class="std-tagline-font">Description</label>
+      <textarea id="product_description" formControlName="product_description" rows="4"></textarea>
+      @if (form.get('product_description')?.invalid && form.get('product_description')?.touched) {
+      <span class="error std-tagline-font">Description is required.</span>
+      }
+    </div>
+
+    @if (error) {
+    <p class="error std-tagline-font">{{ error }}</p>
     }
   </div>
 
-  @if (error) {
-    <p class="error">{{ error }}</p>
-  }
-
   <div class="actions">
-    <button type="button" (click)="cancelled.emit()" [disabled]="loading">Cancel</button>
     <button type="submit" [disabled]="loading">
-      {{ loading ? 'Updating...' : 'Update Product' }}
+      {{ loading ? 'Creating...' : 'Create Product' }}
     </button>
   </div>
 </form>
