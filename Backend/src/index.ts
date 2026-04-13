@@ -49,7 +49,7 @@ async function main() {
     app.use(cookieParser());
     app.use(passport.initialize());
 
-    app.use(globalLimiter);
+    // app.use(globalLimiter);
 
     app.use('/api/auth', authRouter);
     app.use('/api/category', categoryRouter);
@@ -59,7 +59,7 @@ async function main() {
     app.use('/api/order', requireAuth, orderRouter);
     app.use('/api/payment', requireAuth, paymentRoutes);
     app.use('/api/review', reviewRoutes);
-    app.use('/api/images', express.static('public'));
+    app.use('/Images', express.static(path.join(__dirname, '../productImages')));
 
     app.use(errorHandler);
 

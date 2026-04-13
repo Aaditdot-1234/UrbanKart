@@ -42,8 +42,8 @@ export class ProductService {
 
         if (!subCategory) throw new Error("Subcategory not found");
 
-        const productImages = imageUrls.map((path, index) =>
-            this.imageRepo.create({ image_path: path, is_primary: index === 0 })
+        const productImages = imageUrls.map((url, index) =>
+            this.imageRepo.create({ image_path: url, is_primary: index === 0 })
         );
 
         const product = this.productRepo.create({

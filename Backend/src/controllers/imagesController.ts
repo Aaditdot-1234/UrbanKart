@@ -6,11 +6,11 @@ const images = Router();
 images.post("/upload", upload.array("images", 5), (req, res) => {
     try {
         const files = req.files as Express.Multer.File[];
+        const protocol = req.protocol;
+        const host = req.get('host');
 
-        // Strip the leading "public/" so the stored path works with the /images static route
-        // e.g. "public/uploads/123.jpg" → "uploads/123.jpg" → served at GET /images/uploads/123.jpg
         const imagePaths = files.map((file) =>
-            file.path.replace(/^public[\\/]/, '')
+            `${protocol}://${host}/Images/${file.filename}`
         );
 
         res.json({ message: "Image uploaded successfully", imagePaths });
