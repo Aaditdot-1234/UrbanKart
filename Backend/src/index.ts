@@ -49,7 +49,7 @@ async function main() {
     app.use(cookieParser());
     app.use(passport.initialize());
 
-    // app.use(globalLimiter);
+    app.use(globalLimiter);
 
     app.use('/api/auth', authRouter);
     app.use('/api/category', categoryRouter);

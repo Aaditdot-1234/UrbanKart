@@ -25,6 +25,7 @@ require("./auth/passport");
 require("./cronjob/cronjob");
 const imagesController_1 = __importDefault(require("./controllers/imagesController"));
 const path_1 = __importDefault(require("path"));
+const ratelimiter_1 = require("./middleware/ratelimiter");
 async function main() {
     await datasource_1.default.initialize();
     const app = (0, express_1.default)();
@@ -45,7 +46,7 @@ async function main() {
     app.use(express_1.default.json());
     app.use((0, cookie_parser_1.default)());
     app.use(passport_1.default.initialize());
-    // app.use(globalLimiter);
+    app.use(ratelimiter_1.globalLimiter);
     app.use('/api/auth', authRoutes_1.default);
     app.use('/api/category', categoryRoutes_1.default);
     app.use('/api/product', productRoutes_1.default);

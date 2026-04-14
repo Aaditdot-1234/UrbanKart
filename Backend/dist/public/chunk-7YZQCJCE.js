@@ -1,0 +1,1 @@
+import"./chunk-2NFLSA4Y.js";var t=[{path:"",loadComponent:()=>import("./chunk-NA4BAOHI.js").then(o=>o.OrderComponent)},{path:"payments",loadComponent:()=>import("./chunk-THUFTB5Y.js").then(o=>o.PaymentComponent)}];export{t as ORDERROUTES};
