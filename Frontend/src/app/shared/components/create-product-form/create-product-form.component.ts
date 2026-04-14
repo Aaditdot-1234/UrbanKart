@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../Products/product.service';
 import { CategoriesService } from '../../services/categories.service';
 import { SubCategories } from '../../../models/category';
+import { switchMap } from 'rxjs';
+import { Product } from '../../../models/product';
 
 @Component({
   selector: 'app-create-product-form',
@@ -12,7 +14,7 @@ import { SubCategories } from '../../../models/category';
   styleUrl: './create-product-form.component.css'
 })
 export class CreateProductFormComponent implements OnInit {
-  @Output() created = new EventEmitter<void>();
+  @Output() created = new EventEmitter<Product>();
   @Output() close = new EventEmitter<void>();
 
   form!: FormGroup;
@@ -75,26 +77,22 @@ export class CreateProductFormComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.productService.uploadImages(this.selectedFiles).subscribe({
-      next: (uploadRes) => {
+    this.productService.uploadImages(this.selectedFiles).pipe(
+      switchMap((uploadRes) => {
         const payload = {
           ...this.form.value,
           imageUrls: uploadRes.imagePaths
         };
-        this.productService.createProduct(payload).subscribe({
-          next: () => {
-            this.loading = false;
-            this.created.emit();
-          },
-          error: (err) => {
-            this.loading = false;
-            this.error = err?.error?.message ?? 'Failed to create product.';
-          }
-        });
+        return this.productService.createProduct(payload);
+      })
+    ).subscribe({
+      next: (res) => {
+        this.loading = false;
+        this.created.emit(res.product);
       },
       error: (err) => {
         this.loading = false;
-        this.error = err?.error?.message ?? 'Failed to upload images.';
+        this.error = err?.error?.message ?? 'Failed to create product.';
       }
     });
   }

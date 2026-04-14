@@ -1,9 +1,9 @@
 <div class="mgb-40 pt-80">
-    <div class="form-overlay" [class.show]="isVisible" (click)="toggleNewProduct()">
+    <div class="form-overlay" [class.show]="isVisible" (click)="toggleVisibility()">
     </div>
 
     <div class="form-drawer" [class.show]="isVisible">
-        <app-create-product-form (created)="toggleNewProduct()" (close)="toggleNewProduct()"></app-create-product-form>
+        <app-create-product-form (created)="toggleNewProduct($event)" (close)="toggleVisibility()"></app-create-product-form>
     </div>
 
     <div class="search-bar-wrapper flex-jus-sb pt-80">
@@ -16,11 +16,11 @@
             }
         </div>
         <div *appToggleVisibility="auth.isAdmin()">
-            <button (click)="toggleNewProduct()">Add new Product</button>
+            <button (click)="toggleVisibility()">Add new Product</button>
         </div>
     </div>
 
-    <div class="product-page flex-al-fs flex-jus-fs g-20">
+    <div class="product-page flex-al-fs flex-jus-fs g-20 mgb-40">
 
         <div class="filter-side-bar flex-dir flex-al-bs flex-jus-fs">
 
@@ -87,7 +87,7 @@
             </p>
             <div class="product-grid flex-al-fs flex-jus-fs flex-wrap g-20">
                 @for (product of products; track product.product_id) {
-                <app-product-card [productInfo]="product" class="product-card"></app-product-card>
+                <app-product-card [productInfo]="product" (sendProductInfo)="handleDelete($event)" class="product-card"></app-product-card>
                 }
                 @if (products.length === 0) {
                 <p class="no-results font-w-500 std-tagline-font">No products match your filters.</p>

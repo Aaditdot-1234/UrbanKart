@@ -5,10 +5,11 @@ import { AuthService } from '../../../Auth/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 import { ToggleVisibilityDirective } from "../../Directives/toggle-visibility.directive";
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, ToggleVisibilityDirective],
+  imports: [RouterLink, ToggleVisibilityDirective, AsyncPipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

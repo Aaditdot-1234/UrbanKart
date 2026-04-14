@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../../models/product';
 import { ProductService } from '../product.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { FooterComponent } from "../../shared/components/footer/footer.component";
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
@@ -13,6 +13,7 @@ import { ToggleVisibilityDirective } from "../../shared/Directives/toggle-visibi
 import { CommonModule } from '@angular/common';
 import { CreateProductFormComponent } from "../../shared/components/create-product-form/create-product-form.component";
 import { AuthService } from '../../Auth/auth.service';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-product',
@@ -45,7 +46,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     private category: CategoriesService,
     private route: ActivatedRoute,
     public router: Router,
-    public auth: AuthService
+    public auth: AuthService,
+    public product: ProductService,
+    private toast: ToastService,
   ) { }
 
   ngOnInit(): void {
@@ -176,12 +179,35 @@ export class ProductComponent implements OnInit, OnDestroy {
     );
   }
 
-  toggleNewProduct(){
+  toggleVisibility(){
+    this.isVisible = !this.isVisible;
+  }
+
+  toggleNewProduct(product: Product){
+    this.products.push()
     this.isVisible = !this.isVisible;
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  handleDelete(productInfo: Product){
+    this.product.deleteProduct(productInfo.product_id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (res) => {
+        if(this.isFiltering){
+          this.applyFilters(this.currentPage);
+        }
+        else{
+          this.fetchData(this.currentPage);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 }

@@ -9,7 +9,7 @@
             </h2>
 
             <div class="flex-jus-fe flex-al-ce g-20">
-                <a *appToggleVisibility="!auth.isLoggedIn()" href="/auth/login">
+                <a *appToggleVisibility="!( auth.currentUser$ | async)" href="/auth/login">
                     <button>Login</button>
                 </a>
                 <div class="dropdown" *appToggleVisibility="auth.isLoggedIn()">

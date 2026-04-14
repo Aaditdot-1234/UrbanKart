@@ -9,17 +9,22 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       
-      let errorMessage = "Something went wrong";
-      const errorStatuses = [200, 201, 400, 401, 403, 404, 500];
+      let errorMessage = "An unexpected error ocurred";
+      console.log(error.status)
+      if(error.status === 401){
+        console.log(error.status)
+        
+        localStorage.removeItem('user');
 
-      if(errorStatuses.includes(error.status)){
-        errorMessage = `${error.statusText}: ${error.error?.error || 'Unknown Error'}`;
+        errorMessage = 'Session expired. Please login again.';
+      } else {
+
+        errorMessage = error.error?.message || error.message || errorMessage;
       }
 
       toast.showToast(error.status, errorMessage);
 
       return throwError(() => error);
     })
-
   )
 };

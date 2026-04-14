@@ -19,7 +19,9 @@ export class ToggleVisibilityDirective {
 
   private updateView() {
     if (this.isVisible) {
-      this.vcr.createEmbeddedView(this.templateRef);
+      if(this.vcr.length === 0){
+        this.vcr.createEmbeddedView(this.templateRef);
+      }
     } else {
       this.vcr.clear();
     }

@@ -1,6 +1,3 @@
-.product{
-    height: 500px;
-}
 
 .product-image {
     position: relative;
@@ -36,4 +33,13 @@
 
 .quick-add{
     cursor: pointer;
+}
+
+.delete{
+    background-color: rgb(255, 114, 114);
+    color: white;
+}
+
+.delete:hover {
+    background-color: rgb(255, 0, 0);
 }
