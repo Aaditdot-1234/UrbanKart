@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../errors/asyncHandler";
 import { OrderService } from "../services/orderService";
 import { OrderStatus } from "../entities/Orders";
-import { PaymentMethod, PaymentStatus } from "../entities/Payments";
+import { PaymentStatus } from "../entities/Payments";
 import { Users } from "../entities/Users";
 
 export class OrderController {

@@ -36,14 +36,18 @@ class ProductService {
         });
         if (!product)
             throw new appError_1.NotFound("Product not found");
-        if (data.product_name !== undefined)
+        if (data.product_name !== undefined && data.product_name !== '') {
             product.product_name = data.product_name;
-        if (data.product_description !== undefined)
+        }
+        if (data.product_description !== undefined && data.product_description !== '') {
             product.product_description = data.product_description;
-        if (data.product_price !== undefined)
+        }
+        if (data.product_price !== undefined && data.product_price > 0) {
             product.product_price = data.product_price;
-        if (data.stock !== undefined)
+        }
+        if (data.stock !== undefined && data.stock >= 0 && data.stock !== null) {
             product.stock = data.stock;
+        }
         if (data.subCategoryId !== undefined) {
             const subCategory = await datasource_1.default
                 .getRepository(SubCategories_1.SubCategories)

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../Products/product.service';
@@ -12,7 +12,7 @@ import { Product } from '../../../models/product';
   templateUrl: './update-product-form.component.html',
   styleUrl: './update-product-form.component.css'
 })
-export class UpdateProductFormComponent implements OnInit {
+export class UpdateProductFormComponent implements OnInit, OnChanges {
   @Input({ required: true }) product!: Product;
   @Output() updated = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
@@ -26,7 +26,6 @@ export class UpdateProductFormComponent implements OnInit {
   loading = false;
   error = '';
 
-  private readonly imagesBaseUrl = 'http://localhost:3000/images/';
 
   constructor(
     private fb: FormBuilder,
@@ -34,16 +33,16 @@ export class UpdateProductFormComponent implements OnInit {
     private categoriesService: CategoriesService
   ) {
     this.form = this.fb.group({
-      product_name: ['', [Validators.required, Validators.maxLength(150)]],
-      product_description: ['', Validators.required],
-      product_price: [0, [Validators.required, Validators.min(0)]],
-      stock: [0, [Validators.required, Validators.min(0)]],
+      product_name: ['', [ Validators.maxLength(150)]],
+      product_description: [''],
+      product_price: [0, [Validators.min(0)]],
+      stock: [0, [Validators.min(0)]],
       subCategoryId: [null],
     });
   }
 
-  ngOnInit() {
-    if (this.product) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] && this.product) {
       this.form.patchValue({
         product_name: this.product.product_name,
         product_description: this.product.product_description,
@@ -51,7 +50,9 @@ export class UpdateProductFormComponent implements OnInit {
         stock: this.product.stock,
       });
     }
+  }
 
+  ngOnInit() {
     this.categoriesService.getAllSubCategories(1, 1000).subscribe({
       next: (res) => {
         this.subCategories = res.subCategories;

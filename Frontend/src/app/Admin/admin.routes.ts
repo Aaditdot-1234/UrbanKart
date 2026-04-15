@@ -8,5 +8,13 @@ export const ADMINROUTES: Routes = [
     {
         path: "users",
         loadComponent: () => import("./manage-users/manage-users.component").then(m => m.ManageUsersComponent)
-    }
+    },
+    {
+        path: "products",
+        loadComponent: () => import("./adminproducts/adminproducts.component").then(m => m.AdminproductsComponent)
+    },
+    {
+        path: "products/:id/edit",
+        loadComponent: () => import("./admin-products-detail/admin-products-detail.component").then(m => m.AdminProductsDetailComponent)
+    },
 ]

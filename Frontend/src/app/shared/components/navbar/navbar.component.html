@@ -66,7 +66,18 @@
             </div>
         </div>
         <div class="hide-bottom-navbar flex-al-ce flex-jus-fs g-20 w-100" [class.show-bottom-navbar]="onHover">
-            <div class="flex-al-ce flex-jus-fs g-20 w-100">
+            <div *appToggleVisibility="auth.isAdmin()" class="flex-al-ce flex-jus-fs g-20 w-100">
+                <div>
+                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">Home</a>
+                </div>
+                <div>
+                    <a routerLink="/products/categories" class="font-20 font-w-500 std-tagline-font">Shop by types</a>
+                </div>
+                <div>
+                    <a routerLink="/admin/products" class="font-20 font-w-500 std-tagline-font">Products</a>
+                </div>
+            </div>
+            <div *appToggleVisibility="!auth.isAdmin()" class="flex-al-ce flex-jus-fs g-20 w-100">
                 <div>
                     <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">Home</a>
                 </div>
@@ -75,15 +86,6 @@
                 </div>
                 <div>
                     <a routerLink="/products" class="font-20 font-w-500 std-tagline-font">Products</a>
-                </div>
-                <div>
-                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">News</a>
-                </div>
-                <div>
-                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">About</a>
-                </div>
-                <div>
-                    <a routerLink="/home" class="font-20 font-w-500 std-tagline-font">Contact</a>
                 </div>
             </div>
         </div>

@@ -1,27 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../../models/product';
-import { ProductService } from '../product.service';
-import { Subject, takeUntil, tap } from 'rxjs';
-import { FooterComponent } from "../../shared/components/footer/footer.component";
-import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
-import { CategoriesService } from '../../shared/services/categories.service';
-import { FormsModule } from "@angular/forms";
+import { Component } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { SubCategories, Types } from '../../models/category';
-import { ToggleVisibilityDirective } from "../../shared/Directives/toggle-visibility.directive";
-import { CommonModule } from '@angular/common';
+import { Product } from '../../models/product';
+import { ProductService } from '../../Products/product.service';
+import { CategoriesService } from '../../shared/services/categories.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../Auth/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
+import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { FormsModule } from '@angular/forms';
+import { ToggleVisibilityDirective } from '../../shared/Directives/toggle-visibility.directive';
+import { CreateProductFormComponent } from '../../shared/components/create-product-form/create-product-form.component';
+
 
 @Component({
-  selector: 'app-product',
-  imports: [FooterComponent, PaginationComponent, ProductCardComponent, FormsModule, ToggleVisibilityDirective, CommonModule],
-  templateUrl: './product.component.html',
-  styleUrl: './product.component.css'
+  selector: 'app-adminproducts',
+  imports: [FooterComponent, PaginationComponent, ProductCardComponent, FormsModule, ToggleVisibilityDirective, CreateProductFormComponent],
+  templateUrl: './adminproducts.component.html',
+  styleUrl: './adminproducts.component.css'
 })
-export class ProductComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class AdminproductsComponent {
+private destroy$ = new Subject<void>();
+  isVisible: boolean = false;
 
   subCategories: SubCategories[] = [];
   types: Types[] = [];
@@ -45,7 +47,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public router: Router,
     public auth: AuthService,
-    public product: ProductService
+    public product: ProductService,
+    private toast: ToastService,
   ) { }
 
   ngOnInit(): void {
@@ -174,6 +177,15 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.selectedSubCategoryIds.length > 0 ||
       this.selectedCategoryIds.length > 0
     );
+  }
+
+  toggleVisibility(){
+    this.isVisible = !this.isVisible;
+  }
+
+  toggleNewProduct(product: Product){
+    this.products.push()
+    this.isVisible = !this.isVisible;
   }
 
   ngOnDestroy(): void {

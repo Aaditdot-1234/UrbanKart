@@ -11,7 +11,7 @@
             <div class="mgb-10">
                 <h1 class="font-w-600 std-header-font">₹{{productInfo.product_price}}</h1>
             </div>
-            <div class="quick-add mgb-20" (click)="handleAddToCart(); $event.stopPropagation()">
+            <div *appToggleVisibility="!auth.isAdmin()" class="quick-add mgb-20" (click)="handleAddToCart(); $event.stopPropagation()">
                 <p class="font-w-600 std-tagline-font">Quick Add</p>
             </div>
         }

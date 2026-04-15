@@ -1,28 +1,28 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { ProductService } from '../product.service';
-import { ToastService } from '../../shared/services/toast.service';
 import { Product } from '../../models/product';
-import { FooterComponent } from "../../shared/components/footer/footer.component";
-import { ProductCardComponent } from "../../shared/components/product-card/product-card.component";
+import { Reviews } from '../../models/reviews';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProductService } from '../../Products/product.service';
+import { ToastService } from '../../shared/services/toast.service';
 import { CartService } from '../../shared/services/cart.service';
 import { CategoriesService } from '../../shared/services/categories.service';
-import { ReviewCardComponent } from '../../shared/components/review-card/review-card.component';
-import { Reviews } from '../../models/reviews';
 import { ReviewService } from '../../shared/services/review.service';
-import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
-import { ToggleVisibilityDirective } from "../../shared/Directives/toggle-visibility.directive";
 import { AuthService } from '../../Auth/auth.service';
+import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { ReviewCardComponent } from '../../shared/components/review-card/review-card.component';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { UpdateProductFormComponent } from '../../shared/components/update-product-form/update-product-form.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-product-detail',
-  imports: [FooterComponent, ProductCardComponent, ReviewCardComponent, PaginationComponent, ToggleVisibilityDirective, FormsModule],
-  templateUrl: './product-detail.component.html',
-  styleUrl: './product-detail.component.css'
+  selector: 'app-admin-products-detail',
+  imports: [FooterComponent, ProductCardComponent, ReviewCardComponent, PaginationComponent, UpdateProductFormComponent, FormsModule],
+  templateUrl: './admin-products-detail.component.html',
+  styleUrl: './admin-products-detail.component.css'
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+export class AdminProductsDetailComponent {
   private destroy$ = new Subject<void>();
   productId !: string | null;
   productInfo!: Product;
@@ -47,7 +47,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private product: ProductService, private toast: ToastService, private cart: CartService, private category: CategoriesService, private review: ReviewService, public auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.productId = this.route.snapshot.paramMap.get('productId');
+    this.productId = this.route.snapshot.paramMap.get('id');
+    console.log(this.productId);
     if (this.productId) {
       this.fetchBookData(+this.productId);
       this.fetchCategoryInfo(+this.productId);
@@ -102,48 +103,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     })
   }
 
-  handleAddToCart() {
-    this.cart.addToCart(this.productInfo.product_id).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (res) => {
-        this.toast.showToast(200, res.message);
-        this.cart.toggleCardVisibility();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    })
-  }
-
-  updateQuantity(change: number) {
-    const newQuantity = this.quantity + change;
-
-    if (newQuantity >= 1) {
-      this.quantity = newQuantity;
-    }
-  }
-
-  redirectTo() {
-    this.router.navigate(['/order'], {
-      queryParams: { productId: this.productId, quantity: this.quantity }
-    });
-  }
-
-  handleAddReview() {
-    if (this.productId) {
-      this.review.addreview(+this.productId, this.comments, this.rating).pipe(
-        takeUntil(this.destroy$),
-      ).subscribe({
-        next: (res) => {
-          this.reviews.push(res.review);
-        }
-      })
-    }
-
-    this.toggleAddReview();
-  }
-
   getSimilarProducts(subCategory_id: number){
     console.log([subCategory_id]);
     this.category.filterProducts(1,4, undefined, undefined, undefined, undefined, undefined, [subCategory_id]).pipe(
@@ -174,8 +133,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.fetchReviews(+this.productId!, page);
   }
 
-  toggleAddReview() {
-    this.addReview = !this.addReview;
+  toggleUpdateForm() {
+    this.isVisible = !this.isVisible
+  }
+
+  toggleUpdateData() {
+    if(this.productId){
+      this.fetchBookData(+this.productId);
+    }
+    this.isVisible = !this.isVisible
   }
 
   ngOnDestroy(): void {

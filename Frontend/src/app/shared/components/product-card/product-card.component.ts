@@ -37,7 +37,12 @@ export class ProductCardComponent implements OnDestroy{
   }
 
   redirectTo(){
-    this.router.navigate([`/products/productDetail/${this.productInfo.product_id}`])
+    if(this.auth.isAdmin()){
+      this.router.navigate([`admin/products/${this.productInfo.product_id}/edit`])
+    }
+    else{
+      this.router.navigate([`/products/productDetail/${this.productInfo.product_id}`])
+    }
   }
 
   handleSendProduct(){
