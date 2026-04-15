@@ -8,7 +8,7 @@ export interface Order {
     status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
     createdAt: string;
     updatedAt: string;
-    orderProducts: Pick<OrderProducts, 'quantity' | 'price'>[] | OrderProducts[];
+    orderProducts: OrderProducts[];
     address?: Pick<Address, 'address'>;
 }
 
@@ -18,7 +18,7 @@ export interface OrderProducts {
     price: number;
     createdAt: string;
     updatedAt: string;
-    product: Product | Pick<Product, 'product_name'>;
+    product: Product;
 }
 
 export interface GetOrder {

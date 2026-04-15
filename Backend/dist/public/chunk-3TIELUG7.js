@@ -1,1 +1,0 @@
-import"./chunk-2NFLSA4Y.js";var t=[{path:":id/orders",loadComponent:()=>import("./chunk-VU4PY5B2.js").then(o=>o.ManageOrdersComponent)},{path:":id/payments",loadComponent:()=>import("./chunk-LKJH5HSD.js").then(o=>o.ManagePaymentsComponent)},{path:":id",loadComponent:()=>import("./chunk-ZOWPG5SD.js").then(o=>o.ProfilePageComponent)}];export{t as CUSTOMERROUTES};

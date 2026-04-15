@@ -23,7 +23,7 @@ export class Payments {
     @PrimaryGeneratedColumn()
     payment_id !: number;
 
-    @Column()
+    @Column({type: 'decimal', precision: 10, scale: 2})
     amount_paid !: number;
 
     @Column()

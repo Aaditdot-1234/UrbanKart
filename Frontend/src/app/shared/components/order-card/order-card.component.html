@@ -1,4 +1,4 @@
-<div class="order-card flex-jus-sb flex-al-ce">
+<div class="order-card flex-jus-sb flex-al-ce mgb-10">
   <div class="flex-al-ce g-20">
     <div class="card-id-block flex-dir flex-al-ce flex-jus-ce">
       <p class="field-label std-tagline-font color-grey">Order</p>
@@ -17,12 +17,31 @@
         }
       </div>
       <p class="std-tagline-font color-grey">{{ order.createdAt | date:'dd MMM yyyy, hh:mm a' }}</p>
-      @if($any(order.address)?.address) {
-      <p class="std-tagline-font color-grey address-text">{{ $any(order.address).address }}</p>
+      @if(order.address) {
+      <p class="std-tagline-font color-grey address-text">{{ order.address }}</p>
       }
     </div>
   </div>
-  <div class="flex-dir flex-al-end g-10">
-    <h2 class="font-20 font-w-600 std-header-font">₹{{ order.totalAmount }}</h2>
+  <div class="flex-jus-sb flex-al-ce g-20">
+    <div class="flex-dir flex-al-end g-10">
+      <h2 class="font-20 font-w-600 std-header-font">₹{{ order.totalAmount }}</h2>
+    </div>
+    <div>
+      <button (click)="toggleVisibility()">{{ isVisible ? "Hide products" : 'Show Products'}}</button>
+    </div>
   </div>
+</div>
+<div *appToggleVisibility="isVisible" class="op-catalog flex-jus-fs flex-al-ce g-20">
+  @for (op of order.orderProducts; track $index) {
+    <div class="flex-jus-sb flex-al-ce g-20">
+      <div class="img-container op-img"></div>
+      <div class="flex-dir flex-jus-sb flex-al-bs g-20">
+        <h1 class="std-header-font">{{op.product.product_name}}</h1>
+        <div class="flex-jus-sb flex-al-ce g-20">
+          <h2 class="std-tagline-font">Price: ₹{{op.price}}</h2>
+          <h2 class="std-tagline-font">Qty: {{op.quantity}}</h2>
+        </div>
+      </div>
+    </div>
+  }
 </div>

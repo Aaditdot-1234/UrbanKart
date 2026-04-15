@@ -1,4 +1,3 @@
-import { skip } from "node:test";
 import AppDataSource from "../datasource";
 import { Address } from "../entities/Address";
 import { OrderedProducts } from "../entities/OrderedProducts";

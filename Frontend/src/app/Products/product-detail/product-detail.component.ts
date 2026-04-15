@@ -31,6 +31,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   subcategory_name: string = '';
   type_name: string = '';
   reviews!: Omit<Reviews, 'product'>[];
+  similarProducts: Product[] = [];
 
   currentPage: number = 1;
   pageSize: number = 10;
@@ -78,6 +79,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           this.subcategory_name = sub.subcategory_name;
           this.category_name = sub.categories?.category_name;
           this.type_name = sub.categories?.types?.type_name;
+          this.getSimilarProducts(sub.subcategory_id);
         }
       },
       error: (err) => {
@@ -141,6 +143,21 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     this.toggleAddReview();
+  }
+
+  getSimilarProducts(subCategory_id: number){
+    console.log([subCategory_id]);
+    this.category.filterProducts(1,4, undefined, undefined, undefined, undefined, undefined, [subCategory_id]).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (res) => {
+        console.log(res.message);
+        this.similarProducts = res.products;
+      }, 
+      error: (err) => {
+        console.error(err);
+      }
+    })
   }
 
   validateRating(event: any) {

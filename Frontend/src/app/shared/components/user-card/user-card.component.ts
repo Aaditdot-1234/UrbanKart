@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../../models/auth';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-card',
@@ -12,6 +13,8 @@ export class UserCardComponent {
   @Input() user!: Omit<User, 'password'>;
   @Input() showLockButton: boolean = false;
   @Output() lockToggled = new EventEmitter<string>();
+
+  constructor(private router: Router){}
 
   getInitials(name: string): string {
     if (!name) return '?';

@@ -86,10 +86,9 @@
     <div>
         <h1 class="font-50 std-header-font font-w-500 mgb-20">You may also like</h1>
         <div class="flex-jus-fs flex-al-ce g-20">
-            <app-product-card class="product-card"></app-product-card>
-            <app-product-card class="product-card"></app-product-card>
-            <app-product-card class="product-card"></app-product-card>
-            <app-product-card class="product-card"></app-product-card>
+            @for (simProduct of similarProducts; track $index) {
+                <app-product-card class="product-card" [productInfo]="simProduct"></app-product-card>
+            }
         </div>
     </div>
     <div class="reviews">

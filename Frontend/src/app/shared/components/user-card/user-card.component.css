@@ -96,3 +96,22 @@
     background-color: #2e7d32;
     color: white;
 }
+
+
+.profile-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1.5px solid #4528c6;
+    background-color: transparent;
+    color: #6528c6;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.profile-btn:hover {
+    background-color: #4528c6;
+    color: white;
+}
